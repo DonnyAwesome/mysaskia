@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Tier verkaufen - MySaskia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css?v=8">
+    <link rel="stylesheet" href="css/marketplace.css?v=1">
+</head>
+<body data-page="sell">
+    <nav class="navbar">
+        <a class="nav-brand" href="index.html">
+            <img src="images/flower-logo.svg" alt="MySaskia Logo">
+            <span>MySaskia</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="marketplace.html">Marktplatz</a>
+            <a href="sell.html">Tier verkaufen</a>
+            <a href="my-items.html">Meine Inserate</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="support.html">Support</a>
+            <a href="profile.html">Profil</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="marketplace-hero">
+            <h1>Tier inserieren</h1>
+            <p>Erstelle ein neues Tier-Inserat mit Beschreibung, Preis und Bild.</p>
+        </section>
+
+        <form id="sellForm" class="sell-form">
+            <label for="title">Titel</label>
+            <input id="title" name="title" type="text" placeholder="z. B. Junger Labrador sucht Zuhause" required>
+
+            <label for="description">Beschreibung</label>
+            <textarea id="description" name="description" rows="5" placeholder="Beschreibe das Tier kurz..." required></textarea>
+
+            <div class="form-row">
+                <div>
+                    <label for="species">Tierart</label>
+                    <input id="species" name="species" type="text" placeholder="Hund, Katze, Vogel..." required>
+                </div>
+
+                <div>
+                    <label for="breed">Rasse</label>
+                    <input id="breed" name="breed" type="text" placeholder="z. B. Labrador">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="age">Alter</label>
+                    <input id="age" name="age" type="text" placeholder="z. B. 2 Jahre">
+                </div>
+
+                <div>
+                    <label for="gender">Geschlecht</label>
+                    <select id="gender" name="gender">
+                        <option value="">Bitte wählen</option>
+                        <option value="männlich">männlich</option>
+                        <option value="weiblich">weiblich</option>
+                        <option value="unbekannt">unbekannt</option>
+                    </select>
+                </div>
+            </div>
+
+            <label for="price">Preis in Euro</label>
+            <input id="price" name="price" type="number" min="0" step="0.01" placeholder="450" required>
+
+            <input type="hidden" name="item_type" value="animal">
+
+            <label for="image">Bild</label>
+            <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp">
+
+            <img id="imagePreview" class="image-preview" alt="Bildvorschau">
+
+            <button class="btn" type="submit">Inserat erstellen</button>
+
+            <div id="sellMessage" class="status-message"></div>
+        </form>
+    </main>
+
+    <script src="js/i18n.js?v=1"></script>
+    <script src="js/site.js?v=1"></script>
+    <script src="js/items.js?v=1"></script>
+</body>
+</html>
+

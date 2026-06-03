@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Meine Inserate - MySaskia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css?v=8">
+    <link rel="stylesheet" href="css/marketplace.css?v=1">
+</head>
+<body data-page="my-items">
+    <nav class="navbar">
+        <a class="nav-brand" href="index.html">
+            <img src="images/flower-logo.svg" alt="MySaskia Logo">
+            <span>MySaskia</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="marketplace.html">Marktplatz</a>
+            <a href="sell.html">Tier verkaufen</a>
+            <a href="my-items.html">Meine Inserate</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="support.html">Support</a>
+            <a href="profile.html">Profil</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="marketplace-hero">
+            <h1>Meine Inserate</h1>
+            <p>Hier verwaltest du deine eigenen Tier-Inserate.</p>
+
+            <div class="my-items-toolbar">
+                <a class="btn" href="sell.html">Neues Tier inserieren</a>
+                <a class="btn secondary" href="marketplace.html">Marktplatz ansehen</a>
+            </div>
+        </section>
+
+        <section class="marketplace-container">
+            <h2>Deine Tiere</h2>
+            <div id="myItemsGrid" class="item-grid"></div>
+        </section>
+    </main>
+
+    <script src="js/i18n.js?v=1"></script>
+    <script src="js/site.js?v=1"></script>
+    <script src="js/items.js?v=1"></script>
+</body>
+</html>
