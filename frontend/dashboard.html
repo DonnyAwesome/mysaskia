@@ -2,93 +2,76 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - MySaskia</title>
+    <title>Mein Konto - MySaskia</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="css/shop-nav.css?v=1">
     <link rel="stylesheet" href="css/style.css?v=8">
     <link rel="stylesheet" href="css/marketplace.css?v=1">
+    <link rel="stylesheet" href="css/shop-nav.css?v=1">
 </head>
 <body data-page="dashboard">
-    <nav class="navbar">
-        <a class="nav-brand" href="index.html">
-            <img src="images/flower-logo.svg" alt="MySaskia Logo">
-            <span>MySaskia</span>
-        </a>
-
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="marketplace.html">Marktplatz</a>
-            <a href="sell.html">Tier verkaufen</a>
-            <a href="my-items.html">Meine Inserate</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="support.html">Support</a>
-            <a href="profile.html">Profil</a>
-            <a href="login.html">Login</a>
-        </div>
-    </nav>
-
     <main>
         <section class="marketplace-hero">
-            <h1>Dashboard</h1>
+            <h1>Mein Konto</h1>
             <p id="welcomeMessage">
-                Willkommen bei MySaskia. Verwalte deine Tiere, Inserate, dein Profil und deine Support-Anfragen an einem Ort.
+                Willkommen zurück. Hier verwaltest du deine Inserate, dein Profil und deine Support-Anfragen.
             </p>
 
             <div class="marketplace-actions">
                 <a class="btn" href="sell.html">Tier verkaufen</a>
-                <a class="btn secondary" href="marketplace.html">Tiere entdecken</a>
                 <a class="btn secondary" href="my-items.html">Meine Inserate</a>
+                <a class="btn secondary" href="profile.html">Profil bearbeiten</a>
             </div>
         </section>
 
         <section class="marketplace-container">
-            <h2>Deine Schnellaktionen</h2>
+            <h2>Konto-Übersicht</h2>
 
             <div class="item-grid">
                 <article class="item-card">
-                    <div class="item-card-placeholder">🐶</div>
-                    <div class="item-card-body">
-                        <h3>Tiere entdecken</h3>
-                        <p class="item-description">
-                            Sieh dir alle aktiven Tier-Inserate auf dem MySaskia-Marktplatz an.
-                        </p>
-                        <a class="btn" href="marketplace.html">Zum Marktplatz</a>
-                    </div>
-                </article>
-
-                <article class="item-card">
-                    <div class="item-card-placeholder">📸</div>
-                    <div class="item-card-body">
-                        <h3>Tier verkaufen</h3>
-                        <p class="item-description">
-                            Erstelle ein neues Tier-Inserat mit Beschreibung, Preis und Bild.
-                        </p>
-                        <a class="btn" href="sell.html">Inserat erstellen</a>
-                    </div>
-                </article>
-
-                <article class="item-card">
-                    <div class="item-card-placeholder">📋</div>
+                    <div class="item-card-placeholder">📦</div>
                     <div class="item-card-body">
                         <h3>Meine Inserate</h3>
                         <p class="item-description">
-                            Verwalte deine eigenen Tiere, markiere Inserate als verkauft oder lösche sie.
+                            Verwalte deine Tier-Inserate, markiere Tiere als verkauft oder lösche alte Einträge.
                         </p>
                         <a class="btn" href="my-items.html">Inserate verwalten</a>
                     </div>
                 </article>
 
                 <article class="item-card">
+                    <div class="item-card-placeholder">➕</div>
+                    <div class="item-card-body">
+                        <h3>Neues Tier verkaufen</h3>
+                        <p class="item-description">
+                            Erstelle ein neues Inserat mit Foto, Beschreibung, Tierart, Alter und Preis.
+                        </p>
+                        <a class="btn" href="sell.html">Tier inserieren</a>
+                    </div>
+                </article>
+
+                <article class="item-card">
+                    <div class="item-card-placeholder">🐾</div>
+                    <div class="item-card-body">
+                        <h3>Marktplatz</h3>
+                        <p class="item-description">
+                            Sieh dir aktive Inserate anderer Nutzer an und entdecke neue Tiere.
+                        </p>
+                        <a class="btn" href="marketplace.html">Tiere entdecken</a>
+                    </div>
+                </article>
+
+                <article class="item-card">
                     <div class="item-card-placeholder">👤</div>
                     <div class="item-card-body">
-                        <h3>Mein Profil</h3>
+                        <h3>Profil & Sicherheit</h3>
                         <p class="item-description">
-                            Bearbeite deine persönlichen Daten, dein Passwort, Sprache und Theme.
+                            Bearbeite deinen Namen, ändere dein Passwort oder passe Sprache und Theme an.
                         </p>
+
                         <div class="item-card-actions">
-                            <a class="btn" href="profile.html">Profil ansehen</a>
-                            <a class="btn secondary" href="profile.html#edit">Bearbeiten</a>
+                            <a class="btn" href="profile.html">Profil öffnen</a>
+                            <a class="btn secondary" href="profile.html#security">Passwort ändern</a>
                         </div>
                     </div>
                 </article>
@@ -98,7 +81,7 @@
                     <div class="item-card-body">
                         <h3>Support</h3>
                         <p class="item-description">
-                            Erstelle Support-Tickets oder prüfe den Status deiner bisherigen Anfragen.
+                            Schreibe dem Support oder prüfe den Status deiner bisherigen Tickets.
                         </p>
                         <a class="btn" href="support.html">Support öffnen</a>
                     </div>
@@ -109,7 +92,7 @@
                     <div class="item-card-body">
                         <h3>Einstellungen</h3>
                         <p class="item-description">
-                            Passe Sprache, Darstellung und Kontoeinstellungen an.
+                            Passe Sprache und Darstellung von MySaskia an.
                         </p>
                         <a class="btn" href="profile.html#settings">Einstellungen öffnen</a>
                     </div>
@@ -126,11 +109,11 @@
                     <div class="item-card-body">
                         <h3>Account-Verwaltung</h3>
                         <p class="item-description">
-                            Admins können registrierte Accounts ansehen und verwalten.
+                            Admins können registrierte Nutzerkonten ansehen und verwalten.
                         </p>
 
                         <div id="accountsList" class="empty-state">
-                            Account-Verwaltung wird über die bestehende Dashboard-Logik geladen.
+                            Account-Verwaltung wird geladen, wenn du als Admin eingeloggt bist.
                         </div>
                     </div>
                 </article>
@@ -140,7 +123,7 @@
                     <div class="item-card-body">
                         <h3>Support-Tickets</h3>
                         <p class="item-description">
-                            Admins können Support-Tickets prüfen und den Status ändern.
+                            Prüfe Support-Anfragen und ändere den Bearbeitungsstatus.
                         </p>
                         <a class="btn" href="support.html">Tickets öffnen</a>
                     </div>
@@ -151,9 +134,9 @@
                     <div class="item-card-body">
                         <h3>Marktplatz prüfen</h3>
                         <p class="item-description">
-                            Aktuell können Admins den Marktplatz ansehen. Eine eigene Inserate-Moderation bauen wir später.
+                            Prüfe aktive Tier-Inserate. Eine eigene Moderationsansicht bauen wir später.
                         </p>
-                        <a class="btn" href="marketplace.html">Marktplatz ansehen</a>
+                        <a class="btn" href="marketplace.html">Inserate ansehen</a>
                     </div>
                 </article>
             </div>
@@ -162,7 +145,7 @@
 
     <script src="js/i18n.js?v=1"></script>
     <script src="js/site.js?v=1"></script>
+    <script src="js/shop-nav.js?v=1"></script>
     <script src="js/app.js?v=1"></script>
-<script src="js/shop-nav.js?v=1"></script>
 </body>
 </html>
