@@ -2,75 +2,128 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>MySaskia - Startseite</title>
-    <link rel="stylesheet" href="css/style.css?v=5">
+    <title>MySaskia - Tier-Marktplatz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css?v=8">
+    <link rel="stylesheet" href="css/marketplace.css?v=1">
+<link rel="stylesheet" href="css/shop-nav.css?v=1">
 </head>
-<body>
-    <header class="hero">
-        <nav class="navbar">
-            <div class="logo brand-logo">
-                <img src="images/flower-logo.svg" alt="MySaskia Logo">
-                <span>MySaskia</span>
-            </div>
+<body data-page="home">
+    <nav class="navbar">
+        <a class="nav-brand" href="index.html">
+            <img src="images/flower-logo.svg" alt="MySaskia Logo">
+            <span>MySaskia</span>
+        </a>
 
-            <ul class="nav-links">
-                <li><a href="index.html" class="active-link" data-i18n="navHome">Home</a></li>
-                <li><a href="about.html" data-i18n="navAbout">Über mich</a></li>
-                <li><a href="support.html" data-i18n="navSupport">Support</a></li>
-                <li><a href="profile.html" data-i18n="navProfile">Profil</a></li>
-                <li><a href="dashboard.html" data-i18n="navDashboard">Dashboard</a></li>
-                <li id="loginNavItem"><a href="login.html" data-i18n="navLogin">Login</a></li>
-                <li id="logoutNavItem"><button onclick="logout()" data-i18n="navLogout">Logout</button></li>
-            </ul>
-        </nav>
-
-        <div class="hero-content">
-            <img class="hero-logo-image" src="images/flower-logo.svg" alt="MySaskia Logo">
-
-            <h1 data-i18n="homeHeroTitle">Willkommen bei MySaskia</h1>
-
-            <p data-i18n="homeHeroText">
-                Dein persönlicher Bereich für Profil, Support-Tickets, Einstellungen und Account-Verwaltung.
-            </p>
-
-            <div class="hero-buttons">
-                <a class="btn-link" href="login.html" data-i18n="homeLoginButton">Einloggen</a>
-                <a class="btn-link secondary" href="login.html#register" data-i18n="homeRegisterButton">Account erstellen</a>
-            </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="marketplace.html">Marktplatz</a>
+            <a href="sell.html">Tier verkaufen</a>
+            <a href="my-items.html">Meine Inserate</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="support.html">Support</a>
+            <a href="profile.html">Profil</a>
+            <a href="login.html">Login</a>
         </div>
-    </header>
+    </nav>
 
-    <main class="page-section">
-        <section class="card">
-            <h2 data-i18n="homeAboutTitle">Was ist MySaskia?</h2>
-            <p data-i18n="homeAboutText">
-                MySaskia ist ein lokales Server-Lernprojekt mit Apache, Flask, REST API, SQLite, Login-System, Profilen, Admin-Rechten und Support-Tickets.
+    <main>
+        <section class="marketplace-hero">
+            <h1>Willkommen bei MySaskia</h1>
+            <p>
+                MySaskia ist dein lokaler Tier-Marktplatz. Entdecke Tiere, die ein neues Zuhause suchen,
+                oder erstelle selbst ein Inserat mit Beschreibung, Preis und Bild.
             </p>
+
+            <div class="marketplace-actions">
+                <a class="btn" href="marketplace.html">Tiere entdecken</a>
+                <a class="btn secondary" href="sell.html">Tier verkaufen</a>
+                <a class="btn secondary" href="login.html#register">Account erstellen</a>
+            </div>
         </section>
 
-        <section class="card">
-            <h2 data-i18n="homeFeaturesTitle">Funktionen</h2>
+        <section class="marketplace-container">
+            <h2>Was du mit MySaskia machen kannst</h2>
 
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3 data-i18n="homeFeatureProfileTitle">Profil</h3>
-                    <p data-i18n="homeFeatureProfileText">Verwalte deine persönlichen Daten und Einstellungen.</p>
-                </div>
+            <div class="item-grid">
+                <article class="item-card">
+                    <div class="item-card-placeholder">🐶</div>
+                    <div class="item-card-body">
+                        <h3>Tiere entdecken</h3>
+                        <p class="item-description">
+                            Durchsuche aktive Tier-Inserate und finde Tiere, die ein neues Zuhause suchen.
+                        </p>
+                        <a class="btn" href="marketplace.html">Zum Marktplatz</a>
+                    </div>
+                </article>
 
-                <div class="feature-card">
-                    <h3 data-i18n="homeFeatureSupportTitle">Support</h3>
-                    <p data-i18n="homeFeatureSupportText">Erstelle Tickets und verfolge den Bearbeitungsstatus.</p>
-                </div>
+                <article class="item-card">
+                    <div class="item-card-placeholder">📸</div>
+                    <div class="item-card-body">
+                        <h3>Tier inserieren</h3>
+                        <p class="item-description">
+                            Erstelle ein eigenes Inserat mit Tierart, Rasse, Alter, Preis, Beschreibung und Bild.
+                        </p>
+                        <a class="btn" href="sell.html">Tier verkaufen</a>
+                    </div>
+                </article>
 
-                <div class="feature-card">
-                    <h3 data-i18n="homeFeatureAdminTitle">Admin</h3>
-                    <p data-i18n="homeFeatureAdminText">Verwalte Accounts und Support-Anfragen im Admin-Bereich.</p>
-                </div>
+                <article class="item-card">
+                    <div class="item-card-placeholder">📋</div>
+                    <div class="item-card-body">
+                        <h3>Inserate verwalten</h3>
+                        <p class="item-description">
+                            Behalte deine eigenen Inserate im Blick und markiere Tiere später als verkauft.
+                        </p>
+                        <a class="btn" href="my-items.html">Meine Inserate</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="marketplace-container">
+            <h2>Dein Konto</h2>
+
+            <div class="item-grid">
+                <article class="item-card">
+                    <div class="item-card-placeholder">👤</div>
+                    <div class="item-card-body">
+                        <h3>Profil</h3>
+                        <p class="item-description">
+                            Bearbeite deine persönlichen Daten, ändere dein Passwort und verwalte deine Einstellungen.
+                        </p>
+                        <a class="btn" href="profile.html">Profil öffnen</a>
+                    </div>
+                </article>
+
+                <article class="item-card">
+                    <div class="item-card-placeholder">🎫</div>
+                    <div class="item-card-body">
+                        <h3>Support</h3>
+                        <p class="item-description">
+                            Erstelle Support-Tickets, wenn du Hilfe brauchst oder ein Problem melden möchtest.
+                        </p>
+                        <a class="btn" href="support.html">Support öffnen</a>
+                    </div>
+                </article>
+
+                <article class="item-card">
+                    <div class="item-card-placeholder">📊</div>
+                    <div class="item-card-body">
+                        <h3>Dashboard</h3>
+                        <p class="item-description">
+                            Nutze dein Dashboard als zentrale Übersicht für Marktplatz, Inserate, Profil und Support.
+                        </p>
+                        <a class="btn" href="dashboard.html">Dashboard öffnen</a>
+                    </div>
+                </article>
             </div>
         </section>
     </main>
 
-    <script src="js/i18n.js"></script>
-    <script src="js/site.js"></script>
+<script src="js/shop-nav.js?v=1"></script>
+    <script src="js/i18n.js?v=1"></script>
+    <script src="js/site.js?v=1"></script>
 </body>
 </html>
