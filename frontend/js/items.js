@@ -341,17 +341,47 @@ function orderImageHtml(order) {
     return `<div class="item-card-placeholder">🐾</div>`;
 }
 
+function orderStatusClass(status) {
+    const statusMap = {
+        "angefragt": "requested",
+        "bestätigt": "confirmed",
+        "abgelehnt": "rejected",
+        "abgeschlossen": "completed"
+    };
+
+    return statusMap[status] || "requested";
+}
+
+function saleOrderActionsHtml(order) {
+    if (order.status === "angefragt") {
+        return `
+            <button class="btn" type="button" onclick="updateOrderStatus(${order.id}, 'bestätigt')">Bestätigen</button>
+            <button class="btn danger" type="button" onclick="updateOrderStatus(${order.id}, 'abgelehnt')">Ablehnen</button>
+        `;
+    }
+
+    if (order.status === "bestätigt") {
+        return `
+            <button class="btn" type="button" onclick="updateOrderStatus(${order.id}, 'abgeschlossen')">Abschließen</button>
+        `;
+    }
+
+    return "";
+}
+
 function orderCardHtml(order, type) {
     const personLabel = type === "sale" ? "Käufer" : "Verkäufer";
     const personName = type === "sale" ? order.buyer_name : order.seller_name;
     const createdAt = formatDate(order.created_at);
+    const status = order.status || "angefragt";
+    const saleActions = type === "sale" ? saleOrderActionsHtml(order) : "";
 
     return `
         <article class="item-card">
             ${orderImageHtml(order)}
             <div class="item-card-body">
                 <div class="item-meta">
-                    <span class="item-badge">${escapeHtml(order.status || "angefragt")}</span>
+                    <span class="item-badge status-badge status-${orderStatusClass(status)}">${escapeHtml(status)}</span>
                 </div>
 
                 <h3>${escapeHtml(order.item_title)}</h3>
@@ -362,10 +392,70 @@ function orderCardHtml(order, type) {
 
                 <div class="item-card-actions">
                     <a class="btn secondary" href="item.html?id=${encodeURIComponent(order.item_id)}">Inserat ansehen</a>
+                    ${saleActions}
                 </div>
+
+                <div id="orderMessage-${order.id}" class="status-message"></div>
             </div>
         </article>
     `;
+}
+
+async function updateOrderStatus(orderId, status) {
+    if (!requireLogin()) {
+        return;
+    }
+
+    const message = document.getElementById(`orderMessage-${orderId}`);
+
+    if (message) {
+        message.textContent = "Status wird aktualisiert...";
+        message.className = "status-message";
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders/status`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getAuthToken()}`
+            },
+            body: JSON.stringify({
+                order_id: orderId,
+                status: status
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            const errorText = data.error || data.message || "Status konnte nicht geändert werden.";
+
+            if (message) {
+                message.textContent = errorText;
+                message.className = "status-message error";
+            } else {
+                alert(errorText);
+            }
+            return;
+        }
+
+        if (message) {
+            message.textContent = data.message || "Status wurde aktualisiert.";
+            message.className = "status-message success";
+        }
+
+        loadOrderList("sale");
+    } catch (error) {
+        const errorText = "Server nicht erreichbar.";
+
+        if (message) {
+            message.textContent = errorText;
+            message.className = "status-message error";
+        } else {
+            alert(errorText);
+        }
+    }
 }
 
 async function loadOrderList(type) {

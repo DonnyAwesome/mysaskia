@@ -132,6 +132,26 @@
     font-weight: 600;
 }
 
+.status-badge.status-requested {
+    background: rgba(36, 104, 178, 0.14);
+    color: #245c9c;
+}
+
+.status-badge.status-confirmed {
+    background: rgba(31, 122, 77, 0.14);
+    color: #1f7a4d;
+}
+
+.status-badge.status-rejected {
+    background: rgba(192, 57, 43, 0.14);
+    color: #a93226;
+}
+
+.status-badge.status-completed {
+    background: rgba(91, 101, 120, 0.16);
+    color: #4b5565;
+}
+
 .item-price {
     color: var(--market-price);
     font-size: 1.25rem;

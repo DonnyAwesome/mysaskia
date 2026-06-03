@@ -148,6 +148,72 @@ def get_my_orders():
     })
 
 
+@orders_bp.route("/orders/status", methods=["PATCH"])
+def update_order_status():
+    current_user = get_current_user()
+
+    if not current_user:
+        return jsonify({"error": "Nicht eingeloggt"}), 401
+
+    data = request.get_json() or {}
+    order_id = data.get("order_id")
+    new_status = data.get("status")
+    allowed_statuses = ["bestätigt", "abgelehnt", "abgeschlossen"]
+
+    if not order_id:
+        return jsonify({"error": "order_id fehlt"}), 400
+
+    if new_status not in allowed_statuses:
+        return jsonify({"error": "Ungültiger Status"}), 400
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, item_id, seller_id, status
+        FROM orders
+        WHERE id = ?
+    """, (order_id,))
+
+    order = cursor.fetchone()
+
+    if not order:
+        conn.close()
+        return jsonify({"error": "Kaufanfrage nicht gefunden"}), 404
+
+    if order["seller_id"] != current_user["id"]:
+        conn.close()
+        return jsonify({"error": "Keine Berechtigung"}), 403
+
+    cursor.execute("""
+        UPDATE orders
+        SET status = ?
+        WHERE id = ?
+    """, (new_status, order_id))
+
+    if new_status == "bestätigt":
+        cursor.execute("""
+            UPDATE items
+            SET status = 'verkauft'
+            WHERE id = ?
+        """, (order["item_id"],))
+
+    if new_status == "abgeschlossen":
+        cursor.execute("""
+            UPDATE items
+            SET status = 'verkauft'
+            WHERE id = ?
+        """, (order["item_id"],))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({
+        "message": "Status wurde aktualisiert",
+        "status": new_status
+    })
+
+
 @orders_bp.route("/my_sales", methods=["GET"])
 def get_my_sales():
     current_user = get_current_user()
