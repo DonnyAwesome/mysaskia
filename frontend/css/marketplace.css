@@ -281,3 +281,72 @@ body[data-theme="dark"],
         margin: 20px 16px;
     }
 }
+
+a.btn,
+button.btn,
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: none;
+    background: #ffcf40;
+    color: #1d2433;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1;
+}
+
+a.btn:hover,
+button.btn:hover,
+.btn:hover {
+    background: #f5bd12;
+    color: #1d2433;
+    text-decoration: none;
+}
+
+a.btn.secondary,
+button.btn.secondary,
+.btn.secondary {
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--market-text);
+    border: 1px solid var(--market-border);
+}
+
+a.btn.secondary:hover,
+button.btn.secondary:hover,
+.btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.22);
+    color: var(--market-text);
+}
+
+body.light a.btn.secondary,
+body.light button.btn.secondary,
+body.light .btn.secondary,
+body[data-theme="light"] a.btn.secondary,
+body[data-theme="light"] button.btn.secondary,
+body[data-theme="light"] .btn.secondary,
+.light-mode a.btn.secondary,
+.light-mode button.btn.secondary,
+.light-mode .btn.secondary {
+    background: #eef3f9;
+    color: #1d2433;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.light a.btn.secondary:hover,
+body.light button.btn.secondary:hover,
+body.light .btn.secondary:hover,
+body[data-theme="light"] a.btn.secondary:hover,
+body[data-theme="light"] button.btn.secondary:hover,
+body[data-theme="light"] .btn.secondary:hover,
+.light-mode a.btn.secondary:hover,
+.light-mode button.btn.secondary:hover,
+.light-mode .btn.secondary:hover {
+    background: #dde8f4;
+    color: #1d2433;
+}
