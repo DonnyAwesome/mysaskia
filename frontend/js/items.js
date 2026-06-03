@@ -87,6 +87,10 @@ function itemImageHtml(item) {
     return `<div class="item-card-placeholder">🐾</div>`;
 }
 
+function itemDetailUrl(item) {
+    return `item.html?id=${encodeURIComponent(item.id)}`;
+}
+
 function itemCardHtml(item, showOwnerActions = false) {
     const statusBadge = item.status
         ? `<span class="item-badge">${escapeHtml(item.status)}</span>`
@@ -105,34 +109,184 @@ function itemCardHtml(item, showOwnerActions = false) {
         `
         : "";
 
+    const cardContent = `
+        ${itemImageHtml(item)}
+        <div class="item-card-body">
+            <h3>${escapeHtml(item.title)}</h3>
+
+            <p class="item-description">${escapeHtml(item.description)}</p>
+
+            <div class="item-meta">
+                <span class="item-badge">${escapeHtml(item.species || "Tier")}</span>
+                ${item.breed ? `<span class="item-badge">${escapeHtml(item.breed)}</span>` : ""}
+                ${item.age ? `<span class="item-badge">${escapeHtml(item.age)}</span>` : ""}
+                ${item.gender ? `<span class="item-badge">${escapeHtml(item.gender)}</span>` : ""}
+                ${statusBadge}
+            </div>
+
+            <div class="item-price">${formatPrice(item.price)}</div>
+
+            ${
+                item.seller_name
+                    ? `<div class="item-seller">Verkäufer: ${escapeHtml(item.seller_name)}</div>`
+                    : ""
+            }
+
+            ${ownerActions}
+        </div>
+    `;
+
+    if (!showOwnerActions) {
+        return `
+            <a class="item-card item-card-link" href="${escapeHtml(itemDetailUrl(item))}">
+                ${cardContent}
+            </a>
+        `;
+    }
+
     return `
         <article class="item-card">
-            ${itemImageHtml(item)}
-            <div class="item-card-body">
-                <h3>${escapeHtml(item.title)}</h3>
+            ${cardContent}
+        </article>
+    `;
+}
 
-                <p class="item-description">${escapeHtml(item.description)}</p>
+function getItemDetailId() {
+    const params = new URLSearchParams(window.location.search);
 
+    return (params.get("id") || "").trim();
+}
+
+function itemDetailImageHtml(item) {
+    if (item.image_url) {
+        return `<img class="item-detail-image" src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}">`;
+    }
+
+    return `<div class="item-detail-placeholder">🐾</div>`;
+}
+
+function formatDate(value) {
+    if (!value) {
+        return "";
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+
+    return new Intl.DateTimeFormat("de-DE", {
+        dateStyle: "medium",
+        timeStyle: "short"
+    }).format(date);
+}
+
+function detailRowHtml(label, value) {
+    if (!value && value !== 0) {
+        return "";
+    }
+
+    return `
+        <div class="item-detail-row">
+            <dt>${escapeHtml(label)}</dt>
+            <dd>${escapeHtml(value)}</dd>
+        </div>
+    `;
+}
+
+function itemDetailHtml(item) {
+    const createdAt = formatDate(item.created_at);
+
+    return `
+        <article class="item-detail">
+            <div class="item-detail-media">
+                ${itemDetailImageHtml(item)}
+            </div>
+
+            <div class="item-detail-content">
                 <div class="item-meta">
+                    <span class="item-badge">${escapeHtml(item.status || "aktiv")}</span>
                     <span class="item-badge">${escapeHtml(item.species || "Tier")}</span>
-                    ${item.breed ? `<span class="item-badge">${escapeHtml(item.breed)}</span>` : ""}
-                    ${item.age ? `<span class="item-badge">${escapeHtml(item.age)}</span>` : ""}
-                    ${item.gender ? `<span class="item-badge">${escapeHtml(item.gender)}</span>` : ""}
-                    ${statusBadge}
                 </div>
 
-                <div class="item-price">${formatPrice(item.price)}</div>
+                <h2>${escapeHtml(item.title)}</h2>
+                <p class="item-detail-description">${escapeHtml(item.description)}</p>
+                <div class="item-detail-price">${formatPrice(item.price)}</div>
 
-                ${
-                    item.seller_name
-                        ? `<div class="item-seller">Verkäufer: ${escapeHtml(item.seller_name)}</div>`
-                        : ""
-                }
+                <dl class="item-detail-list">
+                    ${detailRowHtml("Tierart", item.species)}
+                    ${detailRowHtml("Rasse", item.breed)}
+                    ${detailRowHtml("Alter", item.age)}
+                    ${detailRowHtml("Geschlecht", item.gender)}
+                    ${detailRowHtml("Verkäufer", item.seller_name)}
+                    ${detailRowHtml("Status", item.status)}
+                    ${createdAt ? detailRowHtml("Erstellt am", createdAt) : ""}
+                </dl>
 
-                ${ownerActions}
+                <div class="item-detail-actions">
+                    <button id="interestButton" class="btn" type="button">Interesse anmelden</button>
+                    <a class="btn secondary" href="marketplace.html">Zurück</a>
+                </div>
+
+                <div id="interestMessage" class="status-message"></div>
             </div>
         </article>
     `;
+}
+
+function setupInterestButton() {
+    const button = document.getElementById("interestButton");
+    const message = document.getElementById("interestMessage");
+
+    if (!button || !message) {
+        return;
+    }
+
+    button.addEventListener("click", () => {
+        message.textContent = "Kaufanfragen bauen wir als nächstes.";
+        message.className = "status-message success";
+    });
+}
+
+async function loadItemDetail() {
+    const container = document.getElementById("itemDetail");
+
+    if (!container) {
+        return;
+    }
+
+    const itemId = getItemDetailId();
+
+    if (!itemId) {
+        container.innerHTML = `<div class="empty-state">Kein Inserat ausgewählt.</div>`;
+        return;
+    }
+
+    container.innerHTML = `<div class="empty-state">Inserat wird geladen...</div>`;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/items`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            container.innerHTML = `<div class="empty-state">Fehler: ${escapeHtml(data.error || data.message || "Inserat konnte nicht geladen werden.")}</div>`;
+            return;
+        }
+
+        const items = Array.isArray(data.items) ? data.items : [];
+        const item = items.find((entry) => String(entry.id) === itemId);
+
+        if (!item) {
+            container.innerHTML = `<div class="empty-state">Inserat nicht gefunden.</div>`;
+            return;
+        }
+
+        container.innerHTML = itemDetailHtml(item);
+        setupInterestButton();
+    } catch (error) {
+        container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
+    }
 }
 
 async function loadMarketplaceItems() {
@@ -374,5 +528,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (document.body.dataset.page === "my-items") {
         loadMyItems();
+    }
+
+    if (document.body.dataset.page === "item-detail") {
+        loadItemDetail();
     }
 });

@@ -67,6 +67,20 @@
     border: 1px solid var(--market-border);
 }
 
+.item-card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.item-card-link:hover {
+    color: inherit;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+}
+
 .item-card-image {
     width: 100%;
     height: 210px;
@@ -129,6 +143,103 @@
     margin-top: 10px;
     font-size: 0.9rem;
     color: var(--market-muted);
+}
+
+.item-detail-container {
+    margin-top: 22px;
+}
+
+.item-detail {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) minmax(320px, 1fr);
+    gap: 28px;
+    padding: 24px;
+    border-radius: 20px;
+    background: var(--market-card-bg);
+    color: var(--market-text);
+    border: 1px solid var(--market-border);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+}
+
+.item-detail-media {
+    min-width: 0;
+}
+
+.item-detail-image,
+.item-detail-placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+    display: block;
+}
+
+.item-detail-image {
+    object-fit: cover;
+    background: #f1f1f1;
+}
+
+.item-detail-placeholder {
+    background: linear-gradient(135deg, #f1f1f1, #dddddd);
+    color: #2468b2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+}
+
+.item-detail-content {
+    min-width: 0;
+}
+
+.item-detail-content h2 {
+    margin: 14px 0 12px;
+    color: var(--market-text);
+    font-size: 2rem;
+    line-height: 1.15;
+}
+
+.item-detail-description {
+    color: var(--market-muted);
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+
+.item-detail-price {
+    color: var(--market-price);
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 16px 0;
+}
+
+.item-detail-list {
+    display: grid;
+    gap: 10px;
+    margin: 18px 0 0;
+}
+
+.item-detail-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--market-border);
+}
+
+.item-detail-row dt {
+    color: var(--market-muted);
+    font-weight: 700;
+}
+
+.item-detail-row dd {
+    margin: 0;
+    color: var(--market-text);
+}
+
+.item-detail-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 22px;
 }
 
 .sell-form {
@@ -294,6 +405,16 @@ body[data-theme="dark"],
 
     .marketplace-hero {
         margin: 20px 16px;
+    }
+
+    .item-detail {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .item-detail-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
     }
 }
 
