@@ -235,17 +235,61 @@ function itemDetailHtml(item) {
     `;
 }
 
-function setupInterestButton() {
-    const button = document.getElementById("interestButton");
+async function createOrder(itemId) {
+    if (!requireLogin()) {
+        return;
+    }
+
     const message = document.getElementById("interestMessage");
 
-    if (!button || !message) {
+    if (message) {
+        message.textContent = "Interesse wird angemeldet...";
+        message.className = "status-message";
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getAuthToken()}`
+            },
+            body: JSON.stringify({
+                item_id: itemId
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            if (message) {
+                message.textContent = data.error || data.message || "Interesse konnte nicht angemeldet werden.";
+                message.className = "status-message error";
+            }
+            return;
+        }
+
+        if (message) {
+            message.textContent = "Interesse wurde angemeldet.";
+            message.className = "status-message success";
+        }
+    } catch (error) {
+        if (message) {
+            message.textContent = "Server nicht erreichbar. Läuft dein Flask-Backend?";
+            message.className = "status-message error";
+        }
+    }
+}
+
+function setupInterestButton(item) {
+    const button = document.getElementById("interestButton");
+
+    if (!button) {
         return;
     }
 
     button.addEventListener("click", () => {
-        message.textContent = "Kaufanfragen bauen wir als nächstes.";
-        message.className = "status-message success";
+        createOrder(item.id);
     });
 }
 
@@ -283,7 +327,86 @@ async function loadItemDetail() {
         }
 
         container.innerHTML = itemDetailHtml(item);
-        setupInterestButton();
+        setupInterestButton(item);
+    } catch (error) {
+        container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
+    }
+}
+
+function orderImageHtml(order) {
+    if (order.image_url) {
+        return `<img class="item-card-image" src="${escapeHtml(order.image_url)}" alt="${escapeHtml(order.item_title)}">`;
+    }
+
+    return `<div class="item-card-placeholder">🐾</div>`;
+}
+
+function orderCardHtml(order, type) {
+    const personLabel = type === "sale" ? "Käufer" : "Verkäufer";
+    const personName = type === "sale" ? order.buyer_name : order.seller_name;
+    const createdAt = formatDate(order.created_at);
+
+    return `
+        <article class="item-card">
+            ${orderImageHtml(order)}
+            <div class="item-card-body">
+                <div class="item-meta">
+                    <span class="item-badge">${escapeHtml(order.status || "angefragt")}</span>
+                </div>
+
+                <h3>${escapeHtml(order.item_title)}</h3>
+                <div class="item-price">${formatPrice(order.price)}</div>
+
+                <div class="item-seller">${personLabel}: ${escapeHtml(personName || "Unbekannt")}</div>
+                ${createdAt ? `<div class="item-seller">Angefragt am: ${escapeHtml(createdAt)}</div>` : ""}
+
+                <div class="item-card-actions">
+                    <a class="btn secondary" href="item.html?id=${encodeURIComponent(order.item_id)}">Inserat ansehen</a>
+                </div>
+            </div>
+        </article>
+    `;
+}
+
+async function loadOrderList(type) {
+    if (!requireLogin()) {
+        return;
+    }
+
+    const containerId = type === "sale" ? "salesGrid" : "ordersGrid";
+    const endpoint = type === "sale" ? "my_sales" : "my_orders";
+    const container = document.getElementById(containerId);
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = `<div class="empty-state">Anfragen werden geladen...</div>`;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+            headers: {
+                "Authorization": `Bearer ${getAuthToken()}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            container.innerHTML = `<div class="empty-state">Fehler: ${escapeHtml(data.error || data.message || "Anfragen konnten nicht geladen werden.")}</div>`;
+            return;
+        }
+
+        if (!data.orders || data.orders.length === 0) {
+            const emptyText = type === "sale"
+                ? "Noch keine Kaufanfragen zu deinen Inseraten."
+                : "Du hast noch keine Kaufanfragen gestellt.";
+
+            container.innerHTML = `<div class="empty-state">${emptyText}</div>`;
+            return;
+        }
+
+        container.innerHTML = data.orders.map((order) => orderCardHtml(order, type)).join("");
     } catch (error) {
         container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
     }
@@ -532,5 +655,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (document.body.dataset.page === "item-detail") {
         loadItemDetail();
+    }
+
+    if (document.body.dataset.page === "orders") {
+        loadOrderList("order");
+    }
+
+    if (document.body.dataset.page === "sales") {
+        loadOrderList("sale");
     }
 });

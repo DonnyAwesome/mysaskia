@@ -91,6 +91,16 @@ function renderShopNavigation() {
                         <span>Inserate</span>
                     </a>
 
+                    <a class="shop-action ${isActivePage("orders.html")}" href="orders.html" title="Meine Käufe">
+                        <span class="shop-action-icon">🛒</span>
+                        <span>Käufe</span>
+                    </a>
+
+                    <a class="shop-action ${isActivePage("sales.html")}" href="sales.html" title="Meine Verkäufe">
+                        <span class="shop-action-icon">🤝</span>
+                        <span>Verkäufe</span>
+                    </a>
+
                     <a class="shop-action ${isActivePage("sell.html")}" href="sell.html" title="Tier verkaufen">
                         <span class="shop-action-icon">➕</span>
                         <span>Verkaufen</span>
