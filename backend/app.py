@@ -1,24 +1,45 @@
-# app.py
-from profile import profile_bp
-from flask import Flask
+import os
+from flask import Flask, send_from_directory
 from flask_cors import CORS
-from db import init_db, create_admin_user
+
+from db import init_db
+
 from auth import auth_bp
 from accounts import accounts_bp
 from tickets import tickets_bp
+from profile import profile_bp
+from items import items_bp
+
 
 app = Flask(__name__)
 CORS(app)
 
-# Blueprints registrieren
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_ITEMS_FOLDER = os.path.join(BASE_DIR, "uploads", "items")
+
+os.makedirs(UPLOAD_ITEMS_FOLDER, exist_ok=True)
+
+init_db()
+
 app.register_blueprint(auth_bp)
 app.register_blueprint(accounts_bp)
 app.register_blueprint(tickets_bp)
 app.register_blueprint(profile_bp)
+app.register_blueprint(items_bp)
 
-# DB initialisieren & Admin
-init_db()
-create_admin_user()
+
+@app.route("/uploads/items/<filename>")
+def uploaded_item_image(filename):
+    return send_from_directory(UPLOAD_ITEMS_FOLDER, filename)
+
+
+@app.route("/")
+def home():
+    return {
+        "message": "MySaskia API läuft",
+        "api": "/api"
+    }
+
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(debug=True)
