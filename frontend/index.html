@@ -2,128 +2,118 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>MySaskia - Tier-Marktplatz</title>
+    <title>MySaskia - Dein Tier-Marktplatz</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="css/style.css?v=8">
     <link rel="stylesheet" href="css/marketplace.css?v=1">
-<link rel="stylesheet" href="css/shop-nav.css?v=1">
+    <link rel="stylesheet" href="css/shop-nav.css?v=1">
 </head>
 <body data-page="home">
-    <nav class="navbar">
-        <a class="nav-brand" href="index.html">
-            <img src="images/flower-logo.svg" alt="MySaskia Logo">
-            <span>MySaskia</span>
-        </a>
-
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="marketplace.html">Marktplatz</a>
-            <a href="sell.html">Tier verkaufen</a>
-            <a href="my-items.html">Meine Inserate</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="support.html">Support</a>
-            <a href="profile.html">Profil</a>
-            <a href="login.html">Login</a>
-        </div>
-    </nav>
-
     <main>
         <section class="marketplace-hero">
-            <h1>Willkommen bei MySaskia</h1>
+            <h1>Finde dein neues Lieblingstier</h1>
             <p>
-                MySaskia ist dein lokaler Tier-Marktplatz. Entdecke Tiere, die ein neues Zuhause suchen,
-                oder erstelle selbst ein Inserat mit Beschreibung, Preis und Bild.
+                MySaskia ist dein lokaler Tier-Marktplatz. Entdecke Hunde, Katzen, Kleintiere und mehr —
+                oder erstelle selbst ein Inserat mit Bild, Preis und Beschreibung.
             </p>
 
             <div class="marketplace-actions">
-                <a class="btn" href="marketplace.html">Tiere entdecken</a>
-                <a class="btn secondary" href="sell.html">Tier verkaufen</a>
-                <a class="btn secondary" href="login.html#register">Account erstellen</a>
+                <a class="btn" href="marketplace.html">Jetzt Tiere entdecken</a>
+                <a class="btn secondary" href="sell.html">Tier inserieren</a>
+                <a class="btn secondary" href="login.html#register">Kostenlos registrieren</a>
             </div>
         </section>
 
         <section class="marketplace-container">
-            <h2>Was du mit MySaskia machen kannst</h2>
+            <h2>Beliebte Kategorien</h2>
 
             <div class="item-grid">
                 <article class="item-card">
                     <div class="item-card-placeholder">🐶</div>
                     <div class="item-card-body">
-                        <h3>Tiere entdecken</h3>
+                        <h3>Hunde</h3>
                         <p class="item-description">
-                            Durchsuche aktive Tier-Inserate und finde Tiere, die ein neues Zuhause suchen.
+                            Entdecke treue Begleiter, Welpen und Hunde, die ein neues Zuhause suchen.
                         </p>
-                        <a class="btn" href="marketplace.html">Zum Marktplatz</a>
+                        <a class="btn" href="marketplace.html?q=Hund">Hunde ansehen</a>
+                    </div>
+                </article>
+
+                <article class="item-card">
+                    <div class="item-card-placeholder">🐱</div>
+                    <div class="item-card-body">
+                        <h3>Katzen</h3>
+                        <p class="item-description">
+                            Finde verschmuste Katzen, junge Kätzchen oder ruhige Stubentiger.
+                        </p>
+                        <a class="btn" href="marketplace.html?q=Katze">Katzen ansehen</a>
+                    </div>
+                </article>
+
+                <article class="item-card">
+                    <div class="item-card-placeholder">🐭</div>
+                    <div class="item-card-body">
+                        <h3>Kleintiere</h3>
+                        <p class="item-description">
+                            Mäuse, Kaninchen, Hamster und andere kleine Tiere entdecken.
+                        </p>
+                        <a class="btn" href="marketplace.html?q=Maus">Kleintiere ansehen</a>
+                    </div>
+                </article>
+
+                <article class="item-card">
+                    <div class="item-card-placeholder">🦜</div>
+                    <div class="item-card-body">
+                        <h3>Vögel</h3>
+                        <p class="item-description">
+                            Suche nach Vögeln und später auch nach Zubehör für dein Tier.
+                        </p>
+                        <a class="btn" href="marketplace.html?q=Vogel">Vögel ansehen</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="marketplace-container">
+            <h2>So funktioniert MySaskia</h2>
+
+            <div class="item-grid">
+                <article class="item-card">
+                    <div class="item-card-placeholder">🔎</div>
+                    <div class="item-card-body">
+                        <h3>1. Tier entdecken</h3>
+                        <p class="item-description">
+                            Durchsuche den Marktplatz und finde ein Tier, das zu dir passt.
+                        </p>
                     </div>
                 </article>
 
                 <article class="item-card">
                     <div class="item-card-placeholder">📸</div>
                     <div class="item-card-body">
-                        <h3>Tier inserieren</h3>
+                        <h3>2. Inserat erstellen</h3>
                         <p class="item-description">
-                            Erstelle ein eigenes Inserat mit Tierart, Rasse, Alter, Preis, Beschreibung und Bild.
+                            Verkäufer können Tiere mit Bild, Beschreibung, Preis und Details einstellen.
                         </p>
-                        <a class="btn" href="sell.html">Tier verkaufen</a>
                     </div>
                 </article>
 
                 <article class="item-card">
-                    <div class="item-card-placeholder">📋</div>
+                    <div class="item-card-placeholder">🤝</div>
                     <div class="item-card-body">
-                        <h3>Inserate verwalten</h3>
+                        <h3>3. Kontakt aufnehmen</h3>
                         <p class="item-description">
-                            Behalte deine eigenen Inserate im Blick und markiere Tiere später als verkauft.
+                            In dieser Lernversion bauen wir Kontakt, Käufe und Verkäufe Schritt für Schritt aus.
                         </p>
-                        <a class="btn" href="my-items.html">Meine Inserate</a>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section class="marketplace-container">
-            <h2>Dein Konto</h2>
-
-            <div class="item-grid">
-                <article class="item-card">
-                    <div class="item-card-placeholder">👤</div>
-                    <div class="item-card-body">
-                        <h3>Profil</h3>
-                        <p class="item-description">
-                            Bearbeite deine persönlichen Daten, ändere dein Passwort und verwalte deine Einstellungen.
-                        </p>
-                        <a class="btn" href="profile.html">Profil öffnen</a>
-                    </div>
-                </article>
-
-                <article class="item-card">
-                    <div class="item-card-placeholder">🎫</div>
-                    <div class="item-card-body">
-                        <h3>Support</h3>
-                        <p class="item-description">
-                            Erstelle Support-Tickets, wenn du Hilfe brauchst oder ein Problem melden möchtest.
-                        </p>
-                        <a class="btn" href="support.html">Support öffnen</a>
-                    </div>
-                </article>
-
-                <article class="item-card">
-                    <div class="item-card-placeholder">📊</div>
-                    <div class="item-card-body">
-                        <h3>Dashboard</h3>
-                        <p class="item-description">
-                            Nutze dein Dashboard als zentrale Übersicht für Marktplatz, Inserate, Profil und Support.
-                        </p>
-                        <a class="btn" href="dashboard.html">Dashboard öffnen</a>
                     </div>
                 </article>
             </div>
         </section>
     </main>
 
-<script src="js/shop-nav.js?v=1"></script>
     <script src="js/i18n.js?v=1"></script>
     <script src="js/site.js?v=1"></script>
+    <script src="js/shop-nav.js?v=1"></script>
 </body>
 </html>
