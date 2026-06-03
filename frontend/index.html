@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>MySaskia - Startseite</title>
+    <link rel="stylesheet" href="css/style.css?v=5">
+</head>
+<body>
+    <header class="hero">
+        <nav class="navbar">
+            <div class="logo brand-logo">
+                <img src="images/flower-logo.svg" alt="MySaskia Logo">
+                <span>MySaskia</span>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html" class="active-link" data-i18n="navHome">Home</a></li>
+                <li><a href="about.html" data-i18n="navAbout">Über mich</a></li>
+                <li><a href="support.html" data-i18n="navSupport">Support</a></li>
+                <li><a href="profile.html" data-i18n="navProfile">Profil</a></li>
+                <li><a href="dashboard.html" data-i18n="navDashboard">Dashboard</a></li>
+                <li id="loginNavItem"><a href="login.html" data-i18n="navLogin">Login</a></li>
+                <li id="logoutNavItem"><button onclick="logout()" data-i18n="navLogout">Logout</button></li>
+            </ul>
+        </nav>
+
+        <div class="hero-content">
+            <img class="hero-logo-image" src="images/flower-logo.svg" alt="MySaskia Logo">
+
+            <h1 data-i18n="homeHeroTitle">Willkommen bei MySaskia</h1>
+
+            <p data-i18n="homeHeroText">
+                Dein persönlicher Bereich für Profil, Support-Tickets, Einstellungen und Account-Verwaltung.
+            </p>
+
+            <div class="hero-buttons">
+                <a class="btn-link" href="login.html" data-i18n="homeLoginButton">Einloggen</a>
+                <a class="btn-link secondary" href="login.html#register" data-i18n="homeRegisterButton">Account erstellen</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-section">
+        <section class="card">
+            <h2 data-i18n="homeAboutTitle">Was ist MySaskia?</h2>
+            <p data-i18n="homeAboutText">
+                MySaskia ist ein lokales Server-Lernprojekt mit Apache, Flask, REST API, SQLite, Login-System, Profilen, Admin-Rechten und Support-Tickets.
+            </p>
+        </section>
+
+        <section class="card">
+            <h2 data-i18n="homeFeaturesTitle">Funktionen</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3 data-i18n="homeFeatureProfileTitle">Profil</h3>
+                    <p data-i18n="homeFeatureProfileText">Verwalte deine persönlichen Daten und Einstellungen.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 data-i18n="homeFeatureSupportTitle">Support</h3>
+                    <p data-i18n="homeFeatureSupportText">Erstelle Tickets und verfolge den Bearbeitungsstatus.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3 data-i18n="homeFeatureAdminTitle">Admin</h3>
+                    <p data-i18n="homeFeatureAdminText">Verwalte Accounts und Support-Anfragen im Admin-Bereich.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/site.js"></script>
+</body>
+</html>

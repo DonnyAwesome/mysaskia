@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - MySaskia</title>
+    <link rel="stylesheet" href="css/style.css?v=6">
+</head>
+<body>
+    <nav class="navbar simple">
+        <div class="logo brand-logo">
+            <img src="images/flower-logo.svg" alt="MySaskia Logo">
+            <span>MySaskia</span>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="index.html" data-i18n="navHome">Home</a></li>
+            <li><a href="about.html" data-i18n="navAbout">Über mich</a></li>
+            <li><a href="support.html" data-i18n="navSupport">Support</a></li>
+            <li><a href="profile.html" data-i18n="navProfile">Profil</a></li>
+            <li><a href="dashboard.html" data-i18n="navDashboard">Dashboard</a></li>
+            <li id="loginNavItem"><a href="login.html" class="active-link" data-i18n="navLogin">Login</a></li>
+            <li id="logoutNavItem"><button onclick="logout()" data-i18n="navLogout">Logout</button></li>
+        </ul>
+    </nav>
+
+    <main class="login-page">
+        <section class="login-brand-card">
+            <img class="login-logo-image" src="images/flower-logo.svg" alt="MySaskia Logo">
+
+            <h1>MySaskia</h1>
+            <p data-i18n="loginBrandText">
+                Dein persönlicher Bereich für Profil, Support und Account-Verwaltung.
+            </p>
+        </section>
+
+        <section class="card login-card">
+            <div class="login-card-header">
+                <div>
+                    <h2 data-i18n="loginAreaTitle">Zugang</h2>
+                    <p data-i18n="loginAreaSubtitle">Melde dich an oder erstelle einen neuen Account.</p>
+                </div>
+
+                <div class="login-language-box">
+                    <label for="loginLanguageSelect" data-i18n="language">Sprache</label>
+                    <select id="loginLanguageSelect">
+                        <option value="de" data-i18n="german">Deutsch</option>
+                        <option value="en" data-i18n="english">Englisch</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab-button active-tab" data-auth-tab="loginPanel" data-i18n="loginButton">
+                    Login
+                </button>
+                <button type="button" class="auth-tab-button" data-auth-tab="registerPanel" data-i18n="registerButton">
+                    Registrieren
+                </button>
+            </div>
+
+            <div id="loginPanel" class="auth-tab-content">
+                <form id="loginForm">
+                    <label for="loginEmail" data-i18n="email">E-Mail</label>
+                    <input type="email" id="loginEmail" name="email" placeholder="E-Mail" data-i18n-placeholder="email" required>
+
+                    <label for="loginPassword" data-i18n="password">Passwort</label>
+                    <input type="password" id="loginPassword" name="password" placeholder="Passwort" data-i18n-placeholder="password" required>
+
+                    <button type="submit" data-i18n="loginButton">Login</button>
+                </form>
+
+                <div class="login-links">
+                    <p>
+                        <span data-i18n="noAccountYet">Noch kein Account?</span>
+                        <a href="login.html#register" id="openRegisterLink" data-i18n="registerHere">Hier registrieren</a>
+                    </p>
+
+                    <p>
+                        <a href="#" data-i18n="forgotPassword">Passwort vergessen?</a>
+                        <span class="muted-text" data-i18n="comingSoon">Kommt später</span>
+                    </p>
+                </div>
+            </div>
+
+            <div id="registerPanel" class="auth-tab-content hidden">
+                <form id="regForm">
+                    <label for="registerFirstName" data-i18n="firstName">Vorname</label>
+                    <input type="text" id="registerFirstName" name="first_name" placeholder="Vorname" data-i18n-placeholder="firstName" required>
+
+                    <label for="registerLastName" data-i18n="lastName">Nachname</label>
+                    <input type="text" id="registerLastName" name="last_name" placeholder="Nachname" data-i18n-placeholder="lastName" required>
+
+                    <label for="registerEmail" data-i18n="email">E-Mail</label>
+                    <input type="email" id="registerEmail" name="email" placeholder="E-Mail" data-i18n-placeholder="email" required>
+
+                    <label for="registerPassword" data-i18n="password">Passwort</label>
+                    <input type="password" id="registerPassword" name="password" placeholder="Passwort" data-i18n-placeholder="password" required>
+
+                    <button type="submit" data-i18n="registerButton">Registrieren</button>
+                </form>
+
+                <div class="login-links">
+                    <p>
+                        <span data-i18n="alreadyRegistered">Schon registriert?</span>
+                        <a href="login.html" id="openLoginLink" data-i18n="loginHere">Hier einloggen</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/site.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

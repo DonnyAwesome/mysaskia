@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Hendrik Duller</title>
+    <link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body class="dashboard-page">
+    <nav class="navbar simple">
+        <div class="logo">Hendrik Duller</div>
+
+        <ul class="nav-links">
+            <li><a href="index.html" data-i18n="navHome">Home</a></li>
+            <li><a href="about.html" data-i18n="navAbout">Über mich</a></li>
+            <li><a href="support.html" data-i18n="navSupport">Support</a></li>
+            <li><a href="profile.html" data-i18n="navProfile">Profil</a></li>
+            <li><a href="dashboard.html" class="active-link" data-i18n="navDashboard">Dashboard</a></li>
+            <li id="loginNavItem"><a href="login.html" data-i18n="navLogin">Login</a></li>
+            <li id="logoutNavItem"><button onclick="logout()" data-i18n="navLogout">Logout</button></li>
+        </ul>
+    </nav>
+
+    <main class="page-section">
+
+        <section class="card dashboard-card">
+            <h1 data-i18n="dashboardTitle">Dashboard</h1>
+
+            <p id="welcomeText" data-i18n="dashboardWelcome">Willkommen.</p>
+            <p id="adminInfo"></p>
+        </section>
+
+        <section class="card dashboard-card">
+            <h2 data-i18n="dashboardProfileTitle">Mein Profil</h2>
+            <p data-i18n="dashboardProfileText">Verwalte deine persönlichen Daten, deinen Namen und deine Kontoeinstellungen.</p>
+
+            <div class="dashboard-actions">
+                <a class="button-link" href="profile.html" data-i18n="dashboardViewProfile">Profil ansehen</a>
+                <a class="button-link" href="profile.html#edit" data-i18n="dashboardEditProfile">Profil bearbeiten</a>
+                <a class="button-link secondary-link" href="profile.html#settings" data-i18n="dashboardSettings">Einstellungen</a>
+            </div>
+        </section>
+
+        <section class="card dashboard-card">
+            <h2 data-i18n="dashboardAccountTitle">Account-Verwaltung</h2>
+            <p data-i18n="dashboardAccountText">Admin-Bereich zum Anzeigen und Verwalten von Accounts.</p>
+
+            <div class="dashboard-actions">
+                <button id="loadAccountsBtn" data-i18n="dashboardLoadAccounts">Alle Accounts anzeigen</button>
+                <button onclick="logout()" data-i18n="navLogout">Logout</button>
+            </div>
+
+            <div id="accountsContainer"></div>
+        </section>
+
+    </main>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/site.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

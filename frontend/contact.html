@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Kontakt</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Kontakt</h1>
+        <p>Auf dieser Seite kannst du interaktive Elemente testen.</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">Über mich</a>
+        <a href="contact.html">Kontakt</a>
+    </nav>
+
+    <main>
+        <section class="card">
+            <h2>Schreib mir</h2>
+            <p>Simulier ein kleines Kontaktformular:</p>
+
+            <input type="text" id="nameInput" placeholder="Dein Name">
+            <input type="email" id="emailInput" placeholder="Deine E-Mail">
+            <button onclick="begruesseUser()">Senden</button>
+
+            <p id="begrussung"></p>
+        </section>
+
+        <section class="card">
+            <h2>Test-Button</h2>
+            <button onclick="zeigeNachricht()">Klick mich</button>
+            <p id="ausgabe"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Mein lokaler Server</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

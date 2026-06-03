@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Datenbank / lokale Daten
+*.db
+database.db
+backend/database.db
+
+# Secrets / Umgebungsvariablen
+.env
+
+# System / Editor
+.DS_Store
+Thumbs.db
+*.swp

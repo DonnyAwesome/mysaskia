@@ -1,0 +1,826 @@
+/* ================================
+   Grundlayout
+================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --danger: #dc2626;
+    --danger-dark: #b91c1c;
+
+    --bg: #f4f6f8;
+    --text: #222;
+    --muted: #6b7280;
+
+    --card-bg: #ffffff;
+    --card-border: #e5e7eb;
+    --shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+
+    --dark-bg: #111827;
+    --dark-card: #1f2937;
+    --dark-card-soft: #243244;
+    --dark-border: #374151;
+    --dark-text: #f9fafb;
+    --dark-muted: #cbd5e1;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ================================
+   Navigation / Header
+================================ */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.navbar.simple {
+    padding: 24px 40px;
+    max-width: none;
+    background: var(--dark-bg);
+    color: white;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-links a:hover,
+.nav-links a.active-link {
+    text-decoration: underline;
+}
+
+.nav-links button {
+    border: none;
+    padding: 9px 14px;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.nav-links button:hover {
+    background: var(--primary-dark);
+}
+
+/* ================================
+   Hero / Startseite
+================================ */
+
+.hero {
+    min-height: 520px;
+    padding: 28px 40px;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb, #38bdf8);
+    color: white;
+}
+
+.hero-content {
+    max-width: 900px;
+    margin: 110px auto 0 auto;
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: 52px;
+    line-height: 1.15;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    max-width: 720px;
+    margin: 0 auto;
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    margin-top: 32px;
+}
+
+/* ================================
+   Seiten / Cards
+================================ */
+
+.page-section,
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 24px;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+}
+
+.card h1,
+.card h2 {
+    margin-top: 0;
+    color: #1f2937;
+}
+
+.card p {
+    line-height: 1.5;
+}
+
+/* ================================
+   Forms
+================================ */
+
+form {
+    margin-top: 20px;
+    max-width: 460px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 14px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    background: white;
+    color: #111827;
+}
+
+textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ================================
+   Buttons / Links
+================================ */
+
+button,
+.btn-link,
+.button-link {
+    display: inline-block;
+    padding: 11px 16px;
+    margin: 6px 6px 6px 0;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+button:hover,
+.btn-link:hover,
+.button-link:hover {
+    background: var(--primary-dark);
+    text-decoration: none;
+}
+
+.btn-link {
+    background: white;
+    color: #1e3a8a;
+}
+
+.btn-link:hover {
+    background: #e0e7ff;
+}
+
+.btn-link.secondary,
+.secondary-link {
+    background: #4b5563;
+    color: white;
+}
+
+.btn-link.secondary:hover,
+.secondary-link:hover {
+    background: #374151;
+}
+
+button.delete-btn {
+    background: var(--danger);
+}
+
+button.delete-btn:hover {
+    background: var(--danger-dark);
+}
+
+a {
+    color: var(--primary);
+}
+
+/* ================================
+   Dashboard
+================================ */
+
+.dashboard-card {
+    margin-bottom: 24px;
+}
+
+.dashboard-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ================================
+   Accounts
+================================ */
+
+#accountsList {
+    margin-top: 25px;
+    max-width: 700px;
+}
+
+.account-card {
+    background: white;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 9px rgba(0, 0, 0, 0.08);
+}
+
+.account-card p {
+    margin: 8px 0;
+}
+
+.account-topline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.account-card small {
+    color: var(--muted);
+}
+
+.admin-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 3px 7px;
+    border-radius: 5px;
+    background: var(--dark-bg);
+    color: white;
+    font-size: 12px;
+}
+
+.protected-text {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* ================================
+   Profilseite
+================================ */
+
+.profile-header-card {
+    padding-bottom: 30px;
+}
+
+.profile-tabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 24px;
+    padding: 7px;
+    width: fit-content;
+    max-width: 100%;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 999px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 14px 30px rgba(0, 0, 0, 0.25);
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    appearance: none;
+    border: none;
+    margin: 0;
+    padding: 13px 22px;
+    border-radius: 999px;
+    background: transparent;
+    color: #cbd5e1;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: none;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+.tab-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.tab-button.active-tab {
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    color: #ffffff;
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.45);
+}
+
+.profile-tab-content {
+    margin-top: 20px;
+    border-radius: 16px;
+}
+
+#profileBox p {
+    margin: 14px 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.message {
+    margin-top: 14px;
+    font-weight: 700;
+}
+
+/* ================================
+   Theme: Light
+================================ */
+
+.theme-light {
+    background: #f9fafb;
+    color: #111827;
+}
+
+.theme-light .profile-tabs {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+}
+
+.theme-light .tab-button {
+    color: #374151;
+}
+
+.theme-light .tab-button:hover {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+/* ================================
+   Theme: Dark
+================================ */
+
+.theme-dark {
+    background: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+.theme-dark .navbar.simple {
+    background: #0b1220;
+}
+
+.theme-dark .card {
+    background: var(--dark-card);
+    color: var(--dark-text);
+    box-shadow: none;
+}
+
+.theme-dark .card h1,
+.theme-dark .card h2 {
+    color: var(--dark-text);
+}
+
+.theme-dark input,
+.theme-dark textarea,
+.theme-dark select {
+    background: #374151;
+    color: var(--dark-text);
+    border: 1px solid #4b5563;
+}
+
+.theme-dark input:focus,
+.theme-dark textarea:focus,
+.theme-dark select:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+.theme-dark .account-card {
+    background: var(--dark-card-soft);
+    color: var(--dark-text);
+}
+
+.theme-dark .account-card small,
+.theme-dark .protected-text {
+    color: var(--dark-muted);
+}
+
+.theme-dark .profile-tabs {
+    background: #0f172a;
+    border: 1px solid #334155;
+}
+
+.theme-dark .tab-button {
+    color: #cbd5e1;
+}
+
+.theme-dark .tab-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.theme-dark .tab-button.active-tab {
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    color: #ffffff;
+}
+
+/* ================================
+   Responsive
+================================ */
+
+@media (max-width: 700px) {
+    .hero {
+        padding: 24px;
+    }
+
+    .hero-content {
+        margin-top: 70px;
+    }
+
+    .hero-content h1 {
+        font-size: 36px;
+    }
+
+    .navbar,
+    .navbar.simple {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .page-section,
+    .container {
+        margin: 24px auto;
+        padding: 0 16px;
+    }
+
+    .card {
+        padding: 22px;
+    }
+
+    .profile-tabs {
+        display: flex;
+        width: 100%;
+        border-radius: 18px;
+    }
+
+    .tab-button {
+        flex: 1;
+        text-align: center;
+        padding: 12px 14px;
+    }
+}
+
+/* ================================
+   MySaskia Branding / Login
+================================ */
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-logo img {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+}
+
+.login-page {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 28px;
+    align-items: stretch;
+}
+
+.login-brand-card,
+.login-card {
+    background: var(--card-bg);
+    padding: 34px;
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+}
+
+.login-brand-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.login-logo-image {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 22px auto;
+    border-radius: 34px;
+}
+
+.login-brand-card h1 {
+    margin: 0 0 14px 0;
+    font-size: 42px;
+    color: #1f2937;
+}
+
+.login-brand-card p {
+    max-width: 420px;
+    margin: 0 auto;
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.login-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.login-card-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 32px;
+}
+
+.login-card-header p {
+    margin: 0;
+}
+
+.login-language-box {
+    min-width: 170px;
+}
+
+.login-language-box label {
+    font-size: 14px;
+}
+
+.login-language-box select {
+    margin-bottom: 0;
+}
+
+.login-links {
+    margin-top: 20px;
+}
+
+.login-links p {
+    margin: 8px 0;
+}
+
+.muted-text {
+    margin-left: 8px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* Dark Mode Login */
+
+.theme-dark .login-brand-card,
+.theme-dark .login-card {
+    background: var(--dark-card);
+    color: var(--dark-text);
+    box-shadow: none;
+}
+
+.theme-dark .login-brand-card h1,
+.theme-dark .login-card h2 {
+    color: var(--dark-text);
+}
+
+.theme-dark .muted-text {
+    color: var(--dark-muted);
+}
+
+/* Mobile Login */
+
+@media (max-width: 800px) {
+    .login-page {
+        grid-template-columns: 1fr;
+    }
+
+    .login-card-header {
+        flex-direction: column;
+    }
+
+    .login-language-box {
+        width: 100%;
+    }
+
+    .login-logo-image {
+        width: 120px;
+        height: 120px;
+    }
+
+    .login-brand-card h1 {
+        font-size: 34px;
+    }
+}
+
+/* ================================
+   Home / Landingpage
+================================ */
+
+.hero-logo-image {
+    width: 130px;
+    height: 130px;
+    margin-bottom: 24px;
+    border-radius: 30px;
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.25);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.feature-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 22px;
+    border-radius: 14px;
+}
+
+.feature-card h3 {
+    margin-top: 0;
+    color: #1f2937;
+}
+
+.feature-card p {
+    margin-bottom: 0;
+}
+
+.theme-dark .feature-card {
+    background: #243244;
+    border: 1px solid #374151;
+    color: #f9fafb;
+}
+
+.theme-dark .feature-card h3 {
+    color: #f9fafb;
+}
+
+@media (max-width: 800px) {
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-logo-image {
+        width: 110px;
+        height: 110px;
+    }
+}
+
+/* ================================
+   Login/Register Tabs
+================================ */
+
+.auth-tabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 10px 0 22px 0;
+    padding: 7px;
+    width: fit-content;
+    max-width: 100%;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 999px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 12px 24px rgba(0, 0, 0, 0.18);
+}
+
+.auth-tab-button {
+    appearance: none;
+    border: none;
+    margin: 0;
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: transparent;
+    color: #cbd5e1;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: none;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+.auth-tab-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.auth-tab-button.active-tab {
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    color: white;
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.45);
+}
+
+.auth-tab-content {
+    margin-top: 8px;
+}
+
+.theme-light .auth-tabs {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+}
+
+.theme-light .auth-tab-button {
+    color: #374151;
+}
+
+.theme-light .auth-tab-button:hover {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+@media (max-width: 800px) {
+    .auth-tabs {
+        display: flex;
+        width: 100%;
+        border-radius: 18px;
+    }
+
+    .auth-tab-button {
+        flex: 1;
+        text-align: center;
+        padding: 12px 14px;
+    }
+}

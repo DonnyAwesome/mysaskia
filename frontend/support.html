@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Support - Hendrik Duller</title>
+    <link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body>
+    <nav class="navbar simple">
+        <div class="logo">Hendrik Duller</div>
+
+        <ul class="nav-links">
+            <li><a href="index.html" data-i18n="navHome">Home</a></li>
+            <li><a href="about.html" data-i18n="navAbout">Über mich</a></li>
+            <li><a href="support.html" class="active-link" data-i18n="navSupport">Support</a></li>
+            <li><a href="profile.html" data-i18n="navProfile">Profil</a></li>
+            <li><a href="dashboard.html" data-i18n="navDashboard">Dashboard</a></li>
+            <li id="loginNavItem"><a href="login.html" data-i18n="navLogin">Login</a></li>
+            <li id="logoutNavItem"><button onclick="logout()" data-i18n="navLogout">Logout</button></li>
+        </ul>
+    </nav>
+
+    <main class="page-section">
+        <section class="card">
+            <h1 data-i18n="supportTitle">Support-Tickets</h1>
+            <p data-i18n="supportSubtitle">Erstelle neue Support-Anfragen und verfolge deine bestehenden Tickets.</p>
+        </section>
+
+        <section class="card">
+            <h2 data-i18n="supportCreateTitle">Neues Ticket erstellen</h2>
+
+            <form id="ticketForm">
+                <label for="ticketSubject" data-i18n="supportSubjectLabel">Betreff</label>
+                <input type="text" id="ticketSubject" placeholder="Betreff" data-i18n-placeholder="supportSubjectPlaceholder" required>
+
+                <label for="ticketMessage" data-i18n="supportMessageLabel">Nachricht</label>
+                <textarea id="ticketMessage" placeholder="Nachricht" data-i18n-placeholder="supportMessagePlaceholder" required></textarea>
+
+                <button type="submit" data-i18n="supportCreateButton">Ticket erstellen</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2 data-i18n="supportMyTicketsTitle">Meine Tickets</h2>
+
+            <div id="myTicketsList">
+                <p data-i18n="supportNoTicketsLoaded">Noch keine Tickets geladen.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 data-i18n="supportAllTicketsTitle">Alle Tickets (Admin)</h2>
+
+            <div id="allTicketsList">
+                <p data-i18n="supportAdminOnly">Nur sichtbar für Admins.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/site.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

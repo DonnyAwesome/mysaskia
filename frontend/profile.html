@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil - Hendriks Server-Projekt</title>
+    <link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body>
+
+<header>
+    <nav class="navbar simple">
+        <div class="logo">Hendrik Server</div>
+
+        <ul class="nav-links">
+            <li><a href="index.html" data-i18n="navHome">Home</a></li>
+            <li><a href="about.html" data-i18n="navAbout">Über mich</a></li>
+            <li><a href="support.html" data-i18n="navSupport">Support</a></li>
+            <li><a href="profile.html" class="active-link" data-i18n="navProfile">Profil</a></li>
+            <li><a href="dashboard.html" data-i18n="navDashboard">Dashboard</a></li>
+            <li id="loginNavItem"><a href="login.html" data-i18n="navLogin">Login</a></li>
+            <li id="logoutNavItem"><button onclick="logout()" data-i18n="navLogout">Logout</button></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="container">
+
+    <section class="card profile-header-card">
+        <h1 data-i18n="profileTitle">Mein Profil</h1>
+        <p data-i18n="profileSubtitle">Verwalte deine Account-Daten und persönlichen Einstellungen.</p>
+
+        <div class="profile-tabs">
+            <button class="tab-button active-tab" data-tab="overviewTab" data-i18n="tabOverview">Übersicht</button>
+            <button class="tab-button" data-tab="editTab" data-i18n="tabEditProfile">Profil bearbeiten</button>
+            <button class="tab-button" data-tab="settingsTab" data-i18n="tabSettings">Einstellungen</button>
+        </div>
+
+        <div id="profileMessage" class="message"></div>
+    </section>
+
+    <section id="overviewTab" class="card profile-tab-content">
+        <h2 data-i18n="overviewTitle">Account-Übersicht</h2>
+
+        <div id="profileBox">
+            <p><strong data-i18n="firstName">Vorname</strong>: <span id="profileFirstName">-</span></p>
+            <p><strong data-i18n="lastName">Nachname</strong>: <span id="profileLastName">-</span></p>
+            <p><strong data-i18n="email">E-Mail</strong>: <span id="profileEmail">-</span></p>
+            <p><strong data-i18n="role">Rolle</strong>: <span id="profileRole">-</span></p>
+            <p><strong data-i18n="createdAt">Erstellt am</strong>: <span id="profileCreatedAt">-</span></p>
+        </div>
+    </section>
+
+    <section id="editTab" class="card profile-tab-content hidden">
+        <h2 data-i18n="editTitle">Profil bearbeiten</h2>
+        <p data-i18n="editDescription">Du kannst hier deinen Vor- und Nachnamen ändern.</p>
+
+        <form id="profileForm">
+            <label for="editFirstName" data-i18n="firstName">Vorname</label>
+            <input type="text" id="editFirstName" name="first_name" required>
+
+            <label for="editLastName" data-i18n="lastName">Nachname</label>
+            <input type="text" id="editLastName" name="last_name" required>
+
+            <button type="submit" data-i18n="saveProfileButton">Profil speichern</button>
+        </form>
+
+        <div id="profileEditMessage" class="message"></div>
+    </section>
+
+    <section id="settingsTab" class="card profile-tab-content hidden">
+        <h2 data-i18n="settingsTitle">Einstellungen</h2>
+        <p data-i18n="settingsDescription">Hier kannst du persönliche Einstellungen für dein Konto auswählen.</p>
+
+        <form id="settingsForm">
+            <label for="languageSelect" data-i18n="language">Sprache</label>
+            <select id="languageSelect" name="language">
+                <option value="de" data-i18n="german">Deutsch</option>
+                <option value="en" data-i18n="english">Englisch</option>
+            </select>
+
+            <label for="themeSelect" data-i18n="design">Design</label>
+            <select id="themeSelect" name="theme">
+                <option value="system" data-i18n="systemDefault">Systemstandard</option>
+                <option value="light" data-i18n="light">Hell</option>
+                <option value="dark" data-i18n="dark">Dunkel</option>
+            </select>
+
+            <button type="submit" data-i18n="saveSettingsButton">Einstellungen speichern</button>
+        </form>
+
+        <div id="settingsMessage" class="message"></div>
+    </section>
+
+</main>
+
+<script src="js/i18n.js"></script>
+<script src="js/profile.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>
