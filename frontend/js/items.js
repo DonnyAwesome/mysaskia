@@ -42,6 +42,43 @@ function escapeHtml(value) {
         .replaceAll("'", "&#039;");
 }
 
+function getMarketplaceSearchQuery() {
+    const params = new URLSearchParams(window.location.search);
+
+    return (params.get("q") || "").trim();
+}
+
+function itemMatchesSearch(item, searchQuery) {
+    const normalizedQuery = searchQuery.toLowerCase();
+    const searchableFields = [
+        item.title,
+        item.description,
+        item.species,
+        item.breed,
+        item.age,
+        item.gender,
+        item.price,
+        item.seller_name
+    ];
+
+    return searchableFields.some((field) => {
+        return String(field || "").toLowerCase().includes(normalizedQuery);
+    });
+}
+
+function marketplaceSearchInfoHtml(searchQuery) {
+    if (!searchQuery) {
+        return "";
+    }
+
+    return `
+        <div class="search-results-info">
+            <span>Suchergebnisse für: ${escapeHtml(searchQuery)}</span>
+            <a class="btn secondary" href="marketplace.html">Suche zurücksetzen</a>
+        </div>
+    `;
+}
+
 function itemImageHtml(item) {
     if (item.image_url) {
         return `<img class="item-card-image" src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}">`;
@@ -105,6 +142,9 @@ async function loadMarketplaceItems() {
         return;
     }
 
+    const searchQuery = getMarketplaceSearchQuery();
+    const searchInfoHtml = marketplaceSearchInfoHtml(searchQuery);
+
     container.innerHTML = `<div class="empty-state">Tiere werden geladen...</div>`;
 
     try {
@@ -117,11 +157,20 @@ async function loadMarketplaceItems() {
         }
 
         if (!data.items || data.items.length === 0) {
-            container.innerHTML = `<div class="empty-state">Noch keine Tiere im Marktplatz.</div>`;
+            container.innerHTML = `${searchInfoHtml}<div class="empty-state">Noch keine Tiere im Marktplatz.</div>`;
             return;
         }
 
-        container.innerHTML = data.items.map((item) => itemCardHtml(item, false)).join("");
+        const visibleItems = searchQuery
+            ? data.items.filter((item) => itemMatchesSearch(item, searchQuery))
+            : data.items;
+
+        if (searchQuery && visibleItems.length === 0) {
+            container.innerHTML = `${searchInfoHtml}<div class="empty-state">Keine Tiere für diese Suche gefunden.</div>`;
+            return;
+        }
+
+        container.innerHTML = `${searchInfoHtml}${visibleItems.map((item) => itemCardHtml(item, false)).join("")}`;
     } catch (error) {
         container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
     }

@@ -43,6 +43,21 @@
     margin-top: 22px;
 }
 
+.search-results-info {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: var(--market-card-bg);
+    color: var(--market-text);
+    border: 1px solid var(--market-border);
+    font-weight: 700;
+}
+
 .item-card {
     background: var(--market-card-bg);
     color: var(--market-text);
