@@ -2,14 +2,17 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Profil - Hendriks Server-Projekt</title>
-    <link rel="stylesheet" href="css/style.css?v=4">
+    <title>Profil - MySaskia</title>
+    <link rel="stylesheet" href="css/style.css?v=7">
 </head>
 <body>
 
 <header>
     <nav class="navbar simple">
-        <div class="logo">Hendrik Server</div>
+        <div class="logo brand-logo">
+            <img src="images/flower-logo.svg" alt="MySaskia Logo">
+            <span>MySaskia</span>
+        </div>
 
         <ul class="nav-links">
             <li><a href="index.html" data-i18n="navHome">Home</a></li>
@@ -32,6 +35,7 @@
         <div class="profile-tabs">
             <button class="tab-button active-tab" data-tab="overviewTab" data-i18n="tabOverview">Übersicht</button>
             <button class="tab-button" data-tab="editTab" data-i18n="tabEditProfile">Profil bearbeiten</button>
+            <button class="tab-button" data-tab="securityTab" data-i18n="tabSecurity">Sicherheit</button>
             <button class="tab-button" data-tab="settingsTab" data-i18n="tabSettings">Einstellungen</button>
         </div>
 
@@ -67,6 +71,26 @@
         <div id="profileEditMessage" class="message"></div>
     </section>
 
+    <section id="securityTab" class="card profile-tab-content hidden">
+        <h2 data-i18n="securityTitle">Sicherheit</h2>
+        <p data-i18n="securityDescription">Ändere hier dein Passwort.</p>
+
+        <form id="changePasswordForm">
+            <label for="currentPassword" data-i18n="currentPassword">Aktuelles Passwort</label>
+            <input type="password" id="currentPassword" name="current_password" data-i18n-placeholder="currentPassword" placeholder="Aktuelles Passwort" required>
+
+            <label for="newPassword" data-i18n="newPassword">Neues Passwort</label>
+            <input type="password" id="newPassword" name="new_password" data-i18n-placeholder="newPassword" placeholder="Neues Passwort" required>
+
+            <label for="confirmPassword" data-i18n="confirmPassword">Neues Passwort wiederholen</label>
+            <input type="password" id="confirmPassword" name="confirm_password" data-i18n-placeholder="confirmPassword" placeholder="Neues Passwort wiederholen" required>
+
+            <button type="submit" data-i18n="changePasswordButton">Passwort ändern</button>
+        </form>
+
+        <div id="changePasswordMessage" class="message"></div>
+    </section>
+
     <section id="settingsTab" class="card profile-tab-content hidden">
         <h2 data-i18n="settingsTitle">Einstellungen</h2>
         <p data-i18n="settingsDescription">Hier kannst du persönliche Einstellungen für dein Konto auswählen.</p>
@@ -94,7 +118,8 @@
 </main>
 
 <script src="js/i18n.js"></script>
-<script src="js/profile.js"></script>
 <script src="js/site.js"></script>
+<script src="js/profile.js"></script>
+
 </body>
 </html>

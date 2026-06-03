@@ -35,38 +35,8 @@ function safeApplyTranslations() {
     }
 }
 
-function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "login.html";
-}
-
 function saveStoredUser(user) {
     localStorage.setItem("user", JSON.stringify(user));
-}
-
-function updateNavigation() {
-    const token = getToken();
-    const loginNavItem = document.getElementById("loginNavItem");
-    const logoutNavItem = document.getElementById("logoutNavItem");
-
-    if (token) {
-        if (loginNavItem) {
-            loginNavItem.style.display = "none";
-        }
-
-        if (logoutNavItem) {
-            logoutNavItem.style.display = "list-item";
-        }
-    } else {
-        if (loginNavItem) {
-            loginNavItem.style.display = "list-item";
-        }
-
-        if (logoutNavItem) {
-            logoutNavItem.style.display = "none";
-        }
-    }
 }
 
 function translateRole(role) {
@@ -134,8 +104,6 @@ async function loadProfile() {
         });
 
         const data = await response.json();
-
-        console.log("Profil geladen:", data);
 
         if (!response.ok) {
             if (messageBox) {
@@ -215,6 +183,78 @@ async function updateProfile(event) {
     }
 }
 
+async function changePassword(event) {
+    event.preventDefault();
+
+    const token = getToken();
+    const messageBox = document.getElementById("changePasswordMessage");
+
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const currentPasswordInput = document.getElementById("currentPassword");
+    const newPasswordInput = document.getElementById("newPassword");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+
+    const currentPassword = currentPasswordInput.value;
+    const newPassword = newPasswordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        messageBox.textContent = safeTranslate("passwordFieldsRequired", "Bitte alle Passwort-Felder ausfüllen.");
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        messageBox.textContent = safeTranslate("passwordTooShort", "Das neue Passwort muss mindestens 6 Zeichen lang sein.");
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        messageBox.textContent = safeTranslate("passwordsDoNotMatch", "Die neuen Passwörter stimmen nicht überein.");
+        return;
+    }
+
+    try {
+        const response = await fetch(API_URL + "/change_password", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                current_password: currentPassword,
+                new_password: newPassword,
+                confirm_password: confirmPassword
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            messageBox.textContent = data.error || safeTranslate("changePasswordError", "Passwort konnte nicht geändert werden.");
+
+            if (response.status === 401) {
+                logout();
+            }
+
+            return;
+        }
+
+        currentPasswordInput.value = "";
+        newPasswordInput.value = "";
+        confirmPasswordInput.value = "";
+
+        messageBox.textContent = safeTranslate("changePasswordSuccess", "Passwort wurde geändert.");
+
+    } catch (error) {
+        console.error("Passwort-Fehler:", error);
+        messageBox.textContent = safeTranslate("serverError", "Fehler beim Verbinden mit dem Server.");
+    }
+}
+
 function activateTab(tabId) {
     const tabButtons = document.querySelectorAll(".tab-button");
     const tabContents = document.querySelectorAll(".profile-tab-content");
@@ -236,6 +276,24 @@ function activateTab(tabId) {
     }
 }
 
+function updateProfileUrl(tabId) {
+    if (tabId === "overviewTab") {
+        history.replaceState(null, "", "profile.html");
+    }
+
+    if (tabId === "editTab") {
+        history.replaceState(null, "", "profile.html#edit");
+    }
+
+    if (tabId === "securityTab") {
+        history.replaceState(null, "", "profile.html#security");
+    }
+
+    if (tabId === "settingsTab") {
+        history.replaceState(null, "", "profile.html#settings");
+    }
+}
+
 function setupTabs() {
     const tabButtons = document.querySelectorAll(".tab-button");
 
@@ -243,18 +301,7 @@ function setupTabs() {
         button.addEventListener("click", function () {
             const selectedTabId = button.dataset.tab;
             activateTab(selectedTabId);
-
-            if (selectedTabId === "overviewTab") {
-                history.replaceState(null, "", "profile.html");
-            }
-
-            if (selectedTabId === "editTab") {
-                history.replaceState(null, "", "profile.html#edit");
-            }
-
-            if (selectedTabId === "settingsTab") {
-                history.replaceState(null, "", "profile.html#settings");
-            }
+            updateProfileUrl(selectedTabId);
         });
     });
 }
@@ -264,6 +311,11 @@ function activateTabFromUrl() {
 
     if (hash === "#edit") {
         activateTab("editTab");
+        return;
+    }
+
+    if (hash === "#security") {
+        activateTab("securityTab");
         return;
     }
 
@@ -302,7 +354,10 @@ function saveSettings(event) {
     localStorage.setItem("theme", theme);
 
     safeApplyTranslations();
-    applyTheme(theme);
+
+    if (typeof applySavedTheme === "function") {
+        applySavedTheme();
+    }
 
     if (settingsMessage) {
         settingsMessage.textContent = safeTranslate("settingsSaved", "Einstellungen wurden gespeichert.");
@@ -311,33 +366,21 @@ function saveSettings(event) {
     loadProfile();
 }
 
-function applyTheme(theme) {
-    document.body.classList.remove("theme-light", "theme-dark");
-
-    if (theme === "light") {
-        document.body.classList.add("theme-light");
-    }
-
-    if (theme === "dark") {
-        document.body.classList.add("theme-dark");
-    }
-}
-
 document.addEventListener("DOMContentLoaded", function () {
-    updateNavigation();
-
     safeApplyTranslations();
 
     setupTabs();
     loadSettings();
 
-    const savedTheme = localStorage.getItem("theme") || "system";
-    applyTheme(savedTheme);
+    if (typeof applySavedTheme === "function") {
+        applySavedTheme();
+    }
 
     activateTabFromUrl();
 
     const profileForm = document.getElementById("profileForm");
     const settingsForm = document.getElementById("settingsForm");
+    const changePasswordForm = document.getElementById("changePasswordForm");
 
     if (profileForm) {
         profileForm.addEventListener("submit", updateProfile);
@@ -345,6 +388,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (settingsForm) {
         settingsForm.addEventListener("submit", saveSettings);
+    }
+
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener("submit", changePassword);
     }
 
     loadProfile();
