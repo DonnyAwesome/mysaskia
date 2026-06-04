@@ -338,6 +338,19 @@ function detailRowHtml(label, value) {
     `;
 }
 
+function sellerProfileRowHtml(item) {
+    if (!item.user_id) {
+        return "";
+    }
+
+    return `
+        <div class="item-detail-row">
+            <dt>Verkäuferprofil</dt>
+            <dd><a href="seller.html?id=${encodeURIComponent(item.user_id)}">Verkäuferprofil ansehen</a></dd>
+        </div>
+    `;
+}
+
 function itemDetailHtml(item) {
     const createdAt = formatDate(item.created_at);
     const favoriteAction = getAuthToken()
@@ -366,6 +379,7 @@ function itemDetailHtml(item) {
                     ${detailRowHtml("Alter", item.age)}
                     ${detailRowHtml("Geschlecht", item.gender)}
                     ${detailRowHtml("Verkäufer", item.seller_name)}
+                    ${sellerProfileRowHtml(item)}
                     ${detailRowHtml("Status", item.status)}
                     ${createdAt ? detailRowHtml("Erstellt am", createdAt) : ""}
                 </dl>
