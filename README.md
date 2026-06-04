@@ -166,6 +166,14 @@ python3 -m pip install -r requirements-dev.txt
 python3 -m pytest
 ```
 
+## Developer-Check ausführen
+
+Der Developer-Check zeigt den Git-Status, prüft die Python-Syntax und führt die Backend-Tests aus:
+
+```bash
+./scripts/dev_check.sh
+```
+
 ## Git und lokale Daten
 
 Die `.gitignore`-Regeln schließen unter anderem folgende lokale Daten aus:
