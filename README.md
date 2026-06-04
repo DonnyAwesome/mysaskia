@@ -156,6 +156,16 @@ Geschützte Endpunkte erwarten einen Authorization-Header:
 Authorization: Bearer <token>
 ```
 
+## Tests ausführen
+
+Die Backend-Tests verwenden für jeden Test eine eigene temporäre SQLite-Datenbank. Die lokale `backend/database.db` wird dabei nicht verändert.
+
+```bash
+cd ~/mysaskia/backend
+python3 -m pip install -r requirements-dev.txt
+python3 -m pytest
+```
+
 ## Git und lokale Daten
 
 Die `.gitignore`-Regeln schließen unter anderem folgende lokale Daten aus:
@@ -186,5 +196,5 @@ MySaskia ist ein lokales Lernprojekt. Es gibt keine echte Zahlungsabwicklung, ke
 
 - Bewertungen für Verkäufer und Inserate
 - Bessere Admin-Verwaltung und Moderation
-- Automatisierte Backend- und Frontend-Tests
+- Testabdeckung für weitere Backend- und Frontend-Funktionen erweitern
 - Deployment und produktionsgeeignete Konfiguration
