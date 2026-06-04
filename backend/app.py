@@ -15,6 +15,7 @@ from favorites import favorites_bp
 from sellers import sellers_bp
 from reviews import reviews_bp
 from admin import admin_bp
+from notifications import notifications_bp
 
 
 app = Flask(__name__)
@@ -38,6 +39,7 @@ app.register_blueprint(favorites_bp)
 app.register_blueprint(sellers_bp)
 app.register_blueprint(reviews_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(notifications_bp)
 
 
 @app.route("/uploads/items/<filename>")

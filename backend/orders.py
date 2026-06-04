@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from db import get_db
+from notifications import create_notification
 from utils import get_current_user
 
 
@@ -53,7 +54,7 @@ def create_order():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id, user_id, status
+        SELECT id, user_id, title, status
         FROM items
         WHERE id = ?
     """, (item_id,))
@@ -101,8 +102,16 @@ def create_order():
         "angefragt"
     ))
 
-    conn.commit()
     order_id = cursor.lastrowid
+    create_notification(
+        cursor,
+        item["user_id"],
+        "order_requested",
+        "Neue Anfrage für dein Inserat",
+        f"Für dein Inserat „{item['title']}“ wurde eine neue Anfrage erstellt.",
+        "sales.html"
+    )
+    conn.commit()
     conn.close()
 
     return jsonify({
@@ -170,9 +179,11 @@ def update_order_status():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id, item_id, seller_id, status
+        SELECT orders.id, orders.item_id, orders.buyer_id, orders.seller_id,
+               orders.status, items.title AS item_title
         FROM orders
-        WHERE id = ?
+        JOIN items ON orders.item_id = items.id
+        WHERE orders.id = ?
     """, (order_id,))
 
     order = cursor.fetchone()
@@ -204,6 +215,30 @@ def update_order_status():
             SET status = 'verkauft'
             WHERE id = ?
         """, (order["item_id"],))
+
+    notification_data = {
+        "bestätigt": (
+            "order_confirmed",
+            "Deine Anfrage wurde bestätigt",
+            f"Deine Anfrage für „{order['item_title']}“ wurde bestätigt."
+        ),
+        "abgelehnt": (
+            "order_rejected",
+            "Deine Anfrage wurde abgelehnt",
+            f"Deine Anfrage für „{order['item_title']}“ wurde abgelehnt."
+        )
+    }.get(new_status)
+
+    if notification_data and order["status"] != new_status:
+        notification_type, title, message = notification_data
+        create_notification(
+            cursor,
+            order["buyer_id"],
+            notification_type,
+            title,
+            message,
+            "orders.html"
+        )
 
     conn.commit()
     conn.close()

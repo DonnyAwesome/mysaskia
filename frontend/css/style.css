@@ -709,6 +709,57 @@ a {
 }
 
 /* ================================
+   Notifications
+================================ */
+
+.notification-list {
+    display: grid;
+    gap: 14px;
+}
+
+.notification-card {
+    padding: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+.notification-card.unread {
+    border-left: 5px solid var(--primary);
+    background: #eff6ff;
+}
+
+.notification-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.notification-card h3 {
+    margin: 0;
+}
+
+.notification-card p {
+    margin: 10px 0;
+}
+
+.notification-date {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.theme-dark .notification-card {
+    background: var(--dark-card);
+    border-color: var(--dark-border);
+}
+
+.theme-dark .notification-card.unread {
+    background: #172b46;
+}
+
+/* ================================
    Home / Landingpage
 ================================ */
 

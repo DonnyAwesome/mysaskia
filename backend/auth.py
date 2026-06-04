@@ -4,6 +4,7 @@ import secrets
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_db_connection
+from notifications import create_notification
 from utils import get_user_by_token
 
 auth_bp = Blueprint("auth", __name__)
@@ -121,6 +122,14 @@ def request_password_reset():
             INSERT INTO password_resets (user_id, token)
             VALUES (?, ?)
         """, (user["id"], reset_token))
+        create_notification(
+            cursor,
+            user["id"],
+            "password_reset_requested",
+            "Passwort-Reset angefordert",
+            "Für dein Konto wurde ein lokaler Passwort-Reset angefordert.",
+            "profile.html#security"
+        )
         conn.commit()
 
         response["reset_token"] = reset_token

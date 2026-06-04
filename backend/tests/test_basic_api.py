@@ -163,3 +163,75 @@ def test_password_reset_request_for_unknown_email_is_neutral(client):
     assert response.status_code == 200
     assert response.json["message"] == "Wenn die E-Mail existiert, wurde ein Reset vorbereitet."
     assert "reset_token" not in response.json
+
+
+def test_notifications_are_private_and_unread_count_updates(client):
+    seller_token = register_and_login(client, email="seller@example.test")
+    buyer_token = register_and_login(client, email="buyer@example.test")
+    item_id = create_item(client, seller_token, title="Benachrichtigungs-Test")
+
+    order_response = client.post(
+        "/api/orders",
+        headers=auth_headers(buyer_token),
+        json={"item_id": item_id}
+    )
+    assert order_response.status_code == 201
+
+    list_response = client.get(
+        "/api/notifications",
+        headers=auth_headers(seller_token)
+    )
+    assert list_response.status_code == 200
+    assert len(list_response.json["notifications"]) == 1
+    notification = list_response.json["notifications"][0]
+    assert notification["title"] == "Neue Anfrage für dein Inserat"
+    assert notification["is_read"] is False
+
+    unread_response = client.get(
+        "/api/notifications/unread-count",
+        headers=auth_headers(seller_token)
+    )
+    assert unread_response.status_code == 200
+    assert unread_response.json == {"unread_count": 1}
+
+    foreign_read_response = client.patch(
+        f"/api/notifications/{notification['id']}/read",
+        headers=auth_headers(buyer_token)
+    )
+    assert foreign_read_response.status_code == 404
+
+    read_response = client.patch(
+        f"/api/notifications/{notification['id']}/read",
+        headers=auth_headers(seller_token)
+    )
+    assert read_response.status_code == 200
+
+    unread_after_read_response = client.get(
+        "/api/notifications/unread-count",
+        headers=auth_headers(seller_token)
+    )
+    assert unread_after_read_response.json == {"unread_count": 0}
+
+    confirm_response = client.patch(
+        "/api/orders/status",
+        headers=auth_headers(seller_token),
+        json={
+            "order_id": order_response.json["order_id"],
+            "status": "bestätigt"
+        }
+    )
+    assert confirm_response.status_code == 200
+
+    buyer_notifications_response = client.get(
+        "/api/notifications",
+        headers=auth_headers(buyer_token)
+    )
+    assert buyer_notifications_response.status_code == 200
+    assert buyer_notifications_response.json["notifications"][0]["title"] == "Deine Anfrage wurde bestätigt"
+
+    read_all_response = client.patch(
+        "/api/notifications/read-all",
+        headers=auth_headers(buyer_token)
+    )
+    assert read_all_response.status_code == 200
+    assert read_all_response.json["updated_count"] == 1

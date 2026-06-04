@@ -59,6 +59,34 @@ function shopLogout() {
     window.location.href = "login.html";
 }
 
+async function loadShopUnreadCount() {
+    const token = getShopToken();
+    const label = document.getElementById("shopNotificationsLabel");
+
+    if (!token || !label) {
+        return;
+    }
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/api/notifications/unread-count", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+        label.textContent = data.unread_count > 0
+            ? `Benachrichtigungen (${data.unread_count})`
+            : "Benachrichtigungen";
+    } catch (error) {
+        // Die Navigation bleibt auch ohne erreichbares Backend nutzbar.
+    }
+}
+
 function renderShopNavigation() {
     const existingNavbar = document.querySelector(".navbar");
     if (existingNavbar) {
@@ -97,6 +125,14 @@ function renderShopNavigation() {
                 <span>Login</span>
             </a>
         `;
+    const notificationsAction = isLoggedIn
+        ? `
+            <a class="shop-action ${isActivePage("notifications.html")}" href="notifications.html" title="Benachrichtigungen">
+                <span class="shop-action-icon">🔔</span>
+                <span id="shopNotificationsLabel">Benachrichtigungen</span>
+            </a>
+        `
+        : "";
 
     const navHtml = `
         <header class="shop-header">
@@ -142,6 +178,7 @@ function renderShopNavigation() {
                         <span>Verkaufen</span>
                     </a>
 
+                    ${notificationsAction}
                     ${adminAction}
                     ${authAction}
                 </div>
@@ -202,6 +239,7 @@ function renderShopNavigation() {
     `;
 
     document.body.insertAdjacentHTML("afterbegin", navHtml);
+    loadShopUnreadCount();
 }
 
 document.addEventListener("DOMContentLoaded", renderShopNavigation);

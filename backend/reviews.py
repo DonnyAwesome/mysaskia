@@ -3,6 +3,7 @@ import sqlite3
 from flask import Blueprint, jsonify, request
 
 from db import get_db
+from notifications import create_notification
 from utils import get_current_user
 
 
@@ -97,6 +98,14 @@ def create_seller_review(seller_id):
             rating,
             comment
         ))
+        create_notification(
+            cursor,
+            seller_id,
+            "seller_review_received",
+            "Neue Bewertung erhalten",
+            f"Du hast eine neue Bewertung mit {rating} von 5 Sternen erhalten.",
+            f"seller.html?id={seller_id}"
+        )
         conn.commit()
     except sqlite3.IntegrityError:
         conn.close()
