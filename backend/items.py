@@ -74,6 +74,7 @@ def get_items():
 
 @items_bp.route("/items/<int:item_id>", methods=["GET"])
 def get_item(item_id):
+    current_user = get_current_user()
     conn = get_db()
     cursor = conn.cursor()
 
@@ -92,6 +93,14 @@ def get_item(item_id):
 
     if not item:
         return jsonify({"error": "Inserat nicht gefunden"}), 404
+
+    if item["status"] == "verborgen":
+        can_view_hidden = current_user and (
+            item["user_id"] == current_user["id"] or current_user["is_admin"]
+        )
+
+        if not can_view_hidden:
+            return jsonify({"error": "Inserat nicht gefunden"}), 404
 
     return jsonify({
         "item": item_to_dict(item)
@@ -235,7 +244,7 @@ def update_item(item_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id, user_id, image_path
+        SELECT id, user_id, image_path, status
         FROM items
         WHERE id = ?
     """, (item_id,))
@@ -265,6 +274,9 @@ def update_item(item_id):
     for field in editable_fields:
         if field in request.form:
             updates[field] = request.form.get(field, "").strip()
+
+    if item["status"] == "verborgen" and not current_user["is_admin"]:
+        updates.pop("status", None)
 
     if "title" in updates and not updates["title"]:
         conn.close()
@@ -362,7 +374,7 @@ def update_item_status():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id, user_id
+        SELECT id, user_id, status
         FROM items
         WHERE id = ?
     """, (item_id,))
@@ -376,6 +388,10 @@ def update_item_status():
     if item["user_id"] != current_user["id"] and not current_user["is_admin"]:
         conn.close()
         return jsonify({"error": "Keine Berechtigung"}), 403
+
+    if item["status"] == "verborgen" and not current_user["is_admin"]:
+        conn.close()
+        return jsonify({"error": "Verborgene Inserate können nur von Admins freigegeben werden"}), 403
 
     cursor.execute("""
         UPDATE items

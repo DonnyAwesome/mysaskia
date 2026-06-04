@@ -548,7 +548,12 @@ async function loadItemDetail() {
     container.innerHTML = `<div class="empty-state">Inserat wird geladen...</div>`;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/items/${encodeURIComponent(itemId)}`);
+        const token = getAuthToken();
+        const response = await fetch(`${API_BASE_URL}/items/${encodeURIComponent(itemId)}`, {
+            headers: token
+                ? { "Authorization": `Bearer ${token}` }
+                : {}
+        });
         const data = await response.json();
 
         if (!response.ok) {

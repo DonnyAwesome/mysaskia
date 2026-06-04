@@ -7,6 +7,20 @@ function getShopToken() {
     );
 }
 
+function getShopUser() {
+    try {
+        return JSON.parse(localStorage.getItem("user") || "null");
+    } catch (error) {
+        return null;
+    }
+}
+
+function isShopAdmin() {
+    const user = getShopUser();
+
+    return Boolean(user && (user.is_admin === true || user.is_admin === 1));
+}
+
 function getCurrentPageName() {
     const path = window.location.pathname;
     const page = path.split("/").pop();
@@ -41,6 +55,7 @@ function shopLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("authToken");
     localStorage.removeItem("mysaskia_token");
+    localStorage.removeItem("user");
     window.location.href = "login.html";
 }
 
@@ -52,6 +67,22 @@ function renderShopNavigation() {
 
     const token = getShopToken();
     const isLoggedIn = Boolean(token);
+    const adminAction = isShopAdmin()
+        ? `
+            <a class="shop-action ${isActivePage("admin.html")}" href="admin.html" title="Moderation">
+                <span class="shop-action-icon">🛡️</span>
+                <span>Admin</span>
+            </a>
+        `
+        : "";
+    const adminTab = isShopAdmin()
+        ? `
+            <a class="shop-tab ${isActivePage("admin.html")}" href="admin.html">
+                <span class="shop-tab-icon">🛡️</span>
+                <span>Moderation</span>
+            </a>
+        `
+        : "";
 
     const authAction = isLoggedIn
         ? `
@@ -111,6 +142,7 @@ function renderShopNavigation() {
                         <span>Verkaufen</span>
                     </a>
 
+                    ${adminAction}
                     ${authAction}
                 </div>
             </div>
@@ -149,6 +181,7 @@ function renderShopNavigation() {
                         <span>Merkliste</span>
                     </a>
 
+                    ${adminTab}
                     <a class="shop-tab ${isActivePage("support.html")}" href="support.html">
                         <span class="shop-tab-icon">🎫</span>
                         <span>Support</span>

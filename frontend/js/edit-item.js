@@ -75,11 +75,15 @@ function setupEditImagePreview() {
     });
 }
 
-async function loadEditItem(itemId) {
+async function loadEditItem(itemId, token) {
     setEditItemMessage("Inserat wird geladen...");
 
     try {
-        const response = await fetch(`${EDIT_ITEM_API_BASE_URL}/items/${encodeURIComponent(itemId)}`);
+        const response = await fetch(`${EDIT_ITEM_API_BASE_URL}/items/${encodeURIComponent(itemId)}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
         const data = await response.json();
 
         if (!response.ok) {
@@ -154,5 +158,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setupEditImagePreview();
     setupEditItemForm(itemId, token);
-    loadEditItem(itemId);
+    loadEditItem(itemId, token);
 });
