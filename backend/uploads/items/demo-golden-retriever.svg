@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Golden Retriever Welpe">
+    <rect width="640" height="480" rx="32" fill="#f7f0e6"/>
+    <circle cx="85" cy="80" r="38" fill="#ffffff" opacity=".55"/>
+    <circle cx="555" cy="395" r="55" fill="#ffffff" opacity=".45"/>
+    <g stroke-linejoin="round">
+            <path d="M205 184 165 105l72 35M435 184l40-79-72 35" fill="#bf7b32"/>
+            <ellipse cx="320" cy="245" rx="150" ry="125" fill="#e6a84f"/>
+            <ellipse cx="320" cy="278" rx="82" ry="63" fill="#f7d18d"/>
+            <circle cx="265" cy="225" r="12"/><circle cx="375" cy="225" r="12"/>
+            <path d="M300 267q20-18 40 0-4 25-20 25t-20-25M276 310q44 38 88 0" fill="#5b3827" stroke="#5b3827" stroke-width="10" stroke-linecap="round"/>
+            <path d="M210 374q110 45 220 0" fill="none" stroke="#fff4d6" stroke-width="22" stroke-linecap="round"/>
+        </g>
+</svg>

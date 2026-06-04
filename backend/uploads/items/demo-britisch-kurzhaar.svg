@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Britisch Kurzhaar Katze">
+    <rect width="640" height="480" rx="32" fill="#f7f0e6"/>
+    <circle cx="85" cy="80" r="38" fill="#ffffff" opacity=".55"/>
+    <circle cx="555" cy="395" r="55" fill="#ffffff" opacity=".45"/>
+    <g stroke-linejoin="round">
+            <path d="M195 175 220 85l75 75M445 175 420 85l-75 75" fill="#718096"/>
+            <circle cx="320" cy="245" r="145" fill="#8b98aa"/>
+            <circle cx="265" cy="230" r="13" fill="#f4c542"/><circle cx="375" cy="230" r="13" fill="#f4c542"/>
+            <path d="M306 270h28l-14 18z" fill="#e8a3a3"/>
+            <path d="M320 288q-24 27-48 5M320 288q24 27 48 5M235 275l-75-15M235 295l-78 18M405 275l75-15M405 295l78 18" fill="none" stroke="#4a5568" stroke-width="7" stroke-linecap="round"/>
+        </g>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Zwergkaninchen Luna">
+    <rect width="640" height="480" rx="32" fill="#f7f0e6"/>
+    <circle cx="85" cy="80" r="38" fill="#ffffff" opacity=".55"/>
+    <circle cx="555" cy="395" r="55" fill="#ffffff" opacity=".45"/>
+    <g stroke-linejoin="round">
+            <ellipse cx="260" cy="120" rx="42" ry="105" fill="#d6c1aa"/><ellipse cx="380" cy="120" rx="42" ry="105" fill="#d6c1aa"/>
+            <ellipse cx="260" cy="120" rx="18" ry="72" fill="#efb4b4"/><ellipse cx="380" cy="120" rx="18" ry="72" fill="#efb4b4"/>
+            <ellipse cx="320" cy="275" rx="145" ry="130" fill="#e5d5c3"/>
+            <circle cx="270" cy="245" r="12"/><circle cx="370" cy="245" r="12"/>
+            <path d="M308 280h24l-12 16z" fill="#df9292"/>
+            <path d="M320 296v28M320 312l-28 18M320 312l28 18M245 295l-75-15M245 315l-75 18M395 295l75-15M395 315l75 18" fill="none" stroke="#786452" stroke-width="7" stroke-linecap="round"/>
+        </g>
+</svg>

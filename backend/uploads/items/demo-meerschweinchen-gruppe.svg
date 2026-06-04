@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Meerschweinchen Gruppe">
+    <rect width="640" height="480" rx="32" fill="#f7f0e6"/>
+    <circle cx="85" cy="80" r="38" fill="#ffffff" opacity=".55"/>
+    <circle cx="555" cy="395" r="55" fill="#ffffff" opacity=".45"/>
+    <g stroke-linejoin="round">
+            <ellipse cx="205" cy="285" rx="105" ry="115" fill="#b87943"/><ellipse cx="320" cy="245" rx="112" ry="132" fill="#f1dfc4"/><ellipse cx="435" cy="285" rx="105" ry="115" fill="#9b765d"/>
+            <circle cx="175" cy="265" r="10"/><circle cx="235" cy="265" r="10"/><circle cx="285" cy="225" r="10"/><circle cx="355" cy="225" r="10"/><circle cx="405" cy="265" r="10"/><circle cx="465" cy="265" r="10"/>
+            <path d="M195 295h20M310 260h20M425 295h20" stroke="#6b4631" stroke-width="10" stroke-linecap="round"/>
+            <path d="M100 395q220-55 440 0" fill="none" stroke="#6ea55b" stroke-width="24" stroke-linecap="round"/>
+        </g>
+</svg>

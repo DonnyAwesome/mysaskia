@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Hamster Bruno">
+    <rect width="640" height="480" rx="32" fill="#f7f0e6"/>
+    <circle cx="85" cy="80" r="38" fill="#ffffff" opacity=".55"/>
+    <circle cx="555" cy="395" r="55" fill="#ffffff" opacity=".45"/>
+    <g stroke-linejoin="round">
+            <circle cx="215" cy="195" r="65" fill="#bf7b42"/><circle cx="425" cy="195" r="65" fill="#bf7b42"/>
+            <circle cx="320" cy="265" r="155" fill="#d99a58"/>
+            <ellipse cx="320" cy="305" rx="95" ry="80" fill="#fff0d6"/>
+            <circle cx="265" cy="245" r="12"/><circle cx="375" cy="245" r="12"/>
+            <circle cx="320" cy="285" r="14" fill="#7a4935"/>
+            <path d="M320 300v25M320 320l-25 15M320 320l25 15M245 295l-72-15M245 315l-72 18M395 295l72-15M395 315l72 18" fill="none" stroke="#7a4935" stroke-width="7" stroke-linecap="round"/>
+        </g>
+</svg>

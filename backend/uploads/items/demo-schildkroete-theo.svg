@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Schildkröte Theo">
+    <rect width="640" height="480" rx="32" fill="#f7f0e6"/>
+    <circle cx="85" cy="80" r="38" fill="#ffffff" opacity=".55"/>
+    <circle cx="555" cy="395" r="55" fill="#ffffff" opacity=".45"/>
+    <g stroke-linejoin="round">
+            <ellipse cx="320" cy="260" rx="180" ry="130" fill="#6ca45d"/>
+            <path d="M220 180 320 140l100 40 35 90-75 85H260l-75-85z" fill="#8fbd68" stroke="#557f49" stroke-width="12"/>
+            <path d="M320 140v215M220 180l160 175M420 180 260 355M185 270h270" stroke="#557f49" stroke-width="8" opacity=".65"/>
+            <circle cx="515" cy="260" r="60" fill="#88b875"/><circle cx="535" cy="245" r="8"/>
+            <path d="M535 278q15 12 30 0" fill="none" stroke="#466a3d" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="170" cy="165" rx="42" ry="25" fill="#88b875"/><ellipse cx="170" cy="355" rx="42" ry="25" fill="#88b875"/><ellipse cx="440" cy="165" rx="42" ry="25" fill="#88b875"/><ellipse cx="440" cy="355" rx="42" ry="25" fill="#88b875"/>
+        </g>
+</svg>

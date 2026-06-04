@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Maine Coon Kater">
+    <rect width="640" height="480" rx="32" fill="#f7f0e6"/>
+    <circle cx="85" cy="80" r="38" fill="#ffffff" opacity=".55"/>
+    <circle cx="555" cy="395" r="55" fill="#ffffff" opacity=".45"/>
+    <g stroke-linejoin="round">
+            <path d="M170 195 215 65l80 105M470 195 425 65l-80 105" fill="#805f4b"/>
+            <path d="M320 105 470 220l-40 165-110 55-110-55-40-165z" fill="#9b765d"/>
+            <path d="M320 145 390 210l-35 35 45 40-80 125-80-125 45-40-35-35z" fill="#c1a087"/>
+            <circle cx="260" cy="235" r="13" fill="#8fca63"/><circle cx="380" cy="235" r="13" fill="#8fca63"/>
+            <path d="M306 278h28l-14 18z" fill="#d69a9a"/>
+            <path d="M320 296q-25 26-50 4M320 296q25 26 50 4M240 280l-85-16M240 305l-85 20M400 280l85-16M400 305l85 20" fill="none" stroke="#5d4436" stroke-width="7" stroke-linecap="round"/>
+        </g>
+</svg>
