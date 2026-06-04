@@ -218,6 +218,11 @@ function renderShopNavigation() {
                         <span>Merkliste</span>
                     </a>
 
+                    <a class="shop-tab ${isActivePage("forum.html") || isActivePage("forum-group.html")}" href="forum.html">
+                        <span class="shop-tab-icon">📖</span>
+                        <span>Tiergeschichten</span>
+                    </a>
+
                     ${adminTab}
                     <a class="shop-tab ${isActivePage("support.html")}" href="support.html">
                         <span class="shop-tab-icon">🎫</span>

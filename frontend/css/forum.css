@@ -1,0 +1,139 @@
+.forum-hero .forum-card-meta {
+    margin: 16px 0;
+}
+
+.forum-group-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.forum-group-card,
+.forum-post-card,
+.forum-form {
+    background: var(--market-card-bg);
+    color: var(--market-text);
+    border: 1px solid var(--market-border);
+    border-radius: 20px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
+}
+
+.forum-group-card {
+    padding: 20px;
+}
+
+.forum-group-card h3 {
+    margin: 16px 0 8px;
+    font-size: 1.25rem;
+}
+
+.forum-group-card p,
+.forum-post-card p {
+    color: var(--market-muted);
+    line-height: 1.65;
+    white-space: pre-wrap;
+}
+
+.forum-card-topline,
+.forum-post-header,
+.forum-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.forum-card-meta {
+    color: var(--market-muted);
+    font-size: 0.9rem;
+    margin: 16px 0;
+}
+
+.forum-member-label,
+.forum-owner-label {
+    color: #1f7a4d;
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.forum-owner-label {
+    align-self: center;
+}
+
+.forum-feed {
+    display: grid;
+    gap: 16px;
+}
+
+.forum-post-card {
+    padding: 20px;
+}
+
+.forum-post-header {
+    align-items: flex-start;
+    color: var(--market-muted);
+    font-size: 0.9rem;
+}
+
+.forum-post-header div {
+    display: grid;
+    gap: 4px;
+}
+
+.forum-post-header a,
+.forum-post-link {
+    color: var(--primary);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.forum-post-link:hover,
+.forum-post-header a:hover {
+    text-decoration: underline;
+}
+
+.forum-post-card p {
+    color: var(--market-text);
+    margin: 18px 0;
+}
+
+.forum-form {
+    padding: 22px;
+}
+
+.forum-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.forum-form label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--market-text);
+    font-weight: 700;
+}
+
+.forum-form input,
+.forum-form textarea {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 12px;
+    border: 1px solid var(--market-input-border);
+    border-radius: 12px;
+    background: var(--market-input-bg);
+    color: var(--market-text);
+    font: inherit;
+}
+
+.forum-form textarea {
+    resize: vertical;
+}
+
+@media (max-width: 700px) {
+    .forum-form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}

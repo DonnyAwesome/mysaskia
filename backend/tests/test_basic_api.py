@@ -235,3 +235,72 @@ def test_notifications_are_private_and_unread_count_updates(client):
     )
     assert read_all_response.status_code == 200
     assert read_all_response.json["updated_count"] == 1
+
+
+def test_forum_group_membership_posts_and_feed(client):
+    owner_token = register_and_login(client, email="forum-owner@example.test")
+    member_token = register_and_login(client, email="forum-member@example.test")
+
+    create_response = client.post(
+        "/api/forum/groups",
+        headers=auth_headers(owner_token),
+        json={
+            "title": "Waldpfoten",
+            "description": "Gemeinsame Abenteuer im tiefen Wald.",
+            "category": "Abenteuer"
+        }
+    )
+    assert create_response.status_code == 201
+    group_id = create_response.json["group_id"]
+
+    groups_response = client.get(
+        "/api/forum/groups",
+        headers=auth_headers(owner_token)
+    )
+    assert groups_response.status_code == 200
+    assert groups_response.json["groups"][0]["title"] == "Waldpfoten"
+    assert groups_response.json["groups"][0]["is_member"] is True
+    assert groups_response.json["groups"][0]["members_count"] == 1
+
+    public_groups_response = client.get("/api/forum/groups")
+    assert public_groups_response.status_code == 200
+    assert public_groups_response.json["groups"][0]["is_member"] is False
+
+    non_member_post_response = client.post(
+        f"/api/forum/groups/{group_id}/posts",
+        headers=auth_headers(member_token),
+        json={"content": "Dieser Beitrag darf noch nicht veröffentlicht werden."}
+    )
+    assert non_member_post_response.status_code == 403
+
+    join_response = client.post(
+        f"/api/forum/groups/{group_id}/join",
+        headers=auth_headers(member_token)
+    )
+    assert join_response.status_code == 200
+
+    repeated_join_response = client.post(
+        f"/api/forum/groups/{group_id}/join",
+        headers=auth_headers(member_token)
+    )
+    assert repeated_join_response.status_code == 200
+
+    post_response = client.post(
+        f"/api/forum/groups/{group_id}/posts",
+        headers=auth_headers(member_token),
+        json={"content": "Mika folgt einer geheimnisvollen Spur zwischen den Bäumen."}
+    )
+    assert post_response.status_code == 201
+
+    group_response = client.get(
+        f"/api/forum/groups/{group_id}",
+        headers=auth_headers(member_token)
+    )
+    assert group_response.status_code == 200
+    assert group_response.json["members_count"] == 2
+    assert group_response.json["posts_count"] == 1
+    assert group_response.json["posts"][0]["content"].startswith("Mika folgt")
+
+    feed_response = client.get("/api/forum/feed")
+    assert feed_response.status_code == 200
+    assert feed_response.json["posts"][0]["group_title"] == "Waldpfoten"
