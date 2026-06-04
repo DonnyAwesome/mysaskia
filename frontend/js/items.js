@@ -241,6 +241,7 @@ function itemCardHtml(item, showOwnerActions = false) {
     const ownerActions = showOwnerActions
         ? `
             <div class="item-card-actions">
+                <a class="btn" href="edit-item.html?id=${encodeURIComponent(item.id)}">Bearbeiten</a>
                 ${
                     item.status === "verkauft"
                         ? `<button class="btn secondary" onclick="updateItemStatus(${item.id}, 'aktiv')">Wieder aktiv</button>`
@@ -452,7 +453,7 @@ async function loadItemDetail() {
     container.innerHTML = `<div class="empty-state">Inserat wird geladen...</div>`;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/items`);
+        const response = await fetch(`${API_BASE_URL}/items/${encodeURIComponent(itemId)}`);
         const data = await response.json();
 
         if (!response.ok) {
@@ -460,8 +461,7 @@ async function loadItemDetail() {
             return;
         }
 
-        const items = Array.isArray(data.items) ? data.items : [];
-        const item = items.find((entry) => String(entry.id) === itemId);
+        const item = data.item;
 
         if (!item) {
             container.innerHTML = `<div class="empty-state">Inserat nicht gefunden.</div>`;
