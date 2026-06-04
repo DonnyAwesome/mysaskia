@@ -431,6 +431,11 @@ def delete_item():
             os.remove(file_path)
 
     cursor.execute("""
+        DELETE FROM favorites
+        WHERE item_id = ?
+    """, (item_id,))
+
+    cursor.execute("""
         DELETE FROM items
         WHERE id = ?
     """, (item_id,))

@@ -340,6 +340,9 @@ function detailRowHtml(label, value) {
 
 function itemDetailHtml(item) {
     const createdAt = formatDate(item.created_at);
+    const favoriteAction = getAuthToken()
+        ? `<button id="favoriteButton" class="btn secondary" type="button">Merken</button>`
+        : `<a class="btn secondary" href="login.html">Einloggen zum Merken</a>`;
 
     return `
         <article class="item-detail">
@@ -369,10 +372,12 @@ function itemDetailHtml(item) {
 
                 <div class="item-detail-actions">
                     <button id="interestButton" class="btn" type="button">Interesse anmelden</button>
+                    ${favoriteAction}
                     <a class="btn secondary" href="marketplace.html">Zurück</a>
                 </div>
 
                 <div id="interestMessage" class="status-message"></div>
+                <div id="favoriteMessage" class="status-message"></div>
             </div>
         </article>
     `;
@@ -436,6 +441,82 @@ function setupInterestButton(item) {
     });
 }
 
+async function setupFavoriteButton(item) {
+    const button = document.getElementById("favoriteButton");
+    const message = document.getElementById("favoriteMessage");
+    const token = getAuthToken();
+
+    if (!button || !token) {
+        return;
+    }
+
+    let isFavorite = false;
+
+    function updateButton() {
+        button.textContent = isFavorite ? "Von Merkliste entfernen" : "Merken";
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/favorites/status?item_id=${encodeURIComponent(item.id)}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            isFavorite = Boolean(data.is_favorite);
+            updateButton();
+        }
+    } catch (error) {
+        if (message) {
+            message.textContent = "Merkliste konnte nicht geladen werden.";
+            message.className = "status-message error";
+        }
+    }
+
+    button.addEventListener("click", async () => {
+        button.disabled = true;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/favorites`, {
+                method: isFavorite ? "DELETE" : "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    item_id: item.id
+                })
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                if (message) {
+                    message.textContent = data.error || data.message || "Merkliste konnte nicht aktualisiert werden.";
+                    message.className = "status-message error";
+                }
+                return;
+            }
+
+            isFavorite = Boolean(data.is_favorite);
+            updateButton();
+
+            if (message) {
+                message.textContent = data.message;
+                message.className = "status-message success";
+            }
+        } catch (error) {
+            if (message) {
+                message.textContent = "Server nicht erreichbar.";
+                message.className = "status-message error";
+            }
+        } finally {
+            button.disabled = false;
+        }
+    });
+}
+
 async function loadItemDetail() {
     const container = document.getElementById("itemDetail");
 
@@ -470,6 +551,7 @@ async function loadItemDetail() {
 
         container.innerHTML = itemDetailHtml(item);
         setupInterestButton(item);
+        setupFavoriteButton(item);
     } catch (error) {
         container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
     }

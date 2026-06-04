@@ -96,6 +96,11 @@ function renderShopNavigation() {
                         <span>Käufe</span>
                     </a>
 
+                    <a class="shop-action ${isActivePage("favorites.html")}" href="favorites.html" title="Merkliste">
+                        <span class="shop-action-icon">♥</span>
+                        <span>Merkliste</span>
+                    </a>
+
                     <a class="shop-action ${isActivePage("sales.html")}" href="sales.html" title="Meine Verkäufe">
                         <span class="shop-action-icon">🤝</span>
                         <span>Verkäufe</span>
@@ -137,6 +142,11 @@ function renderShopNavigation() {
                     <a class="shop-tab ${isActivePage("my-items.html")}" href="my-items.html">
                         <span class="shop-tab-icon">📋</span>
                         <span>Meine Inserate</span>
+                    </a>
+
+                    <a class="shop-tab ${isActivePage("favorites.html")}" href="favorites.html">
+                        <span class="shop-tab-icon">♥</span>
+                        <span>Merkliste</span>
                     </a>
 
                     <a class="shop-tab ${isActivePage("support.html")}" href="support.html">

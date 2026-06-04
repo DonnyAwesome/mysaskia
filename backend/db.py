@@ -85,6 +85,18 @@ def init_db():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS favorites (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            item_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (user_id, item_id),
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE
+        )
+    """)
+
     cursor.execute("SELECT id FROM users WHERE email = ?", ("admin@local.test",))
     admin_exists = cursor.fetchone()
 
