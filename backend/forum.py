@@ -22,6 +22,27 @@ def group_to_dict(group):
     }
 
 
+def post_to_dict(post, include_group=False):
+    result = {
+        "character_item_id": post["character_item_id"],
+        "character_name": post["character_name"],
+        "character_species": post["character_species"],
+        "character_image_path": post["character_image_path"],
+        "user_name": post["user_name"],
+        "content": post["content"],
+        "created_at": post["created_at"]
+    }
+
+    if include_group:
+        result["post_id"] = post["post_id"]
+        result["group_id"] = post["group_id"]
+        result["group_title"] = post["group_title"]
+    else:
+        result["id"] = post["post_id"]
+
+    return result
+
+
 def select_group(cursor, group_id, current_user_id=None):
     return cursor.execute("""
         SELECT
@@ -145,12 +166,17 @@ def get_group(group_id):
 
     posts = cursor.execute("""
         SELECT
-            forum_posts.id,
+            forum_posts.id AS post_id,
+            forum_posts.character_item_id,
+            characters.title AS character_name,
+            characters.species AS character_species,
+            characters.image_path AS character_image_path,
             users.first_name || ' ' || users.last_name AS user_name,
             forum_posts.content,
             forum_posts.created_at
         FROM forum_posts
         JOIN users ON forum_posts.user_id = users.id
+        LEFT JOIN items AS characters ON forum_posts.character_item_id = characters.id
         WHERE forum_posts.group_id = ?
         ORDER BY forum_posts.created_at DESC, forum_posts.id DESC
         LIMIT 100
@@ -158,15 +184,7 @@ def get_group(group_id):
     conn.close()
 
     result = group_to_dict(group)
-    result["posts"] = [
-        {
-            "id": post["id"],
-            "user_name": post["user_name"],
-            "content": post["content"],
-            "created_at": post["created_at"]
-        }
-        for post in posts
-    ]
+    result["posts"] = [post_to_dict(post) for post in posts]
 
     return jsonify(result)
 
@@ -234,13 +252,24 @@ def create_post(group_id):
     if not current_user:
         return jsonify({"error": "Nicht eingeloggt"}), 401
 
-    content = str((request.get_json() or {}).get("content") or "").strip()
+    data = request.get_json() or {}
+    content = str(data.get("content") or "").strip()
+    character_item_id = data.get("character_item_id")
 
     if not content:
         return jsonify({"error": "Beitrag darf nicht leer sein"}), 400
 
     if len(content) > 1000:
         return jsonify({"error": "Beitrag darf maximal 1000 Zeichen lang sein"}), 400
+
+    if character_item_id is not None:
+        try:
+            character_item_id = int(character_item_id)
+        except (TypeError, ValueError):
+            return jsonify({"error": "Ungültige Tierrolle"}), 400
+
+        if character_item_id < 1:
+            return jsonify({"error": "Ungültige Tierrolle"}), 400
 
     conn = get_db()
     cursor = conn.cursor()
@@ -259,10 +288,29 @@ def create_post(group_id):
         conn.close()
         return jsonify({"error": "Du musst Mitglied der Gruppe sein"}), 403
 
+    if character_item_id is not None:
+        character = cursor.execute("""
+            SELECT id, user_id, item_type, status
+            FROM items
+            WHERE id = ?
+        """, (character_item_id,)).fetchone()
+
+        if not character:
+            conn.close()
+            return jsonify({"error": "Tierrolle nicht gefunden"}), 404
+
+        if character["user_id"] != current_user["id"]:
+            conn.close()
+            return jsonify({"error": "Du darfst nicht als fremdes Tier schreiben"}), 403
+
+        if character["item_type"] != "animal" or character["status"] not in ["aktiv", "verkauft"]:
+            conn.close()
+            return jsonify({"error": "Dieses Inserat kann nicht als Tierrolle verwendet werden"}), 400
+
     cursor.execute("""
-        INSERT INTO forum_posts (group_id, user_id, content)
-        VALUES (?, ?, ?)
-    """, (group_id, current_user["id"], content))
+        INSERT INTO forum_posts (group_id, user_id, character_item_id, content)
+        VALUES (?, ?, ?, ?)
+    """, (group_id, current_user["id"], character_item_id, content))
     post_id = cursor.lastrowid
     conn.commit()
     conn.close()
@@ -273,6 +321,38 @@ def create_post(group_id):
     }), 201
 
 
+@forum_bp.route("/my-characters", methods=["GET"])
+def get_my_characters():
+    current_user = get_current_user()
+
+    if not current_user:
+        return jsonify({"error": "Nicht eingeloggt"}), 401
+
+    conn = get_db()
+    characters = conn.execute("""
+        SELECT id, title, species, breed, image_path
+        FROM items
+        WHERE user_id = ?
+          AND item_type = 'animal'
+          AND status IN ('aktiv', 'verkauft')
+        ORDER BY created_at DESC, id DESC
+    """, (current_user["id"],)).fetchall()
+    conn.close()
+
+    return jsonify({
+        "characters": [
+            {
+                "id": character["id"],
+                "title": character["title"],
+                "species": character["species"],
+                "breed": character["breed"],
+                "image_path": character["image_path"]
+            }
+            for character in characters
+        ]
+    })
+
+
 @forum_bp.route("/feed", methods=["GET"])
 def get_feed():
     conn = get_db()
@@ -281,27 +361,22 @@ def get_feed():
             forum_posts.id AS post_id,
             forum_groups.id AS group_id,
             forum_groups.title AS group_title,
+            forum_posts.character_item_id,
+            characters.title AS character_name,
+            characters.species AS character_species,
+            characters.image_path AS character_image_path,
             users.first_name || ' ' || users.last_name AS user_name,
             forum_posts.content,
             forum_posts.created_at
         FROM forum_posts
         JOIN forum_groups ON forum_posts.group_id = forum_groups.id
         JOIN users ON forum_posts.user_id = users.id
+        LEFT JOIN items AS characters ON forum_posts.character_item_id = characters.id
         ORDER BY forum_posts.created_at DESC, forum_posts.id DESC
         LIMIT 100
     """).fetchall()
     conn.close()
 
     return jsonify({
-        "posts": [
-            {
-                "post_id": post["post_id"],
-                "group_id": post["group_id"],
-                "group_title": post["group_title"],
-                "user_name": post["user_name"],
-                "content": post["content"],
-                "created_at": post["created_at"]
-            }
-            for post in posts
-        ]
+        "posts": [post_to_dict(post, include_group=True) for post in posts]
     })

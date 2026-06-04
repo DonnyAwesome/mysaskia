@@ -165,12 +165,21 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             group_id INTEGER NOT NULL,
             user_id INTEGER NOT NULL,
+            character_item_id INTEGER,
             content TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (group_id) REFERENCES forum_groups(id) ON DELETE CASCADE,
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (character_item_id) REFERENCES items(id)
         )
     """)
+
+    forum_post_columns = {
+        row["name"]
+        for row in cursor.execute("PRAGMA table_info(forum_posts)").fetchall()
+    }
+    if "character_item_id" not in forum_post_columns:
+        cursor.execute("ALTER TABLE forum_posts ADD COLUMN character_item_id INTEGER")
 
     cursor.execute("SELECT id FROM users WHERE email = ?", ("admin@local.test",))
     admin_exists = cursor.fetchone()

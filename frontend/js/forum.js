@@ -35,6 +35,18 @@ function formatForumDate(value) {
     }).format(date);
 }
 
+function forumImageUrl(imagePath) {
+    if (!imagePath) {
+        return "";
+    }
+
+    try {
+        return new URL(imagePath, FORUM_API_BASE_URL).href;
+    } catch (error) {
+        return "";
+    }
+}
+
 function forumHeaders(includeJson = false) {
     const headers = {};
     const token = getForumToken();
@@ -87,12 +99,26 @@ function forumGroupCardHtml(group) {
 }
 
 function forumFeedPostHtml(post) {
+    const author = post.character_name
+        ? `
+            <div class="forum-character-author">
+                <strong>${escapeForumHtml(post.character_name)}</strong>
+                ${post.character_species ? `<span>${escapeForumHtml(post.character_species)}</span>` : ""}
+                <small>gespielt von ${escapeForumHtml(post.user_name)}</small>
+            </div>
+        `
+        : `<strong>${escapeForumHtml(post.user_name)}</strong>`;
+    const imageUrl = forumImageUrl(post.character_image_path);
+
     return `
         <article class="forum-post-card">
             <div class="forum-post-header">
-                <div>
-                    <a href="forum-group.html?id=${encodeURIComponent(post.group_id)}">${escapeForumHtml(post.group_title)}</a>
-                    <span>von ${escapeForumHtml(post.user_name)}</span>
+                <div class="forum-post-author">
+                    ${imageUrl ? `<img class="forum-character-avatar" src="${escapeForumHtml(imageUrl)}" alt="" onerror="this.remove()">` : ""}
+                    <div>
+                        ${author}
+                        <a href="forum-group.html?id=${encodeURIComponent(post.group_id)}">${escapeForumHtml(post.group_title)}</a>
+                    </div>
                 </div>
                 <time>${escapeForumHtml(formatForumDate(post.created_at))}</time>
             </div>

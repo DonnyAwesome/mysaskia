@@ -81,6 +81,36 @@
     gap: 4px;
 }
 
+.forum-post-header .forum-post-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.forum-character-author {
+    display: grid;
+    gap: 2px;
+}
+
+.forum-character-author strong {
+    color: var(--market-text);
+    font-size: 1.05rem;
+}
+
+.forum-character-author small {
+    color: var(--market-muted);
+    font-size: 0.78rem;
+}
+
+.forum-character-avatar {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border: 1px solid var(--market-border);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .forum-post-header a,
 .forum-post-link {
     color: var(--primary);
@@ -116,6 +146,7 @@
 }
 
 .forum-form input,
+.forum-form select,
 .forum-form textarea {
     width: 100%;
     margin-bottom: 16px;
@@ -125,6 +156,10 @@
     background: var(--market-input-bg);
     color: var(--market-text);
     font: inherit;
+}
+
+.forum-role-select {
+    max-width: 420px;
 }
 
 .forum-form textarea {

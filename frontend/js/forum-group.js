@@ -39,6 +39,18 @@ function formatForumGroupDate(value) {
     }).format(date);
 }
 
+function forumGroupImageUrl(imagePath) {
+    if (!imagePath) {
+        return "";
+    }
+
+    try {
+        return new URL(imagePath, FORUM_GROUP_API_BASE_URL).href;
+    } catch (error) {
+        return "";
+    }
+}
+
 function forumGroupHeaders(includeJson = false) {
     const headers = {};
     const token = getForumGroupToken();
@@ -94,10 +106,24 @@ function forumGroupDetailsHtml(group) {
 }
 
 function forumGroupPostHtml(post) {
+    const author = post.character_name
+        ? `
+            <div class="forum-character-author">
+                <strong>${escapeForumGroupHtml(post.character_name)}</strong>
+                ${post.character_species ? `<span>${escapeForumGroupHtml(post.character_species)}</span>` : ""}
+                <small>gespielt von ${escapeForumGroupHtml(post.user_name)}</small>
+            </div>
+        `
+        : `<strong>${escapeForumGroupHtml(post.user_name)}</strong>`;
+    const imageUrl = forumGroupImageUrl(post.character_image_path);
+
     return `
         <article class="forum-post-card">
             <div class="forum-post-header">
-                <strong>${escapeForumGroupHtml(post.user_name)}</strong>
+                <div class="forum-post-author">
+                    ${imageUrl ? `<img class="forum-character-avatar" src="${escapeForumGroupHtml(imageUrl)}" alt="" onerror="this.remove()">` : ""}
+                    ${author}
+                </div>
                 <time>${escapeForumGroupHtml(formatForumGroupDate(post.created_at))}</time>
             </div>
             <p>${escapeForumGroupHtml(post.content)}</p>
@@ -124,6 +150,12 @@ function renderForumPostForm(group) {
 
     container.innerHTML = `
         <form id="forumPostCreateForm" class="forum-form">
+            <div class="forum-role-select">
+                <label for="forumPostCharacter">Schreiben als</label>
+                <select id="forumPostCharacter" name="character_item_id">
+                    <option value="">Als ich selbst schreiben</option>
+                </select>
+            </div>
             <label for="forumPostContent">Dein Beitrag</label>
             <textarea id="forumPostContent" name="content" maxlength="1000" rows="6" placeholder="Schreibe die Geschichte aus Sicht deines Tieres weiter..." required></textarea>
             <button class="btn" type="submit">Beitrag veröffentlichen</button>
@@ -132,6 +164,37 @@ function renderForumPostForm(group) {
     `;
 
     document.getElementById("forumPostCreateForm").addEventListener("submit", createForumPost);
+    loadForumCharacters();
+}
+
+async function loadForumCharacters() {
+    const select = document.getElementById("forumPostCharacter");
+
+    if (!select) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${FORUM_GROUP_API_BASE_URL}/my-characters`, {
+            headers: forumGroupHeaders()
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            return;
+        }
+
+        data.characters.forEach((character) => {
+            const option = document.createElement("option");
+            option.value = character.id;
+            option.textContent = character.species
+                ? `${character.title} (${character.species})`
+                : character.title;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        // Schreiben als User bleibt auch ohne geladene Tierrollen möglich.
+    }
 }
 
 async function loadForumGroup() {
@@ -203,7 +266,14 @@ async function createForumPost(event) {
     event.preventDefault();
     const form = event.currentTarget;
     const message = document.getElementById("forumPostMessage");
-    const content = new FormData(form).get("content");
+    const formData = new FormData(form);
+    const content = formData.get("content");
+    const characterItemId = formData.get("character_item_id");
+    const payload = {content};
+
+    if (characterItemId) {
+        payload.character_item_id = Number(characterItemId);
+    }
 
     message.textContent = "Beitrag wird veröffentlicht...";
     message.className = "status-message";
@@ -212,7 +282,7 @@ async function createForumPost(event) {
         const response = await fetch(`${FORUM_GROUP_API_BASE_URL}/groups/${encodeURIComponent(getForumGroupId())}/posts`, {
             method: "POST",
             headers: forumGroupHeaders(true),
-            body: JSON.stringify({content})
+            body: JSON.stringify(payload)
         });
         const data = await response.json();
 

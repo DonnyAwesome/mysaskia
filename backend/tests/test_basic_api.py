@@ -240,6 +240,8 @@ def test_notifications_are_private_and_unread_count_updates(client):
 def test_forum_group_membership_posts_and_feed(client):
     owner_token = register_and_login(client, email="forum-owner@example.test")
     member_token = register_and_login(client, email="forum-member@example.test")
+    owner_character_id = create_item(client, owner_token, title="Luna")
+    member_character_id = create_item(client, member_token, title="Mika")
 
     create_response = client.post(
         "/api/forum/groups",
@@ -285,10 +287,31 @@ def test_forum_group_membership_posts_and_feed(client):
     )
     assert repeated_join_response.status_code == 200
 
+    characters_response = client.get(
+        "/api/forum/my-characters",
+        headers=auth_headers(member_token)
+    )
+    assert characters_response.status_code == 200
+    assert characters_response.json["characters"][0]["id"] == member_character_id
+    assert characters_response.json["characters"][0]["title"] == "Mika"
+
+    foreign_character_post_response = client.post(
+        f"/api/forum/groups/{group_id}/posts",
+        headers=auth_headers(member_token),
+        json={
+            "content": "Dieser Beitrag darf nicht veröffentlicht werden.",
+            "character_item_id": owner_character_id
+        }
+    )
+    assert foreign_character_post_response.status_code == 403
+
     post_response = client.post(
         f"/api/forum/groups/{group_id}/posts",
         headers=auth_headers(member_token),
-        json={"content": "Mika folgt einer geheimnisvollen Spur zwischen den Bäumen."}
+        json={
+            "content": "Mika folgt einer geheimnisvollen Spur zwischen den Bäumen.",
+            "character_item_id": member_character_id
+        }
     )
     assert post_response.status_code == 201
 
@@ -300,7 +323,12 @@ def test_forum_group_membership_posts_and_feed(client):
     assert group_response.json["members_count"] == 2
     assert group_response.json["posts_count"] == 1
     assert group_response.json["posts"][0]["content"].startswith("Mika folgt")
+    assert group_response.json["posts"][0]["character_item_id"] == member_character_id
+    assert group_response.json["posts"][0]["character_name"] == "Mika"
+    assert group_response.json["posts"][0]["character_species"] == "Hund"
+    assert group_response.json["posts"][0]["user_name"] == "Test User"
 
     feed_response = client.get("/api/forum/feed")
     assert feed_response.status_code == 200
     assert feed_response.json["posts"][0]["group_title"] == "Waldpfoten"
+    assert feed_response.json["posts"][0]["character_name"] == "Mika"
