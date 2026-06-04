@@ -10,6 +10,7 @@ from tickets import tickets_bp
 from profile import profile_bp
 from items import items_bp
 from orders import orders_bp
+from dashboard import dashboard_bp
 
 
 app = Flask(__name__)
@@ -28,6 +29,7 @@ app.register_blueprint(tickets_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(items_bp)
 app.register_blueprint(orders_bp)
+app.register_blueprint(dashboard_bp)
 
 
 @app.route("/uploads/items/<filename>")
