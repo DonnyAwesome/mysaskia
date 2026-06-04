@@ -332,3 +332,81 @@ def test_forum_group_membership_posts_and_feed(client):
     assert feed_response.status_code == 200
     assert feed_response.json["posts"][0]["group_title"] == "Waldpfoten"
     assert feed_response.json["posts"][0]["character_name"] == "Mika"
+
+    story_response = client.post(
+        f"/api/forum/groups/{group_id}/stories",
+        headers=auth_headers(member_token),
+        json={
+            "title": "Die Spur im Mondlicht",
+            "description": "Mika und Luna folgen der geheimnisvollen Spur."
+        }
+    )
+    assert story_response.status_code == 201
+    story_id = story_response.json["story_id"]
+
+    stories_response = client.get(f"/api/forum/groups/{group_id}/stories")
+    assert stories_response.status_code == 200
+    assert stories_response.json["stories"][0]["title"] == "Die Spur im Mondlicht"
+    assert stories_response.json["stories"][0]["posts_count"] == 0
+
+    plain_story_post_response = client.post(
+        f"/api/forum/stories/{story_id}/posts",
+        headers=auth_headers(member_token),
+        json={"content": "Mika bleibt am Waldrand stehen."}
+    )
+    assert plain_story_post_response.status_code == 201
+
+    foreign_story_post_response = client.post(
+        f"/api/forum/stories/{story_id}/posts",
+        headers=auth_headers(member_token),
+        json={
+            "content": "Luna darf hier nicht fremdgesteuert werden.",
+            "character_item_id": owner_character_id
+        }
+    )
+    assert foreign_story_post_response.status_code == 403
+
+    character_story_post_response = client.post(
+        f"/api/forum/stories/{story_id}/posts",
+        headers=auth_headers(member_token),
+        json={
+            "content": "Mika setzt seine Suche im Mondlicht fort.",
+            "character_item_id": member_character_id
+        }
+    )
+    assert character_story_post_response.status_code == 201
+
+    story_details_response = client.get(
+        f"/api/forum/stories/{story_id}",
+        headers=auth_headers(member_token)
+    )
+    assert story_details_response.status_code == 200
+    assert story_details_response.json["is_group_member"] is True
+    assert story_details_response.json["posts"][0]["character_name"] is None
+    assert story_details_response.json["posts"][1]["character_name"] == "Mika"
+
+    story_feed_response = client.get("/api/forum/feed")
+    assert story_feed_response.status_code == 200
+    assert story_feed_response.json["posts"][0]["story_id"] == story_id
+    assert story_feed_response.json["posts"][0]["story_title"] == "Die Spur im Mondlicht"
+
+    close_story_response = client.patch(
+        f"/api/forum/stories/{story_id}/status",
+        headers=auth_headers(owner_token),
+        json={"status": "abgeschlossen"}
+    )
+    assert close_story_response.status_code == 200
+
+    closed_story_post_response = client.post(
+        f"/api/forum/stories/{story_id}/posts",
+        headers=auth_headers(member_token),
+        json={"content": "Dieser Beitrag darf nicht mehr veröffentlicht werden."}
+    )
+    assert closed_story_post_response.status_code == 400
+
+    reopen_story_response = client.patch(
+        f"/api/forum/stories/{story_id}/status",
+        headers=auth_headers(member_token),
+        json={"status": "aktiv"}
+    )
+    assert reopen_story_response.status_code == 200

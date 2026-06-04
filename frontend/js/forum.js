@@ -109,6 +109,16 @@ function forumFeedPostHtml(post) {
         `
         : `<strong>${escapeForumHtml(post.user_name)}</strong>`;
     const imageUrl = forumImageUrl(post.character_image_path);
+    const targetUrl = post.story_id
+        ? `forum-story.html?id=${encodeURIComponent(post.story_id)}`
+        : `forum-group.html?id=${encodeURIComponent(post.group_id)}`;
+    const context = post.story_id
+        ? `
+            <a href="${targetUrl}">${escapeForumHtml(post.story_title)}</a>
+            <span>Gruppe: ${escapeForumHtml(post.group_title)}</span>
+        `
+        : `<a href="${targetUrl}">${escapeForumHtml(post.group_title)}</a>`;
+    const linkLabel = post.story_id ? "Zur Geschichte" : "Zur Gruppe";
 
     return `
         <article class="forum-post-card">
@@ -117,13 +127,13 @@ function forumFeedPostHtml(post) {
                     ${imageUrl ? `<img class="forum-character-avatar" src="${escapeForumHtml(imageUrl)}" alt="" onerror="this.remove()">` : ""}
                     <div>
                         ${author}
-                        <a href="forum-group.html?id=${encodeURIComponent(post.group_id)}">${escapeForumHtml(post.group_title)}</a>
+                        ${context}
                     </div>
                 </div>
                 <time>${escapeForumHtml(formatForumDate(post.created_at))}</time>
             </div>
             <p>${escapeForumHtml(post.content)}</p>
-            <a class="forum-post-link" href="forum-group.html?id=${encodeURIComponent(post.group_id)}">Zur Gruppe</a>
+            <a class="forum-post-link" href="${targetUrl}">${linkLabel}</a>
         </article>
     `;
 }

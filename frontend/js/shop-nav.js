@@ -218,7 +218,7 @@ function renderShopNavigation() {
                         <span>Merkliste</span>
                     </a>
 
-                    <a class="shop-tab ${isActivePage("forum.html") || isActivePage("forum-group.html")}" href="forum.html">
+                    <a class="shop-tab ${isActivePage("forum.html") || isActivePage("forum-group.html") || isActivePage("forum-story.html")}" href="forum.html">
                         <span class="shop-tab-icon">📖</span>
                         <span>Tiergeschichten</span>
                     </a>

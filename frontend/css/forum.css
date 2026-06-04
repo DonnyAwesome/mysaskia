@@ -9,6 +9,7 @@
 }
 
 .forum-group-card,
+.forum-story-card,
 .forum-post-card,
 .forum-form {
     background: var(--market-card-bg);
@@ -22,12 +23,14 @@
     padding: 20px;
 }
 
-.forum-group-card h3 {
+.forum-group-card h3,
+.forum-story-card h3 {
     margin: 16px 0 8px;
     font-size: 1.25rem;
 }
 
 .forum-group-card p,
+.forum-story-card p,
 .forum-post-card p {
     color: var(--market-muted);
     line-height: 1.65;
@@ -64,6 +67,41 @@
 .forum-feed {
     display: grid;
     gap: 16px;
+}
+
+.forum-story-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.forum-story-card {
+    padding: 20px;
+}
+
+.forum-story-status {
+    color: #1f7a4d;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.forum-story-status.completed {
+    color: var(--market-muted);
+}
+
+.forum-story-hero > a {
+    color: var(--primary);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.forum-story-hero > a:hover {
+    text-decoration: underline;
+}
+
+.forum-story-notice {
+    margin: 0;
 }
 
 .forum-post-card {

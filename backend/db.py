@@ -161,16 +161,32 @@ def init_db():
     """)
 
     cursor.execute("""
+        CREATE TABLE IF NOT EXISTS forum_stories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            group_id INTEGER NOT NULL,
+            owner_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT,
+            status TEXT NOT NULL DEFAULT 'aktiv',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (group_id) REFERENCES forum_groups(id) ON DELETE CASCADE,
+            FOREIGN KEY (owner_id) REFERENCES users(id)
+        )
+    """)
+
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS forum_posts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             group_id INTEGER NOT NULL,
             user_id INTEGER NOT NULL,
             character_item_id INTEGER,
+            story_id INTEGER,
             content TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (group_id) REFERENCES forum_groups(id) ON DELETE CASCADE,
             FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (character_item_id) REFERENCES items(id)
+            FOREIGN KEY (character_item_id) REFERENCES items(id),
+            FOREIGN KEY (story_id) REFERENCES forum_stories(id) ON DELETE CASCADE
         )
     """)
 
@@ -180,6 +196,8 @@ def init_db():
     }
     if "character_item_id" not in forum_post_columns:
         cursor.execute("ALTER TABLE forum_posts ADD COLUMN character_item_id INTEGER")
+    if "story_id" not in forum_post_columns:
+        cursor.execute("ALTER TABLE forum_posts ADD COLUMN story_id INTEGER")
 
     cursor.execute("SELECT id FROM users WHERE email = ?", ("admin@local.test",))
     admin_exists = cursor.fetchone()

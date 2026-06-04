@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Tiergeschichten - MySaskia</title>
+    <title>Geschichte - MySaskia</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="css/shop-nav.css?v=1">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/marketplace.css?v=7">
     <link rel="stylesheet" href="css/forum.css?v=3">
 </head>
-<body data-page="forum">
+<body data-page="forum-story">
     <nav class="navbar">
         <a class="nav-brand" href="index.html">
             <img src="images/flower-logo.svg" alt="MySaskia Logo">
@@ -19,30 +19,25 @@
     </nav>
 
     <main>
-        <section class="marketplace-hero forum-hero">
-            <h1>Tiergeschichten</h1>
-            <p>Erstelle Gruppen, tritt Rollenspielen bei und schreibe gemeinsam Geschichten aus Sicht deiner Tiere.</p>
+        <section id="forumStoryDetails" class="marketplace-hero forum-hero forum-story-hero">
+            <h1>Geschichte</h1>
+            <p>Geschichte wird geladen...</p>
         </section>
 
         <section class="marketplace-container">
-            <h2>Neue Gruppe erstellen</h2>
-            <div id="forumCreateGroup"></div>
+            <h2>Geschichte weiterschreiben</h2>
+            <div id="forumStoryPostForm"></div>
         </section>
 
         <section class="marketplace-container">
-            <h2>Gruppen entdecken</h2>
-            <div id="forumGroups" class="forum-group-grid"></div>
-        </section>
-
-        <section class="marketplace-container">
-            <h2>Aktuelle Geschichten</h2>
-            <div id="forumFeed" class="forum-feed"></div>
+            <h2>Beiträge</h2>
+            <div id="forumStoryPosts" class="forum-feed"></div>
         </section>
     </main>
 
     <script src="js/i18n.js?v=1"></script>
     <script src="js/site.js?v=1"></script>
     <script src="js/shop-nav.js?v=6"></script>
-    <script src="js/forum.js?v=3"></script>
+    <script src="js/forum-story.js?v=1"></script>
 </body>
 </html>

@@ -131,6 +131,77 @@ function forumGroupPostHtml(post) {
     `;
 }
 
+function forumStoryCardHtml(story) {
+    const lastPost = story.last_post_at
+        ? `Letzter Beitrag: ${formatForumGroupDate(story.last_post_at)}`
+        : `Erstellt: ${formatForumGroupDate(story.created_at)}`;
+
+    return `
+        <article class="forum-story-card">
+            <div class="forum-card-topline">
+                <span class="forum-story-status ${story.status === "abgeschlossen" ? "completed" : ""}">${escapeForumGroupHtml(story.status)}</span>
+                <span>${story.posts_count} Beiträge</span>
+            </div>
+            <h3>${escapeForumGroupHtml(story.title)}</h3>
+            ${story.description ? `<p>${escapeForumGroupHtml(story.description)}</p>` : ""}
+            <div class="forum-card-meta">
+                <span>Von ${escapeForumGroupHtml(story.owner_name)}</span>
+                <span>${escapeForumGroupHtml(lastPost)}</span>
+            </div>
+            <a class="btn secondary" href="forum-story.html?id=${encodeURIComponent(story.id)}">Geschichte öffnen</a>
+        </article>
+    `;
+}
+
+function renderForumStoryForm(group) {
+    const container = document.getElementById("forumStoryForm");
+
+    if (!getForumGroupToken()) {
+        container.innerHTML = forumGroupStateHtml("Melde dich an, um eine Geschichte zu starten.", "");
+        return;
+    }
+
+    if (!group.is_member) {
+        container.innerHTML = forumGroupStateHtml("Tritt der Gruppe bei, um eine Geschichte zu starten.", "");
+        return;
+    }
+
+    container.innerHTML = `
+        <form id="forumStoryCreateForm" class="forum-form">
+            <label for="forumStoryTitle">Titel</label>
+            <input id="forumStoryTitle" name="title" maxlength="120" required>
+            <label for="forumStoryDescription">Beschreibung</label>
+            <textarea id="forumStoryDescription" name="description" maxlength="1000" rows="4"></textarea>
+            <button class="btn" type="submit">Geschichte starten</button>
+            <div id="forumStoryMessage" class="status-message"></div>
+        </form>
+    `;
+
+    document.getElementById("forumStoryCreateForm").addEventListener("submit", createForumStory);
+}
+
+async function loadForumStories() {
+    const container = document.getElementById("forumGroupStories");
+
+    container.innerHTML = forumGroupStateHtml("Geschichten werden geladen", "Einen Moment bitte.", "loading-state");
+
+    try {
+        const response = await fetch(`${FORUM_GROUP_API_BASE_URL}/groups/${encodeURIComponent(getForumGroupId())}/stories`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            container.innerHTML = forumGroupStateHtml("Geschichten konnten nicht geladen werden", data.error || "", "error-state");
+            return;
+        }
+
+        container.innerHTML = data.stories.length
+            ? data.stories.map(forumStoryCardHtml).join("")
+            : forumGroupStateHtml("Noch keine Geschichten", "Starte die erste Geschichte dieser Gruppe.");
+    } catch (error) {
+        container.innerHTML = forumGroupStateHtml("Server nicht erreichbar", "Geschichten konnten nicht geladen werden.", "error-state");
+    }
+}
+
 function renderForumPostForm(group) {
     const container = document.getElementById("forumPostForm");
 
@@ -223,13 +294,48 @@ async function loadForumGroup() {
         }
 
         details.innerHTML = forumGroupDetailsHtml(data);
+        renderForumStoryForm(data);
         renderForumPostForm(data);
+        loadForumStories();
         posts.innerHTML = data.posts.length
             ? data.posts.map(forumGroupPostHtml).join("")
             : forumGroupStateHtml("Noch keine Beiträge", "Beginne die erste Geschichte dieser Gruppe.");
     } catch (error) {
         details.innerHTML = forumGroupStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
         posts.innerHTML = forumGroupStateHtml("Keine Beiträge verfügbar", "");
+    }
+}
+
+async function createForumStory(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const message = document.getElementById("forumStoryMessage");
+    const formData = new FormData(form);
+
+    message.textContent = "Geschichte wird gestartet...";
+    message.className = "status-message";
+
+    try {
+        const response = await fetch(`${FORUM_GROUP_API_BASE_URL}/groups/${encodeURIComponent(getForumGroupId())}/stories`, {
+            method: "POST",
+            headers: forumGroupHeaders(true),
+            body: JSON.stringify({
+                title: formData.get("title"),
+                description: formData.get("description")
+            })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            message.textContent = data.error || "Geschichte konnte nicht gestartet werden.";
+            message.className = "status-message error";
+            return;
+        }
+
+        window.location.href = `forum-story.html?id=${encodeURIComponent(data.story_id)}`;
+    } catch (error) {
+        message.textContent = "Server nicht erreichbar.";
+        message.className = "status-message error";
     }
 }
 
