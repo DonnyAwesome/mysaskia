@@ -394,6 +394,29 @@ a {
     font-weight: 700;
 }
 
+.auth-message {
+    margin-top: 18px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #eef2ff;
+    color: #1e3a8a;
+    line-height: 1.5;
+}
+
+.auth-message.error {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.auth-message.success {
+    background: #ecfdf5;
+    color: #166534;
+}
+
+.auth-message a {
+    overflow-wrap: anywhere;
+}
+
 /* ================================
    Theme: Light
 ================================ */

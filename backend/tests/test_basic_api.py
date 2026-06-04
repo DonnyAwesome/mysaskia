@@ -110,3 +110,56 @@ def test_normal_user_cannot_access_admin_items(client):
 
     assert response.status_code == 403
     assert response.json["error"] == "Keine Admin-Rechte"
+
+
+def test_password_reset_changes_password_and_invalidates_sessions(client):
+    old_token = register_and_login(client, email="reset@example.test")
+
+    request_response = client.post("/api/password-reset/request", json={
+        "email": "reset@example.test"
+    })
+
+    assert request_response.status_code == 200
+    assert request_response.json["reset_token"]
+
+    reset_token = request_response.json["reset_token"]
+    confirm_response = client.post("/api/password-reset/confirm", json={
+        "token": reset_token,
+        "new_password": "NeuesPasswort123"
+    })
+
+    assert confirm_response.status_code == 200
+
+    old_session_response = client.get(
+        "/api/favorites",
+        headers=auth_headers(old_token)
+    )
+    assert old_session_response.status_code == 401
+
+    old_login_response = client.post("/api/login", json={
+        "email": "reset@example.test",
+        "password": "TestPass123"
+    })
+    assert old_login_response.status_code == 401
+
+    new_login_response = client.post("/api/login", json={
+        "email": "reset@example.test",
+        "password": "NeuesPasswort123"
+    })
+    assert new_login_response.status_code == 200
+
+    reused_response = client.post("/api/password-reset/confirm", json={
+        "token": reset_token,
+        "new_password": "NochEinPasswort123"
+    })
+    assert reused_response.status_code == 400
+
+
+def test_password_reset_request_for_unknown_email_is_neutral(client):
+    response = client.post("/api/password-reset/request", json={
+        "email": "unbekannt@example.test"
+    })
+
+    assert response.status_code == 200
+    assert response.json["message"] == "Wenn die E-Mail existiert, wurde ein Reset vorbereitet."
+    assert "reset_token" not in response.json
