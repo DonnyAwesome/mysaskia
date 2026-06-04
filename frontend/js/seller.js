@@ -49,6 +49,23 @@ function formatSellerPrice(price) {
     }).format(numberPrice);
 }
 
+function sellerStateHtml(title, text, type = "") {
+    return `
+        <div class="empty-state ${type}">
+            <div class="empty-state-icon">${type === "loading-state" ? "…" : type === "error-state" ? "!" : "🐾"}</div>
+            <strong>${escapeSellerHtml(title)}</strong>
+            ${text ? `<p>${escapeSellerHtml(text)}</p>` : ""}
+        </div>
+    `;
+}
+
+function handleSellerImageError(image) {
+    const placeholder = document.createElement("div");
+    placeholder.className = "item-card-placeholder";
+    placeholder.textContent = "🐾";
+    image.replaceWith(placeholder);
+}
+
 function sellerProfileHtml(seller) {
     const name = `${seller.first_name} ${seller.last_name}`;
 
@@ -79,7 +96,7 @@ function sellerProfileHtml(seller) {
 
 function sellerItemCardHtml(item) {
     const imageHtml = item.image_url
-        ? `<img class="item-card-image" src="${escapeSellerHtml(item.image_url)}" alt="${escapeSellerHtml(item.title)}">`
+        ? `<img class="item-card-image" src="${escapeSellerHtml(item.image_url)}" alt="${escapeSellerHtml(item.title)}" onerror="handleSellerImageError(this)">`
         : `<div class="item-card-placeholder">🐾</div>`;
 
     return `
@@ -143,25 +160,25 @@ async function loadSellerReviews(sellerId) {
         return;
     }
 
-    reviewsList.innerHTML = `<div class="empty-state">Bewertungen werden geladen...</div>`;
+    reviewsList.innerHTML = sellerStateHtml("Bewertungen werden geladen", "Einen Moment bitte.", "loading-state");
 
     try {
         const response = await fetch(`${SELLER_API_BASE_URL}/sellers/${encodeURIComponent(sellerId)}/reviews`);
         const data = await response.json();
 
         if (!response.ok) {
-            reviewsList.innerHTML = `<div class="empty-state">${escapeSellerHtml(data.error || "Bewertungen konnten nicht geladen werden.")}</div>`;
+            reviewsList.innerHTML = sellerStateHtml("Bewertungen konnten nicht geladen werden", data.error || "Bitte versuche es erneut.", "error-state");
             return;
         }
 
         if (!data.reviews || data.reviews.length === 0) {
-            reviewsList.innerHTML = `<div class="empty-state">Noch keine Bewertungen</div>`;
+            reviewsList.innerHTML = sellerStateHtml("Noch keine Bewertungen", "Für diesen Verkäufer wurde noch keine Bewertung abgegeben.");
             return;
         }
 
         reviewsList.innerHTML = data.reviews.map(sellerReviewHtml).join("");
     } catch (error) {
-        reviewsList.innerHTML = `<div class="empty-state">Bewertungen konnten nicht geladen werden.</div>`;
+        reviewsList.innerHTML = sellerStateHtml("Bewertungen konnten nicht geladen werden", "Prüfe, ob das Backend erreichbar ist.", "error-state");
     }
 }
 
@@ -287,34 +304,34 @@ async function loadSellerProfile() {
     }
 
     if (!sellerId) {
-        profile.innerHTML = `<div class="empty-state">Keine Verkäufer-ID angegeben.</div>`;
-        itemsGrid.innerHTML = "";
+        profile.innerHTML = sellerStateHtml("Kein Verkäufer ausgewählt", "Öffne ein Verkäuferprofil über ein Inserat.", "error-state");
+        itemsGrid.innerHTML = sellerStateHtml("Keine Inserate verfügbar", "");
         return;
     }
 
-    itemsGrid.innerHTML = `<div class="empty-state">Inserate werden geladen...</div>`;
+    itemsGrid.innerHTML = sellerStateHtml("Inserate werden geladen", "Aktive Inserate werden abgerufen.", "loading-state");
 
     try {
         const response = await fetch(`${SELLER_API_BASE_URL}/sellers/${encodeURIComponent(sellerId)}`);
         const data = await response.json();
 
         if (!response.ok) {
-            profile.innerHTML = `<div class="empty-state">${escapeSellerHtml(data.error || data.message || "Verkäuferprofil konnte nicht geladen werden.")}</div>`;
-            itemsGrid.innerHTML = "";
+            profile.innerHTML = sellerStateHtml("Verkäuferprofil nicht verfügbar", data.error || data.message || "Verkäuferprofil konnte nicht geladen werden.", "error-state");
+            itemsGrid.innerHTML = sellerStateHtml("Keine Inserate verfügbar", "");
             return;
         }
 
         profile.innerHTML = sellerProfileHtml(data);
 
         if (!data.active_items || data.active_items.length === 0) {
-            itemsGrid.innerHTML = `<div class="empty-state">Dieser Verkäufer hat aktuell keine aktiven Inserate.</div>`;
+            itemsGrid.innerHTML = sellerStateHtml("Keine aktiven Inserate", "Dieser Verkäufer bietet aktuell keine Tiere an.");
             return;
         }
 
         itemsGrid.innerHTML = data.active_items.map(sellerItemCardHtml).join("");
     } catch (error) {
-        profile.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
-        itemsGrid.innerHTML = "";
+        profile.innerHTML = sellerStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
+        itemsGrid.innerHTML = sellerStateHtml("Keine Inserate verfügbar", "");
     }
 }
 

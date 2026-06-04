@@ -38,6 +38,16 @@ function formatAdminDate(value) {
     }).format(date);
 }
 
+function adminStateHtml(title, text, type = "") {
+    return `
+        <div class="empty-state ${type}">
+            <div class="empty-state-icon">${type === "loading-state" ? "…" : type === "error-state" ? "!" : "🛡️"}</div>
+            <strong>${escapeAdminHtml(title)}</strong>
+            ${text ? `<p>${escapeAdminHtml(text)}</p>` : ""}
+        </div>
+    `;
+}
+
 async function adminFetch(path, options = {}) {
     const token = getAdminToken();
 
@@ -82,7 +92,7 @@ function adminItemHtml(item) {
 
 function adminReviewHtml(review) {
     return `
-        <article class="review-card">
+        <article id="adminReview-${review.id}" class="review-card">
             <div class="review-card-header">
                 <strong>${escapeAdminHtml(review.reviewer_name)} bewertet ${escapeAdminHtml(review.seller_name)}</strong>
                 <span class="item-badge">${review.rating} / 5 Sterne</span>
@@ -103,18 +113,22 @@ async function loadAdminItems() {
         return;
     }
 
-    container.innerHTML = `<div class="empty-state">Inserate werden geladen...</div>`;
+    container.innerHTML = adminStateHtml("Inserate werden geladen", "Alle Inserate werden abgerufen.", "loading-state");
 
-    const { response, data } = await adminFetch("/admin/items");
+    try {
+        const { response, data } = await adminFetch("/admin/items");
 
-    if (!response.ok) {
-        container.innerHTML = `<div class="empty-state">${escapeAdminHtml(data.error || "Inserate konnten nicht geladen werden.")}</div>`;
-        return;
+        if (!response.ok) {
+            container.innerHTML = adminStateHtml("Inserate konnten nicht geladen werden", data.error || "Bitte versuche es erneut.", "error-state");
+            return;
+        }
+
+        container.innerHTML = data.items.length
+            ? data.items.map(adminItemHtml).join("")
+            : adminStateHtml("Keine Inserate vorhanden", "Aktuell gibt es nichts zu moderieren.");
+    } catch (error) {
+        container.innerHTML = adminStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
     }
-
-    container.innerHTML = data.items.length
-        ? data.items.map(adminItemHtml).join("")
-        : `<div class="empty-state">Keine Inserate vorhanden.</div>`;
 }
 
 async function loadAdminReviews() {
@@ -124,18 +138,22 @@ async function loadAdminReviews() {
         return;
     }
 
-    container.innerHTML = `<div class="empty-state">Bewertungen werden geladen...</div>`;
+    container.innerHTML = adminStateHtml("Bewertungen werden geladen", "Alle Verkäuferbewertungen werden abgerufen.", "loading-state");
 
-    const { response, data } = await adminFetch("/admin/reviews");
+    try {
+        const { response, data } = await adminFetch("/admin/reviews");
 
-    if (!response.ok) {
-        container.innerHTML = `<div class="empty-state">${escapeAdminHtml(data.error || "Bewertungen konnten nicht geladen werden.")}</div>`;
-        return;
+        if (!response.ok) {
+            container.innerHTML = adminStateHtml("Bewertungen konnten nicht geladen werden", data.error || "Bitte versuche es erneut.", "error-state");
+            return;
+        }
+
+        container.innerHTML = data.reviews.length
+            ? data.reviews.map(adminReviewHtml).join("")
+            : adminStateHtml("Keine Bewertungen vorhanden", "Aktuell gibt es nichts zu moderieren.");
+    } catch (error) {
+        container.innerHTML = adminStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
     }
-
-    container.innerHTML = data.reviews.length
-        ? data.reviews.map(adminReviewHtml).join("")
-        : `<div class="empty-state">Keine Bewertungen vorhanden.</div>`;
 }
 
 async function updateAdminItemStatus(itemId) {
@@ -146,23 +164,30 @@ async function updateAdminItemStatus(itemId) {
         return;
     }
 
-    const { response, data } = await adminFetch(`/admin/items/${itemId}/status`, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            status: select.value
-        })
-    });
+    try {
+        const { response, data } = await adminFetch(`/admin/items/${itemId}/status`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                status: select.value
+            })
+        });
 
-    if (message) {
-        message.textContent = data.error || data.message || "";
-        message.className = `status-message ${response.ok ? "success" : "error"}`;
-    }
+        if (message) {
+            message.textContent = data.error || data.message || "";
+            message.className = `status-message ${response.ok ? "success" : "error"}`;
+        }
 
-    if (response.ok) {
-        loadAdminItems();
+        if (response.ok) {
+            loadAdminItems();
+        }
+    } catch (error) {
+        if (message) {
+            message.textContent = "Server nicht erreichbar.";
+            message.className = "status-message error";
+        }
     }
 }
 
@@ -171,16 +196,30 @@ async function deleteAdminReview(reviewId) {
         return;
     }
 
-    const { response, data } = await adminFetch(`/admin/reviews/${reviewId}`, {
-        method: "DELETE"
-    });
+    try {
+        const { response, data } = await adminFetch(`/admin/reviews/${reviewId}`, {
+            method: "DELETE"
+        });
 
-    if (!response.ok) {
-        alert(data.error || "Bewertung konnte nicht gelöscht werden.");
-        return;
+        if (!response.ok) {
+            alert(data.error || "Bewertung konnte nicht gelöscht werden.");
+            return;
+        }
+
+        const review = document.getElementById(`adminReview-${reviewId}`);
+
+        if (review) {
+            review.remove();
+        }
+
+        const container = document.getElementById("adminReviewsList");
+
+        if (container && !container.querySelector(".review-card")) {
+            container.innerHTML = adminStateHtml("Keine Bewertungen vorhanden", "Aktuell gibt es nichts zu moderieren.");
+        }
+    } catch (error) {
+        alert("Server nicht erreichbar.");
     }
-
-    loadAdminReviews();
 }
 
 async function setupAdminPage() {
@@ -202,8 +241,12 @@ async function setupAdminPage() {
 
         if (!response.ok || !(user.is_admin === true || user.is_admin === 1)) {
             if (message) {
-                message.textContent = "Keine Admin-Rechte.";
-                message.className = "status-message error";
+                message.innerHTML = adminStateHtml(
+                    "Keine Admin-Rechte",
+                    "Diese Seite ist nur für Administratoren verfügbar.",
+                    "error-state"
+                );
+                message.className = "status-message";
             }
             document.getElementById("adminItemsSection").style.display = "none";
             document.getElementById("adminReviewsSection").style.display = "none";
@@ -216,8 +259,12 @@ async function setupAdminPage() {
         ]);
     } catch (error) {
         if (message) {
-            message.textContent = "Server nicht erreichbar. Läuft dein Flask-Backend?";
-            message.className = "status-message error";
+            message.innerHTML = adminStateHtml(
+                "Server nicht erreichbar",
+                "Prüfe, ob das Flask-Backend läuft.",
+                "error-state"
+            );
+            message.className = "status-message";
         }
     }
 }

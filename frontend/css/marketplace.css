@@ -481,6 +481,69 @@
     border: 1px solid var(--market-border);
 }
 
+.empty-state strong {
+    display: block;
+    color: var(--market-text);
+    font-size: 1.05rem;
+}
+
+.empty-state p {
+    margin: 8px 0 0;
+    line-height: 1.5;
+}
+
+.empty-state-icon {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--market-badge-bg);
+    color: var(--market-badge-text);
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+.empty-state-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.loading-state .empty-state-icon {
+    animation: loading-pulse 1s ease-in-out infinite alternate;
+}
+
+.error-state {
+    border-color: rgba(192, 57, 43, 0.35);
+}
+
+.error-state .empty-state-icon {
+    background: rgba(192, 57, 43, 0.14);
+    color: #c0392b;
+}
+
+button:disabled,
+.btn:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+@keyframes loading-pulse {
+    from {
+        opacity: 0.45;
+        transform: scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 .btn.danger {
     background: #c0392b;
     color: #ffffff;

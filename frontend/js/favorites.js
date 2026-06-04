@@ -31,13 +31,31 @@ function formatFavoritePrice(price) {
     }).format(numberPrice);
 }
 
+function favoriteStateHtml(title, text, type = "", actionHtml = "") {
+    return `
+        <div class="empty-state ${type}">
+            <div class="empty-state-icon">${type === "loading-state" ? "…" : type === "error-state" ? "!" : "♥"}</div>
+            <strong>${escapeFavoriteHtml(title)}</strong>
+            ${text ? `<p>${escapeFavoriteHtml(text)}</p>` : ""}
+            ${actionHtml ? `<div class="empty-state-actions">${actionHtml}</div>` : ""}
+        </div>
+    `;
+}
+
+function handleFavoriteImageError(image) {
+    const placeholder = document.createElement("div");
+    placeholder.className = "item-card-placeholder";
+    placeholder.textContent = "🐾";
+    image.replaceWith(placeholder);
+}
+
 function favoriteCardHtml(item) {
     const imageHtml = item.image_url
-        ? `<img class="item-card-image" src="${escapeFavoriteHtml(item.image_url)}" alt="${escapeFavoriteHtml(item.title)}">`
+        ? `<img class="item-card-image" src="${escapeFavoriteHtml(item.image_url)}" alt="${escapeFavoriteHtml(item.title)}" onerror="handleFavoriteImageError(this)">`
         : `<div class="item-card-placeholder">🐾</div>`;
 
     return `
-        <article class="item-card">
+        <article id="favoriteItem-${item.id}" class="item-card">
             ${imageHtml}
             <div class="item-card-body">
                 <h3>${escapeFavoriteHtml(item.title)}</h3>
@@ -74,7 +92,7 @@ async function loadFavorites() {
         return;
     }
 
-    container.innerHTML = `<div class="empty-state">Merkliste wird geladen...</div>`;
+    container.innerHTML = favoriteStateHtml("Merkliste wird geladen", "Gemerkte Inserate werden abgerufen.", "loading-state");
 
     try {
         const response = await fetch(`${FAVORITES_API_BASE_URL}/favorites`, {
@@ -85,18 +103,23 @@ async function loadFavorites() {
         const data = await response.json();
 
         if (!response.ok) {
-            container.innerHTML = `<div class="empty-state">${escapeFavoriteHtml(data.error || data.message || "Merkliste konnte nicht geladen werden.")}</div>`;
+            container.innerHTML = favoriteStateHtml("Merkliste konnte nicht geladen werden", data.error || data.message || "Bitte versuche es erneut.", "error-state");
             return;
         }
 
         if (!data.items || data.items.length === 0) {
-            container.innerHTML = `<div class="empty-state">Deine Merkliste ist noch leer.</div>`;
+            container.innerHTML = favoriteStateHtml(
+                "Deine Merkliste ist noch leer",
+                "Merke interessante Inserate auf deren Detailseite.",
+                "",
+                `<a class="btn" href="marketplace.html">Tiere entdecken</a>`
+            );
             return;
         }
 
         container.innerHTML = data.items.map(favoriteCardHtml).join("");
     } catch (error) {
-        container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
+        container.innerHTML = favoriteStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
     }
 }
 
@@ -126,7 +149,22 @@ async function removeFavorite(itemId) {
             return;
         }
 
-        loadFavorites();
+        const card = document.getElementById(`favoriteItem-${itemId}`);
+
+        if (card) {
+            card.remove();
+        }
+
+        const container = document.getElementById("favoritesGrid");
+
+        if (container && !container.querySelector(".item-card")) {
+            container.innerHTML = favoriteStateHtml(
+                "Deine Merkliste ist noch leer",
+                "Merke interessante Inserate auf deren Detailseite.",
+                "",
+                `<a class="btn" href="marketplace.html">Tiere entdecken</a>`
+            );
+        }
     } catch (error) {
         alert("Server nicht erreichbar.");
     }

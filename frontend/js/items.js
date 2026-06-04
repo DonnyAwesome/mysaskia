@@ -42,6 +42,25 @@ function escapeHtml(value) {
         .replaceAll("'", "&#039;");
 }
 
+function itemStateHtml(title, text, type = "", actionHtml = "") {
+    return `
+        <div class="empty-state ${type}">
+            <div class="empty-state-icon">${type === "loading-state" ? "…" : type === "error-state" ? "!" : "🐾"}</div>
+            <strong>${escapeHtml(title)}</strong>
+            ${text ? `<p>${escapeHtml(text)}</p>` : ""}
+            ${actionHtml ? `<div class="empty-state-actions">${actionHtml}</div>` : ""}
+        </div>
+    `;
+}
+
+function handleItemImageError(image, detail = false) {
+    const placeholder = document.createElement("div");
+    placeholder.className = detail ? "item-detail-placeholder" : "item-card-placeholder";
+    placeholder.textContent = "🐾";
+    placeholder.setAttribute("aria-label", "Kein Bild verfügbar");
+    image.replaceWith(placeholder);
+}
+
 let marketplaceItems = [];
 
 function marketplaceFiltersHtml() {
@@ -171,7 +190,12 @@ function renderMarketplaceItems() {
     const filterInfoHtml = marketplaceFilterInfoHtml(filters, visibleItems.length);
 
     if (visibleItems.length === 0) {
-        container.innerHTML = `${filterInfoHtml}<div class="empty-state">Keine Tiere für diese Filter gefunden.</div>`;
+        container.innerHTML = `${filterInfoHtml}${itemStateHtml(
+            "Keine passenden Inserate",
+            "Passe die Filter an oder setze sie zurück.",
+            "",
+            `<button class="btn secondary" type="button" onclick="document.getElementById('resetMarketplaceFilters').click()">Filter zurücksetzen</button>`
+        )}`;
         return;
     }
 
@@ -223,7 +247,7 @@ function setupMarketplaceFilters() {
 
 function itemImageHtml(item) {
     if (item.image_url) {
-        return `<img class="item-card-image" src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}">`;
+        return `<img class="item-card-image" src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" onerror="handleItemImageError(this)">`;
     }
 
     return `<div class="item-card-placeholder">🐾</div>`;
@@ -302,7 +326,7 @@ function getItemDetailId() {
 
 function itemDetailImageHtml(item) {
     if (item.image_url) {
-        return `<img class="item-detail-image" src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}">`;
+        return `<img class="item-detail-image" src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" onerror="handleItemImageError(this, true)">`;
     }
 
     return `<div class="item-detail-placeholder">🐾</div>`;
@@ -541,11 +565,16 @@ async function loadItemDetail() {
     const itemId = getItemDetailId();
 
     if (!itemId) {
-        container.innerHTML = `<div class="empty-state">Kein Inserat ausgewählt.</div>`;
+        container.innerHTML = itemStateHtml(
+            "Kein Inserat ausgewählt",
+            "Öffne ein Inserat über den Marktplatz.",
+            "error-state",
+            `<a class="btn secondary" href="marketplace.html">Zum Marktplatz</a>`
+        );
         return;
     }
 
-    container.innerHTML = `<div class="empty-state">Inserat wird geladen...</div>`;
+    container.innerHTML = itemStateHtml("Inserat wird geladen", "Einen Moment bitte.", "loading-state");
 
     try {
         const token = getAuthToken();
@@ -557,14 +586,19 @@ async function loadItemDetail() {
         const data = await response.json();
 
         if (!response.ok) {
-            container.innerHTML = `<div class="empty-state">Fehler: ${escapeHtml(data.error || data.message || "Inserat konnte nicht geladen werden.")}</div>`;
+            container.innerHTML = itemStateHtml(
+                "Inserat nicht verfügbar",
+                data.error || data.message || "Inserat konnte nicht geladen werden.",
+                "error-state",
+                `<a class="btn secondary" href="marketplace.html">Zum Marktplatz</a>`
+            );
             return;
         }
 
         const item = data.item;
 
         if (!item) {
-            container.innerHTML = `<div class="empty-state">Inserat nicht gefunden.</div>`;
+            container.innerHTML = itemStateHtml("Inserat nicht gefunden", "Das Inserat existiert nicht oder ist nicht öffentlich.", "error-state");
             return;
         }
 
@@ -572,13 +606,13 @@ async function loadItemDetail() {
         setupInterestButton(item);
         setupFavoriteButton(item);
     } catch (error) {
-        container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
+        container.innerHTML = itemStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
     }
 }
 
 function orderImageHtml(order) {
     if (order.image_url) {
-        return `<img class="item-card-image" src="${escapeHtml(order.image_url)}" alt="${escapeHtml(order.item_title)}">`;
+        return `<img class="item-card-image" src="${escapeHtml(order.image_url)}" alt="${escapeHtml(order.item_title)}" onerror="handleItemImageError(this)">`;
     }
 
     return `<div class="item-card-placeholder">🐾</div>`;
@@ -752,27 +786,32 @@ async function loadMarketplaceItems() {
         return;
     }
 
-    container.innerHTML = `<div class="empty-state">Tiere werden geladen...</div>`;
+    container.innerHTML = itemStateHtml("Marktplatz wird geladen", "Aktive Inserate werden abgerufen.", "loading-state");
 
     try {
         const response = await fetch(`${API_BASE_URL}/items`);
         const data = await response.json();
 
         if (!response.ok) {
-            container.innerHTML = `<div class="empty-state">Fehler: ${escapeHtml(data.error || data.message || "Tiere konnten nicht geladen werden.")}</div>`;
+            container.innerHTML = itemStateHtml("Marktplatz konnte nicht geladen werden", data.error || data.message || "Bitte versuche es erneut.", "error-state");
             return;
         }
 
         if (!data.items || data.items.length === 0) {
             marketplaceItems = [];
-            container.innerHTML = `<div class="empty-state">Noch keine Tiere im Marktplatz.</div>`;
+            container.innerHTML = itemStateHtml(
+                "Noch keine aktiven Inserate",
+                "Sei der Erste und stelle ein Tier ein.",
+                "",
+                `<a class="btn" href="sell.html">Tier inserieren</a>`
+            );
             return;
         }
 
         marketplaceItems = data.items;
         renderMarketplaceItems();
     } catch (error) {
-        container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
+        container.innerHTML = itemStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
     }
 }
 
@@ -787,7 +826,7 @@ async function loadMyItems() {
         return;
     }
 
-    container.innerHTML = `<div class="empty-state">Deine Inserate werden geladen...</div>`;
+    container.innerHTML = itemStateHtml("Deine Inserate werden geladen", "Einen Moment bitte.", "loading-state");
 
     try {
         const response = await fetch(`${API_BASE_URL}/my_items`, {
@@ -799,18 +838,23 @@ async function loadMyItems() {
         const data = await response.json();
 
         if (!response.ok) {
-            container.innerHTML = `<div class="empty-state">Fehler: ${escapeHtml(data.error || data.message || "Inserate konnten nicht geladen werden.")}</div>`;
+            container.innerHTML = itemStateHtml("Inserate konnten nicht geladen werden", data.error || data.message || "Bitte versuche es erneut.", "error-state");
             return;
         }
 
         if (!data.items || data.items.length === 0) {
-            container.innerHTML = `<div class="empty-state">Du hast noch keine Tiere inseriert.</div>`;
+            container.innerHTML = itemStateHtml(
+                "Du hast noch keine Inserate",
+                "Erstelle dein erstes Tier-Inserat.",
+                "",
+                `<a class="btn" href="sell.html">Neues Tier inserieren</a>`
+            );
             return;
         }
 
         container.innerHTML = data.items.map((item) => itemCardHtml(item, true)).join("");
     } catch (error) {
-        container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
+        container.innerHTML = itemStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
     }
 }
 
