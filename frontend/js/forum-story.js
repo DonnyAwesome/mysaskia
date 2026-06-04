@@ -114,8 +114,47 @@ function forumStoryPostHtml(post) {
                 <time>${escapeForumStoryHtml(formatForumStoryDate(post.created_at))}</time>
             </div>
             <p>${escapeForumStoryHtml(post.content)}</p>
+            <div class="forum-post-actions">
+                ${forumStoryLikeButtonHtml(post)}
+            </div>
         </article>
     `;
+}
+
+function forumStoryLikeButtonHtml(post) {
+    const disabled = getForumStoryToken() ? "" : "disabled title=\"Melde dich an, um Beiträge zu liken.\"";
+    const activeClass = post.liked_by_current_user ? " liked" : "";
+
+    return `
+        <button class="forum-like-button${activeClass}" type="button" data-liked="${post.liked_by_current_user}" onclick="toggleForumStoryLike(${post.id}, this)" ${disabled}>
+            <span>♥</span>
+            <span class="forum-like-count">${post.likes_count}</span>
+        </button>
+    `;
+}
+
+async function toggleForumStoryLike(postId, button) {
+    const liked = button.dataset.liked === "true";
+
+    try {
+        const response = await fetch(`${FORUM_STORY_API_BASE_URL}/posts/${postId}/reactions`, {
+            method: liked ? "DELETE" : "POST",
+            headers: forumStoryHeaders(true),
+            body: JSON.stringify({reaction: "like"})
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error || "Reaktion konnte nicht gespeichert werden.");
+            return;
+        }
+
+        button.dataset.liked = String(data.liked_by_current_user);
+        button.classList.toggle("liked", data.liked_by_current_user);
+        button.querySelector(".forum-like-count").textContent = data.likes_count;
+    } catch (error) {
+        alert("Server nicht erreichbar.");
+    }
 }
 
 function renderForumStoryPostForm(story) {

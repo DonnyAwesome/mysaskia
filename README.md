@@ -21,6 +21,7 @@ Die Anwendung läuft lokal ohne echte Zahlung. Nutzer können Tier-Inserate entd
 - Admin-Bereich zur Account- und Ticketverwaltung
 - Dashboard-Zahlen für Nutzer und Admins
 - Lokale Demo-Inserate mit eigenen SVG-Bildern
+- Rollenspiel-Forum „Tiergeschichten“ mit Gruppen, Geschichten, Tierrollen und Likes
 - Light- und Dark-Theme
 
 ## Technik
@@ -48,6 +49,7 @@ mysaskia/
 │   ├── accounts.py            # Admin-Accountverwaltung
 │   ├── dashboard.py           # Dashboard-Zahlen
 │   ├── seed_demo_items.py     # Demo-Account, Inserate und SVG-Bilder
+│   ├── seed_demo_forum.py     # Demo-Forum mit Usern, Tieren und Geschichten
 │   ├── utils.py               # Authentifizierungs-Helfer
 │   └── uploads/items/         # Demo-SVGs und lokale Uploads
 ├── frontend/
@@ -120,6 +122,13 @@ cd ~/mysaskia/backend
 python3 seed_demo_items.py
 ```
 
+Das Forum-Seed erzeugt Demo-User, Tierrollen, Gruppen, Geschichten, Beiträge und Likes. Es ist ebenfalls mehrfach ausführbar.
+
+```bash
+cd ~/mysaskia/backend
+python3 seed_demo_forum.py
+```
+
 ## Demo-Accounts
 
 Diese Accounts sind ausschließlich für das lokale Lernprojekt gedacht:
@@ -128,6 +137,10 @@ Diese Accounts sind ausschließlich für das lokale Lernprojekt gedacht:
 |---|---|---|
 | Admin | `admin@local.test` | `Admin` |
 | Demo-Verkäufer | `demo@local.test` | `Demo123` |
+| Tiergeschichten | `mia@local.test` | `Demo123` |
+| Tiergeschichten | `tom@local.test` | `Demo123` |
+| Tiergeschichten | `lina@local.test` | `Demo123` |
+| Tiergeschichten | `ben@local.test` | `Demo123` |
 
 ## Wichtige URLs
 
@@ -135,6 +148,7 @@ Diese Accounts sind ausschließlich für das lokale Lernprojekt gedacht:
 - Marktplatz: `http://localhost/marketplace.html`
 - Dashboard: `http://localhost/dashboard.html`
 - Merkliste: `http://localhost/favorites.html`
+- Tiergeschichten: `http://localhost/forum.html`
 
 ## Wichtige API-Bereiche
 
@@ -149,6 +163,7 @@ Basis-URL: `http://127.0.0.1:5000/api`
 - `/tickets`, `/my_tickets`, `/admin/tickets` – Support
 - `/dashboard/summary` – Dashboard-Zahlen
 - `/accounts`, `/delete_account` – Accountverwaltung
+- `/forum/groups`, `/forum/stories`, `/forum/feed` – Rollenspiel-Forum
 
 Geschützte Endpunkte erwarten einen Authorization-Header:
 

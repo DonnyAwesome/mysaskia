@@ -1,4 +1,6 @@
 const FORUM_API_BASE_URL = "http://127.0.0.1:5000/api/forum";
+let forumGroupsData = [];
+let forumFeedData = [];
 
 function getForumToken() {
     return (
@@ -98,6 +100,18 @@ function forumGroupCardHtml(group) {
     `;
 }
 
+function forumLikeButtonHtml(post) {
+    const disabled = getForumToken() ? "" : "disabled title=\"Melde dich an, um Beiträge zu liken.\"";
+    const activeClass = post.liked_by_current_user ? " liked" : "";
+
+    return `
+        <button class="forum-like-button${activeClass}" type="button" data-post-id="${post.post_id}" data-liked="${post.liked_by_current_user}" onclick="toggleForumLike(${post.post_id}, this)" ${disabled}>
+            <span>♥</span>
+            <span class="forum-like-count">${post.likes_count}</span>
+        </button>
+    `;
+}
+
 function forumFeedPostHtml(post) {
     const author = post.character_name
         ? `
@@ -121,7 +135,7 @@ function forumFeedPostHtml(post) {
     const linkLabel = post.story_id ? "Zur Geschichte" : "Zur Gruppe";
 
     return `
-        <article class="forum-post-card">
+        <article class="forum-post-card forum-social-card">
             <div class="forum-post-header">
                 <div class="forum-post-author">
                     ${imageUrl ? `<img class="forum-character-avatar" src="${escapeForumHtml(imageUrl)}" alt="" onerror="this.remove()">` : ""}
@@ -133,9 +147,75 @@ function forumFeedPostHtml(post) {
                 <time>${escapeForumHtml(formatForumDate(post.created_at))}</time>
             </div>
             <p>${escapeForumHtml(post.content)}</p>
-            <a class="forum-post-link" href="${targetUrl}">${linkLabel}</a>
+            <div class="forum-post-actions">
+                ${forumLikeButtonHtml(post)}
+                <a class="forum-post-link" href="${targetUrl}">${linkLabel}</a>
+            </div>
         </article>
     `;
+}
+
+async function toggleForumLike(postId, button) {
+    const liked = button.dataset.liked === "true";
+
+    try {
+        const response = await fetch(`${FORUM_API_BASE_URL}/posts/${postId}/reactions`, {
+            method: liked ? "DELETE" : "POST",
+            headers: forumHeaders(true),
+            body: JSON.stringify({reaction: "like"})
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.error || "Reaktion konnte nicht gespeichert werden.");
+            return;
+        }
+
+        button.dataset.liked = String(data.liked_by_current_user);
+        button.classList.toggle("liked", data.liked_by_current_user);
+        button.querySelector(".forum-like-count").textContent = data.likes_count;
+    } catch (error) {
+        alert("Server nicht erreichbar.");
+    }
+}
+
+function currentForumFilters() {
+    return {
+        category: document.getElementById("forumCategoryFilter")?.value || "",
+        search: (document.getElementById("forumSearch")?.value || "").trim().toLowerCase()
+    };
+}
+
+function matchesForumSearch(values, search) {
+    return !search || values.some((value) => String(value || "").toLowerCase().includes(search));
+}
+
+function renderFilteredForumContent() {
+    const groupsContainer = document.getElementById("forumGroups");
+    const feedContainer = document.getElementById("forumFeed");
+    const filters = currentForumFilters();
+    const groups = forumGroupsData.filter((group) => (
+        (!filters.category || group.category === filters.category) &&
+        matchesForumSearch([group.title, group.description, group.category, group.owner_name], filters.search)
+    ));
+    const posts = forumFeedData.filter((post) => (
+        (!filters.category || post.group_category === filters.category) &&
+        matchesForumSearch([
+            post.group_title,
+            post.story_title,
+            post.user_name,
+            post.character_name,
+            post.character_species,
+            post.content
+        ], filters.search)
+    ));
+
+    groupsContainer.innerHTML = groups.length
+        ? groups.map(forumGroupCardHtml).join("")
+        : forumStateHtml("Keine passenden Gruppen", "Passe Suche oder Kategorie an.");
+    feedContainer.innerHTML = posts.length
+        ? posts.map(forumFeedPostHtml).join("")
+        : forumStateHtml("Keine passenden Beiträge", "Passe Suche oder Kategorie an.");
 }
 
 function renderForumCreateGroup() {
@@ -233,9 +313,8 @@ async function loadForumGroups() {
             return;
         }
 
-        container.innerHTML = data.groups.length
-            ? data.groups.map(forumGroupCardHtml).join("")
-            : forumStateHtml("Noch keine Gruppen", "Erstelle die erste Gruppe für eine neue Tiergeschichte.");
+        forumGroupsData = data.groups;
+        renderFilteredForumContent();
     } catch (error) {
         container.innerHTML = forumStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
     }
@@ -270,7 +349,9 @@ async function loadForumFeed() {
     container.innerHTML = forumStateHtml("Geschichten werden geladen", "Einen Moment bitte.", "loading-state");
 
     try {
-        const response = await fetch(`${FORUM_API_BASE_URL}/feed`);
+        const response = await fetch(`${FORUM_API_BASE_URL}/feed`, {
+            headers: forumHeaders()
+        });
         const data = await response.json();
 
         if (!response.ok) {
@@ -278,15 +359,16 @@ async function loadForumFeed() {
             return;
         }
 
-        container.innerHTML = data.posts.length
-            ? data.posts.map(forumFeedPostHtml).join("")
-            : forumStateHtml("Noch keine Geschichten", "Tritt einer Gruppe bei und beginne die erste Geschichte.");
+        forumFeedData = data.posts;
+        renderFilteredForumContent();
     } catch (error) {
         container.innerHTML = forumStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
     }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("forumSearch")?.addEventListener("input", renderFilteredForumContent);
+    document.getElementById("forumCategoryFilter")?.addEventListener("change", renderFilteredForumContent);
     renderForumCreateGroup();
     loadForumGroups();
     loadForumFeed();

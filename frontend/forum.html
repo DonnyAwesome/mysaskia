@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/shop-nav.css?v=1">
     <link rel="stylesheet" href="css/style.css?v=9">
     <link rel="stylesheet" href="css/marketplace.css?v=7">
-    <link rel="stylesheet" href="css/forum.css?v=3">
+    <link rel="stylesheet" href="css/forum.css?v=4">
 </head>
 <body data-page="forum">
     <nav class="navbar">
@@ -22,6 +22,27 @@
         <section class="marketplace-hero forum-hero">
             <h1>Tiergeschichten</h1>
             <p>Erstelle Gruppen, tritt Rollenspielen bei und schreibe gemeinsam Geschichten aus Sicht deiner Tiere.</p>
+        </section>
+
+        <section class="marketplace-container">
+            <div class="forum-discovery-tools">
+                <div>
+                    <label for="forumSearch">Tiergeschichten durchsuchen</label>
+                    <input id="forumSearch" type="search" placeholder="Gruppe, Geschichte, Tierrolle oder Beitrag">
+                </div>
+                <div>
+                    <label for="forumCategoryFilter">Kategorie</label>
+                    <select id="forumCategoryFilter">
+                        <option value="">Alle</option>
+                        <option value="Abenteuer">Abenteuer</option>
+                        <option value="Familie">Familie</option>
+                        <option value="Freundschaft">Freundschaft</option>
+                        <option value="Wald">Wald</option>
+                        <option value="Stadt">Stadt</option>
+                        <option value="Fantasie">Fantasie</option>
+                    </select>
+                </div>
+            </div>
         </section>
 
         <section class="marketplace-container">
@@ -43,6 +64,6 @@
     <script src="js/i18n.js?v=1"></script>
     <script src="js/site.js?v=1"></script>
     <script src="js/shop-nav.js?v=6"></script>
-    <script src="js/forum.js?v=3"></script>
+    <script src="js/forum.js?v=4"></script>
 </body>
 </html>

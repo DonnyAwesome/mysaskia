@@ -30,13 +30,16 @@ def post_to_dict(post, include_group=False):
         "character_image_path": post["character_image_path"],
         "user_name": post["user_name"],
         "content": post["content"],
-        "created_at": post["created_at"]
+        "created_at": post["created_at"],
+        "likes_count": post["likes_count"],
+        "liked_by_current_user": bool(post["liked_by_current_user"])
     }
 
     if include_group:
         result["post_id"] = post["post_id"]
         result["group_id"] = post["group_id"]
         result["group_title"] = post["group_title"]
+        result["group_category"] = post["group_category"]
         result["story_id"] = post["story_id"]
         result["story_title"] = post["story_title"]
     else:
@@ -207,14 +210,25 @@ def get_group(group_id):
             characters.image_path AS character_image_path,
             users.first_name || ' ' || users.last_name AS user_name,
             forum_posts.content,
-            forum_posts.created_at
+            forum_posts.created_at,
+            (
+                SELECT COUNT(*) FROM forum_post_reactions
+                WHERE forum_post_reactions.post_id = forum_posts.id
+                  AND forum_post_reactions.reaction = 'like'
+            ) AS likes_count,
+            EXISTS (
+                SELECT 1 FROM forum_post_reactions
+                WHERE forum_post_reactions.post_id = forum_posts.id
+                  AND forum_post_reactions.user_id = ?
+                  AND forum_post_reactions.reaction = 'like'
+            ) AS liked_by_current_user
         FROM forum_posts
         JOIN users ON forum_posts.user_id = users.id
         LEFT JOIN items AS characters ON forum_posts.character_item_id = characters.id
         WHERE forum_posts.group_id = ? AND forum_posts.story_id IS NULL
         ORDER BY forum_posts.created_at DESC, forum_posts.id DESC
         LIMIT 100
-    """, (group_id,)).fetchall()
+    """, (current_user_id, group_id)).fetchall()
     conn.close()
 
     result = group_to_dict(group)
@@ -467,14 +481,25 @@ def get_story(story_id):
             characters.image_path AS character_image_path,
             users.first_name || ' ' || users.last_name AS user_name,
             forum_posts.content,
-            forum_posts.created_at
+            forum_posts.created_at,
+            (
+                SELECT COUNT(*) FROM forum_post_reactions
+                WHERE forum_post_reactions.post_id = forum_posts.id
+                  AND forum_post_reactions.reaction = 'like'
+            ) AS likes_count,
+            EXISTS (
+                SELECT 1 FROM forum_post_reactions
+                WHERE forum_post_reactions.post_id = forum_posts.id
+                  AND forum_post_reactions.user_id = ?
+                  AND forum_post_reactions.reaction = 'like'
+            ) AS liked_by_current_user
         FROM forum_posts
         JOIN users ON forum_posts.user_id = users.id
         LEFT JOIN items AS characters ON forum_posts.character_item_id = characters.id
         WHERE forum_posts.story_id = ?
         ORDER BY forum_posts.created_at ASC, forum_posts.id ASC
         LIMIT 200
-    """, (story_id,)).fetchall()
+    """, (current_user_id, story_id)).fetchall()
     conn.close()
 
     return jsonify({
@@ -585,6 +610,70 @@ def update_story_status(story_id):
     return jsonify({"message": "Status wurde aktualisiert", "status": status})
 
 
+@forum_bp.route("/posts/<int:post_id>/reactions", methods=["POST"])
+def add_post_reaction(post_id):
+    current_user = get_current_user()
+
+    if not current_user:
+        return jsonify({"error": "Nicht eingeloggt"}), 401
+
+    reaction = str((request.get_json() or {}).get("reaction") or "").strip()
+    if reaction != "like":
+        return jsonify({"error": "Ungültige Reaktion"}), 400
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    if not cursor.execute("SELECT id FROM forum_posts WHERE id = ?", (post_id,)).fetchone():
+        conn.close()
+        return jsonify({"error": "Beitrag nicht gefunden"}), 404
+
+    cursor.execute("""
+        INSERT OR IGNORE INTO forum_post_reactions (post_id, user_id, reaction)
+        VALUES (?, ?, ?)
+    """, (post_id, current_user["id"], reaction))
+    conn.commit()
+    likes_count = cursor.execute("""
+        SELECT COUNT(*) AS count FROM forum_post_reactions
+        WHERE post_id = ? AND reaction = 'like'
+    """, (post_id,)).fetchone()["count"]
+    conn.close()
+
+    return jsonify({"reaction": reaction, "likes_count": likes_count, "liked_by_current_user": True})
+
+
+@forum_bp.route("/posts/<int:post_id>/reactions", methods=["DELETE"])
+def remove_post_reaction(post_id):
+    current_user = get_current_user()
+
+    if not current_user:
+        return jsonify({"error": "Nicht eingeloggt"}), 401
+
+    reaction = str((request.get_json() or {}).get("reaction") or "").strip()
+    if reaction != "like":
+        return jsonify({"error": "Ungültige Reaktion"}), 400
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    if not cursor.execute("SELECT id FROM forum_posts WHERE id = ?", (post_id,)).fetchone():
+        conn.close()
+        return jsonify({"error": "Beitrag nicht gefunden"}), 404
+
+    cursor.execute("""
+        DELETE FROM forum_post_reactions
+        WHERE post_id = ? AND user_id = ? AND reaction = ?
+    """, (post_id, current_user["id"], reaction))
+    conn.commit()
+    likes_count = cursor.execute("""
+        SELECT COUNT(*) AS count FROM forum_post_reactions
+        WHERE post_id = ? AND reaction = 'like'
+    """, (post_id,)).fetchone()["count"]
+    conn.close()
+
+    return jsonify({"reaction": reaction, "likes_count": likes_count, "liked_by_current_user": False})
+
+
 @forum_bp.route("/my-characters", methods=["GET"])
 def get_my_characters():
     current_user = get_current_user()
@@ -619,12 +708,15 @@ def get_my_characters():
 
 @forum_bp.route("/feed", methods=["GET"])
 def get_feed():
+    current_user = get_current_user()
+    current_user_id = current_user["id"] if current_user else None
     conn = get_db()
     posts = conn.execute("""
         SELECT
             forum_posts.id AS post_id,
             forum_groups.id AS group_id,
             forum_groups.title AS group_title,
+            forum_groups.category AS group_category,
             forum_posts.story_id,
             forum_stories.title AS story_title,
             forum_posts.character_item_id,
@@ -633,7 +725,18 @@ def get_feed():
             characters.image_path AS character_image_path,
             users.first_name || ' ' || users.last_name AS user_name,
             forum_posts.content,
-            forum_posts.created_at
+            forum_posts.created_at,
+            (
+                SELECT COUNT(*) FROM forum_post_reactions
+                WHERE forum_post_reactions.post_id = forum_posts.id
+                  AND forum_post_reactions.reaction = 'like'
+            ) AS likes_count,
+            EXISTS (
+                SELECT 1 FROM forum_post_reactions
+                WHERE forum_post_reactions.post_id = forum_posts.id
+                  AND forum_post_reactions.user_id = ?
+                  AND forum_post_reactions.reaction = 'like'
+            ) AS liked_by_current_user
         FROM forum_posts
         JOIN forum_groups ON forum_posts.group_id = forum_groups.id
         JOIN users ON forum_posts.user_id = users.id
@@ -641,7 +744,7 @@ def get_feed():
         LEFT JOIN forum_stories ON forum_posts.story_id = forum_stories.id
         ORDER BY forum_posts.created_at DESC, forum_posts.id DESC
         LIMIT 100
-    """).fetchall()
+    """, (current_user_id,)).fetchall()
     conn.close()
 
     return jsonify({

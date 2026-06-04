@@ -199,6 +199,19 @@ def init_db():
     if "story_id" not in forum_post_columns:
         cursor.execute("ALTER TABLE forum_posts ADD COLUMN story_id INTEGER")
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS forum_post_reactions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            post_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            reaction TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (post_id, user_id, reaction),
+            FOREIGN KEY (post_id) REFERENCES forum_posts(id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    """)
+
     cursor.execute("SELECT id FROM users WHERE email = ?", ("admin@local.test",))
     admin_exists = cursor.fetchone()
 

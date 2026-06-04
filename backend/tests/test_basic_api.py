@@ -389,6 +389,39 @@ def test_forum_group_membership_posts_and_feed(client):
     assert story_feed_response.status_code == 200
     assert story_feed_response.json["posts"][0]["story_id"] == story_id
     assert story_feed_response.json["posts"][0]["story_title"] == "Die Spur im Mondlicht"
+    assert story_feed_response.json["posts"][0]["likes_count"] == 0
+
+    story_post_id = character_story_post_response.json["post_id"]
+    like_response = client.post(
+        f"/api/forum/posts/{story_post_id}/reactions",
+        headers=auth_headers(owner_token),
+        json={"reaction": "like"}
+    )
+    assert like_response.status_code == 200
+    assert like_response.json["likes_count"] == 1
+
+    repeated_like_response = client.post(
+        f"/api/forum/posts/{story_post_id}/reactions",
+        headers=auth_headers(owner_token),
+        json={"reaction": "like"}
+    )
+    assert repeated_like_response.status_code == 200
+    assert repeated_like_response.json["likes_count"] == 1
+
+    liked_feed_response = client.get(
+        "/api/forum/feed",
+        headers=auth_headers(owner_token)
+    )
+    assert liked_feed_response.json["posts"][0]["likes_count"] == 1
+    assert liked_feed_response.json["posts"][0]["liked_by_current_user"] is True
+
+    unlike_response = client.delete(
+        f"/api/forum/posts/{story_post_id}/reactions",
+        headers=auth_headers(owner_token),
+        json={"reaction": "like"}
+    )
+    assert unlike_response.status_code == 200
+    assert unlike_response.json["likes_count"] == 0
 
     close_story_response = client.patch(
         f"/api/forum/stories/{story_id}/status",
@@ -410,3 +443,9 @@ def test_forum_group_membership_posts_and_feed(client):
         json={"status": "aktiv"}
     )
     assert reopen_story_response.status_code == 200
+
+
+def test_demo_forum_seed_is_importable():
+    import seed_demo_forum
+
+    assert callable(seed_demo_forum.main)
