@@ -18,3 +18,11 @@ Thumbs.db
 *.swp
 
 *~
+
+backend/database.db
+backend/*.db
+__pycache__/
+*.pyc
+
+backend/uploads/items/*
+!backend/uploads/items/*.svg
