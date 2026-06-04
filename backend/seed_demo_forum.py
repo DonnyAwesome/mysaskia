@@ -14,7 +14,13 @@ USERS = {
     "mia": ("Mia", "Wald", "mia@local.test"),
     "tom": ("Tom", "Pfote", "tom@local.test"),
     "lina": ("Lina", "Feder", "lina@local.test"),
-    "ben": ("Ben", "Bach", "ben@local.test")
+    "ben": ("Ben", "Bach", "ben@local.test"),
+    "emma": ("Emma", "Nebel", "emma@local.test"),
+    "noah": ("Noah", "Fuchs", "noah@local.test"),
+    "clara": ("Clara", "Mond", "clara@local.test"),
+    "finn": ("Finn", "Wiese", "finn@local.test"),
+    "sophie": ("Sophie", "Stein", "sophie@local.test"),
+    "leon": ("Leon", "Fluss", "leon@local.test")
 }
 
 ANIMALS = {
@@ -25,7 +31,19 @@ ANIMALS = {
     "Kiki": ("lina", "Vogel", "Wellensittich", "frech und schnell", "demo-wellensittich-paar.svg"),
     "Nala": ("lina", "Katze", "Maine Coon", "stolz und geheimnisvoll", "demo-maine-coon-kater.svg"),
     "Fips": ("ben", "Hamster", "Goldhamster", "klein aber tapfer", "demo-hamster-bruno.svg"),
-    "Wuschel": ("ben", "Meerschweinchen", "Glatthaar", "gemütlich und loyal", "demo-meerschweinchen-gruppe.svg")
+    "Wuschel": ("ben", "Meerschweinchen", "Glatthaar", "gemütlich und loyal", "demo-meerschweinchen-gruppe.svg"),
+    "Nebel": ("emma", "Katze", "Graue Katze", "vorsichtig und geheimnisvoll", "demo-britisch-kurzhaar.svg"),
+    "Pino": ("emma", "Kaninchen", "Zwergkaninchen", "neugierig und schnell", "demo-zwergkaninchen-luna.svg"),
+    "Rex": ("noah", "Hund", "Schäferhund", "mutig und wachsam", "demo-golden-retriever.svg"),
+    "Mimi": ("noah", "Hamster", "Goldhamster", "erfinderisch und flink", "demo-hamster-bruno.svg"),
+    "Ari": ("clara", "Vogel", "Weißer Wellensittich", "träumerisch und aufmerksam", "demo-wellensittich-paar.svg"),
+    "Yuki": ("clara", "Schildkröte", "Landschildkröte", "ruhig und geduldig", "demo-schildkroete-theo.svg"),
+    "Oskar": ("finn", "Meerschweinchen", "Glatthaar", "freundlich und etwas ängstlich", "demo-meerschweinchen-gruppe.svg"),
+    "Tilda": ("finn", "Katze", "Maine Coon", "stolz und beschützend", "demo-maine-coon-kater.svg"),
+    "Pepper": ("sophie", "Kaninchen", "Zwergkaninchen", "frech und mutig", "demo-zwergkaninchen-luna.svg"),
+    "Lotte": ("sophie", "Hund", "Golden Retriever", "warmherzig und verspielt", "demo-golden-retriever.svg"),
+    "Milo": ("leon", "Vogel", "Wellensittich", "laut und abenteuerlustig", "demo-wellensittich-paar.svg"),
+    "Tara": ("leon", "Katze", "Waldkatze", "leise und klug", "demo-britisch-kurzhaar.svg")
 }
 
 GROUPS = {
@@ -33,19 +51,43 @@ GROUPS = {
         "owner": "mia",
         "category": "Wald",
         "description": "Ein friedlicher Treffpunkt für Tiere, die den Wald erkunden.",
-        "members": ["mia", "tom", "lina"]
+        "members": ["mia", "tom", "lina", "emma", "noah", "clara"]
     },
     "Abenteuer am Bach": {
         "owner": "tom",
         "category": "Abenteuer",
         "description": "Mutige Tiere erleben Geschichten am Wasser und zwischen Steinen.",
-        "members": ["tom", "ben", "mia"]
+        "members": ["tom", "ben", "mia", "noah", "finn", "leon"]
     },
     "Stadtpfoten": {
         "owner": "lina",
         "category": "Stadt",
         "description": "Haustiere entdecken heimlich die Straßen und Hinterhöfe der Stadt.",
-        "members": ["lina", "ben", "tom"]
+        "members": ["lina", "ben", "tom", "sophie", "leon", "emma"]
+    },
+    "Mondscheinpfad": {
+        "owner": "emma",
+        "category": "Fantasie",
+        "description": "Tiere folgen nachts geheimnisvollen Spuren unter dem Mondlicht.",
+        "members": ["emma", "clara", "mia", "lina", "noah", "leon"]
+    },
+    "Die alte Scheune": {
+        "owner": "finn",
+        "category": "Familie",
+        "description": "Ein warmer Ort voller Stroh, Geschichten und kleiner Geheimnisse.",
+        "members": ["finn", "sophie", "ben", "tom", "clara", "mia"]
+    },
+    "Pfoten in der Stadt": {
+        "owner": "sophie",
+        "category": "Stadt",
+        "description": "Zwischen Gärten, Hinterhöfen und Straßenlaternen erleben Tiere heimliche Abenteuer.",
+        "members": ["sophie", "leon", "emma", "lina", "ben", "noah"]
+    },
+    "Die große Reise": {
+        "owner": "leon",
+        "category": "Abenteuer",
+        "description": "Eine lange Reise über Wiesen, Wege und Flüsse beginnt.",
+        "members": ["leon", "noah", "finn", "sophie", "tom", "clara"]
     }
 }
 
@@ -74,41 +116,105 @@ STORIES = {
         "Stadtpfoten",
         "lina",
         "Nala führt die Tiere über Mauern, Dächer und stille Gassen."
+    ),
+    "Der Ruf aus der Baumkrone": (
+        "Die Waldlichtung",
+        "clara",
+        "Ein heller Ruf lockt die Tiere zu einer besonders hohen alten Buche."
+    ),
+    "Spuren im nassen Sand": (
+        "Abenteuer am Bach",
+        "noah",
+        "Am Ufer entdecken die Tiere eine Reihe rätselhafter kleiner Abdrücke."
+    ),
+    "Das Fenster mit dem blauen Licht": (
+        "Stadtpfoten",
+        "sophie",
+        "Ein sanft blau leuchtendes Fenster weckt die Neugier der Stadtpfoten."
+    ),
+    "Das Flüstern im Nebel": (
+        "Mondscheinpfad",
+        "emma",
+        "Im silbernen Nebel klingt eine leise Melodie zwischen den Gräsern."
+    ),
+    "Die Spur aus silbernen Pfoten": (
+        "Mondscheinpfad",
+        "clara",
+        "Funkelnde Pfotenabdrücke führen über den nächtlichen Pfad."
+    ),
+    "Ein Sturm zieht auf": (
+        "Die alte Scheune",
+        "finn",
+        "Die Tiere bereiten den warmen Scheunenplatz gemeinsam auf den Regen vor."
+    ),
+    "Das Geheimnis unter dem Heuboden": (
+        "Die alte Scheune",
+        "sophie",
+        "Unter dem Heu finden die Tiere eine vergessene Schachtel voller kleiner Andenken."
+    ),
+    "Die verschwundene Glocke": (
+        "Pfoten in der Stadt",
+        "sophie",
+        "Eine kleine Gartenglocke ist verschwunden und alle helfen bei der Suche."
+    ),
+    "Unter den Straßenlaternen": (
+        "Pfoten in der Stadt",
+        "leon",
+        "Die Tiere folgen dem Licht der Laternen durch ruhige Hinterhöfe."
+    ),
+    "Der erste Schritt": (
+        "Die große Reise",
+        "leon",
+        "Mit gepackten Vorräten beginnt die gemeinsame Reise über die Wiesen."
+    ),
+    "Die Brücke aus Wurzeln": (
+        "Die große Reise",
+        "noah",
+        "Ein Geflecht aus starken Wurzeln hilft den Reisenden über einen Graben."
     )
 }
 
-POSTS = {
-    "Das geheimnisvolle Leuchten": [
-        ("Luna", "Ich habe das Leuchten gesehen! Es war direkt hinter der großen Eiche."),
-        ("Bruno", "Dann bleibe ich dicht bei euch. Niemand geht allein weiter."),
-        ("Kiki", "Von oben funkelt es wie ein kleiner Stern zwischen den Zweigen!"),
-        ("Momo", "Ich schleiche voraus und lausche, ob sich dort etwas bewegt.")
-    ],
-    "Der Rat der Tiere": [
-        ("Bruno", "Wir sollten ruhig bleiben und zuerst allen zuhören."),
-        ("Luna", "Das Geräusch kam dreimal aus Richtung Farnhügel."),
-        ("Kiki", "Ich fliege hinauf und halte nach Spuren Ausschau!"),
-        ("Momo", "Im Moos liegen kleine Abdrücke. Sie wirken nicht gefährlich.")
-    ],
-    "Die verschwundene Brücke": [
-        ("Fips", "Die Brücke ist weg, aber ich sehe einen schmalen Ast über dem Wasser!"),
-        ("Bruno", "Bleibt hinter mir. Ich prüfe zuerst, ob der Ast sicher ist."),
-        ("Luna", "Zwischen den Steinen ist eine trockene Stelle zum Ausruhen."),
-        ("Wuschel", "Gemeinsam schaffen wir das. Ich trage die kleinen Vorräte.")
-    ],
-    "Theo kennt den Weg": [
-        ("Theo", "Langsam. Alte Wege verschwinden nicht, sie verstecken sich nur."),
-        ("Bruno", "Wir folgen dir, Theo. Deine Erinnerung kennt diesen Bach besser als wir."),
-        ("Fips", "Unter den Wurzeln ist wirklich ein kleiner Durchgang!"),
-        ("Momo", "Der Pfad riecht nach trockenem Laub. Hier waren lange keine Pfoten.")
-    ],
-    "Nacht auf den Dächern": [
-        ("Nala", "Setzt eure Pfoten genau dorthin, wo das Mondlicht die Ziegel berührt."),
-        ("Kiki", "Von hier oben sehe ich die ganze Straße und keinen Menschen!"),
-        ("Fips", "Die Dachrinne ist hoch, aber ich bin klein genug für den schmalen Weg."),
-        ("Bruno", "Ich warte am Hof und passe auf, bis ihr wieder unten seid.")
-    ]
+STORY_CASTS = {
+    "Das geheimnisvolle Leuchten": ["Luna", "Bruno", "Kiki", "Momo", "Nebel", "Ari"],
+    "Der Rat der Tiere": ["Bruno", "Luna", "Kiki", "Momo", "Rex", "Yuki"],
+    "Der Ruf aus der Baumkrone": ["Ari", "Kiki", "Luna", "Nebel", "Rex", "Momo"],
+    "Die verschwundene Brücke": ["Fips", "Bruno", "Luna", "Wuschel", "Rex", "Tara"],
+    "Theo kennt den Weg": ["Theo", "Bruno", "Fips", "Momo", "Oskar", "Milo"],
+    "Spuren im nassen Sand": ["Rex", "Tara", "Luna", "Fips", "Bruno", "Milo"],
+    "Nacht auf den Dächern": ["Nala", "Kiki", "Fips", "Bruno", "Pepper", "Tara"],
+    "Das Fenster mit dem blauen Licht": ["Pepper", "Nala", "Milo", "Nebel", "Wuschel", "Bruno"],
+    "Das Flüstern im Nebel": ["Nebel", "Ari", "Luna", "Kiki", "Rex", "Tara"],
+    "Die Spur aus silbernen Pfoten": ["Ari", "Nebel", "Momo", "Milo", "Luna", "Rex"],
+    "Ein Sturm zieht auf": ["Oskar", "Lotte", "Wuschel", "Bruno", "Yuki", "Luna"],
+    "Das Geheimnis unter dem Heuboden": ["Pepper", "Fips", "Theo", "Tilda", "Ari", "Momo"],
+    "Die verschwundene Glocke": ["Pepper", "Milo", "Nebel", "Kiki", "Fips", "Mimi"],
+    "Unter den Straßenlaternen": ["Milo", "Tara", "Nala", "Lotte", "Wuschel", "Rex"],
+    "Der erste Schritt": ["Milo", "Rex", "Oskar", "Lotte", "Bruno", "Yuki"],
+    "Die Brücke aus Wurzeln": ["Rex", "Tilda", "Theo", "Pepper", "Milo", "Ari"],
 }
+
+POST_TEMPLATES = [
+    "{animal} blieb am Anfang des Weges kurz stehen und betrachtete aufmerksam die Umgebung. Die Geschichte „{story}“ fühlte sich heute besonders lebendig an, denn überall gab es neue Düfte und leise Geräusche zu entdecken. „Wir gehen gemeinsam weiter und achten gut aufeinander“, sagte {animal} freundlich.",
+    "{animal} rückte ein wenig näher zu den anderen und lauschte dem sanften Rascheln ringsum. Obwohl {trait} sonst oft den eigenen Weg bestimmte, war jetzt vor allem die gemeinsame Aufgabe wichtig. Mit einem zuversichtlichen Blick zeigte {animal} auf eine kleine Spur, die vorher niemand bemerkt hatte.",
+    "Vorsichtig folgte {animal} dem Weg und ließ sich Zeit, jedes Detail anzusehen. Ein warmer Lichtschein fiel auf den Boden und machte die Umgebung beinahe märchenhaft. „Vielleicht erzählt uns dieser Ort selbst, wohin wir als Nächstes gehen sollen“, überlegte {animal} laut.",
+    "{animal} entdeckte zwischen Blättern, Steinen und Gräsern ein winziges Zeichen, das gut zur Geschichte „{story}“ passen könnte. Sofort rief {animal} die Freunde zusammen, damit niemand die Entdeckung allein untersuchen musste. Gemeinsam schmiedeten sie einen ruhigen und klugen Plan.",
+    "Ein leichter Wind strich über das Fell und die Federn, während {animal} mutig den nächsten Schritt machte. Dabei blieb {animal} immer wieder stehen, um sicherzugehen, dass alle Freunde folgen konnten. „Es ist viel schöner, wenn wir dieses Abenteuer miteinander erleben“, sagte {animal} lächelnd.",
+    "{animal} setzte sich für einen Moment an den Rand des Weges und dachte über alles nach, was die Gruppe bisher entdeckt hatte. Weil {trait} gut zu diesem Augenblick passte, fiel {animal} eine einfache, aber hilfreiche Idee ein. Die anderen hörten aufmerksam zu und machten sich anschließend gemeinsam auf den Weg."
+]
+
+
+def build_story_posts(story_title):
+    return [
+        (
+            animal,
+            POST_TEMPLATES[index].format(
+                animal=animal,
+                story=story_title,
+                trait=ANIMALS[animal][3]
+            )
+        )
+        for index, animal in enumerate(STORY_CASTS[story_title])
+    ]
 
 
 def get_connection():
@@ -179,7 +285,15 @@ def main():
     db.init_db()
     conn = get_connection()
     cursor = conn.cursor()
-    counts = {"User": 0, "Tiere": 0, "Gruppen": 0, "Geschichten": 0, "Beiträge": 0, "Likes": 0}
+    counts = {
+        "User": 0,
+        "Tiere": 0,
+        "Gruppen": 0,
+        "Mitgliedschaften": 0,
+        "Geschichten": 0,
+        "Beiträge": 0,
+        "Likes": 0
+    }
 
     user_ids = {}
     for key, user in USERS.items():
@@ -206,6 +320,7 @@ def main():
                 INSERT OR IGNORE INTO forum_group_members (group_id, user_id)
                 VALUES (?, ?)
             """, (group_ids[title], user_ids[member]))
+            counts["Mitgliedschaften"] += cursor.rowcount
 
     story_ids = {}
     for title, (group_title, owner, description) in STORIES.items():
@@ -215,15 +330,17 @@ def main():
         counts["Geschichten"] += int(created)
 
     post_ids = []
-    for story_title, posts in POSTS.items():
+    post_owner_ids = {}
+    for story_title in STORIES:
         group_title = STORIES[story_title][0]
-        for animal, content in posts:
+        for animal, content in build_story_posts(story_title):
             post = cursor.execute(
                 "SELECT id FROM forum_posts WHERE story_id = ? AND content = ?",
                 (story_ids[story_title], content)
             ).fetchone()
             if post:
                 post_ids.append(post["id"])
+                post_owner_ids[post["id"]] = animal_owner_ids[animal]
                 continue
 
             cursor.execute("""
@@ -237,17 +354,27 @@ def main():
                 content
             ))
             post_ids.append(cursor.lastrowid)
+            post_owner_ids[cursor.lastrowid] = animal_owner_ids[animal]
             counts["Beiträge"] += 1
 
     demo_user_ids = list(user_ids.values())
     for index, post_id in enumerate(post_ids):
-        for offset in (1, 2):
+        target_likes = 1 + (index % 4)
+        added_likes = 0
+        for offset in range(1, len(demo_user_ids) + 1):
             user_id = demo_user_ids[(index + offset) % len(demo_user_ids)]
+            if user_id == post_owner_ids[post_id]:
+                continue
+
             cursor.execute("""
                 INSERT OR IGNORE INTO forum_post_reactions (post_id, user_id, reaction)
                 VALUES (?, ?, 'like')
             """, (post_id, user_id))
             counts["Likes"] += cursor.rowcount
+            added_likes += 1
+
+            if added_likes == target_likes:
+                break
 
     conn.commit()
     conn.close()

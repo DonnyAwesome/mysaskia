@@ -122,7 +122,7 @@ cd ~/mysaskia/backend
 python3 seed_demo_items.py
 ```
 
-Das Forum-Seed erzeugt Demo-User, Tierrollen, Gruppen, Geschichten, Beiträge und Likes. Es ist ebenfalls mehrfach ausführbar.
+Das Forum-Seed erzeugt eine größere, lebendige Demo-Welt mit zahlreichen Usern, Tierrollen, Gruppen, Geschichten, längeren Rollenspiel-Beiträgen und Likes. Es ist ebenfalls mehrfach ausführbar.
 
 ```bash
 cd ~/mysaskia/backend
@@ -141,6 +141,12 @@ Diese Accounts sind ausschließlich für das lokale Lernprojekt gedacht:
 | Tiergeschichten | `tom@local.test` | `Demo123` |
 | Tiergeschichten | `lina@local.test` | `Demo123` |
 | Tiergeschichten | `ben@local.test` | `Demo123` |
+| Tiergeschichten | `emma@local.test` | `Demo123` |
+| Tiergeschichten | `noah@local.test` | `Demo123` |
+| Tiergeschichten | `clara@local.test` | `Demo123` |
+| Tiergeschichten | `finn@local.test` | `Demo123` |
+| Tiergeschichten | `sophie@local.test` | `Demo123` |
+| Tiergeschichten | `leon@local.test` | `Demo123` |
 
 ## Wichtige URLs
 
