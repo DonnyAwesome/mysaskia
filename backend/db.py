@@ -97,6 +97,20 @@ def init_db():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS seller_reviews (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            seller_id INTEGER NOT NULL,
+            reviewer_id INTEGER NOT NULL,
+            rating INTEGER NOT NULL,
+            comment TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (seller_id, reviewer_id),
+            FOREIGN KEY (seller_id) REFERENCES users(id),
+            FOREIGN KEY (reviewer_id) REFERENCES users(id)
+        )
+    """)
+
     cursor.execute("SELECT id FROM users WHERE email = ?", ("admin@local.test",))
     admin_exists = cursor.fetchone()
 

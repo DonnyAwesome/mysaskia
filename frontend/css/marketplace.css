@@ -385,6 +385,39 @@
     margin-top: 14px;
 }
 
+.review-list {
+    display: grid;
+    gap: 14px;
+}
+
+.review-card {
+    padding: 18px;
+    border-radius: 18px;
+    background: var(--market-card-bg);
+    color: var(--market-text);
+    border: 1px solid var(--market-border);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+}
+
+.review-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.review-card p {
+    margin: 12px 0 0;
+    color: var(--market-muted);
+    line-height: 1.5;
+}
+
+.seller-review-form {
+    max-width: none;
+    margin: 0;
+}
+
 .dashboard-stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));

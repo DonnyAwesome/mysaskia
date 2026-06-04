@@ -61,6 +61,15 @@ def get_seller(user_id):
     sold_items_count = cursor.fetchone()[0]
 
     cursor.execute("""
+        SELECT COUNT(*), AVG(rating)
+        FROM seller_reviews
+        WHERE seller_id = ?
+    """, (user_id,))
+    reviews_summary = cursor.fetchone()
+    reviews_count = reviews_summary[0]
+    average_rating = round(reviews_summary[1], 1) if reviews_summary[1] is not None else None
+
+    cursor.execute("""
         SELECT
             id,
             title,
@@ -86,5 +95,7 @@ def get_seller(user_id):
         "created_at": seller["created_at"],
         "active_items_count": active_items_count,
         "sold_items_count": sold_items_count,
+        "average_rating": average_rating,
+        "reviews_count": reviews_count,
         "active_items": [seller_item_to_dict(item) for item in active_items]
     })
