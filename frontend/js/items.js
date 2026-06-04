@@ -42,14 +42,69 @@ function escapeHtml(value) {
         .replaceAll("'", "&#039;");
 }
 
-function getMarketplaceSearchQuery() {
-    const params = new URLSearchParams(window.location.search);
+let marketplaceItems = [];
 
-    return (params.get("q") || "").trim();
+function marketplaceFiltersHtml() {
+    return `
+        <form id="marketplaceFilters" class="marketplace-filters">
+            <div class="marketplace-filter-fields">
+                <div class="marketplace-filter-field marketplace-filter-search">
+                    <label for="filterQuery">Suche</label>
+                    <input id="filterQuery" name="q" type="search" placeholder="Titel, Rasse, Beschreibung...">
+                </div>
+
+                <div class="marketplace-filter-field">
+                    <label for="filterSpecies">Tierart/Kategorie</label>
+                    <select id="filterSpecies" name="species">
+                        <option value="">Alle</option>
+                        <option value="Hund">Hund</option>
+                        <option value="Katze">Katze</option>
+                        <option value="Kaninchen">Kaninchen</option>
+                        <option value="Vogel">Vogel</option>
+                        <option value="Hamster">Hamster</option>
+                        <option value="Meerschweinchen">Meerschweinchen</option>
+                        <option value="Schildkröte">Schildkröte</option>
+                    </select>
+                </div>
+
+                <div class="marketplace-filter-field">
+                    <label for="filterMaxPrice">Preis bis</label>
+                    <input id="filterMaxPrice" name="maxPrice" type="number" min="0" step="0.01" placeholder="500">
+                </div>
+            </div>
+
+            <div class="marketplace-filter-actions">
+                <button class="btn" type="submit">Filter anwenden</button>
+                <button id="resetMarketplaceFilters" class="btn secondary" type="button">Zurücksetzen</button>
+            </div>
+        </form>
+    `;
 }
 
-function itemMatchesSearch(item, searchQuery) {
-    const normalizedQuery = searchQuery.toLowerCase();
+function ensureMarketplaceFilters() {
+    if (document.getElementById("marketplaceFilters")) {
+        return;
+    }
+
+    const itemsGrid = document.getElementById("itemsGrid");
+
+    if (itemsGrid) {
+        itemsGrid.insertAdjacentHTML("beforebegin", marketplaceFiltersHtml());
+    }
+}
+
+function getMarketplaceFilters() {
+    const params = new URLSearchParams(window.location.search);
+
+    return {
+        q: (params.get("q") || "").trim(),
+        species: (params.get("species") || "").trim(),
+        maxPrice: (params.get("maxPrice") || "").trim()
+    };
+}
+
+function itemMatchesFilters(item, filters) {
+    const normalizedQuery = filters.q.toLowerCase();
     const searchableFields = [
         item.title,
         item.description,
@@ -61,22 +116,109 @@ function itemMatchesSearch(item, searchQuery) {
         item.seller_name
     ];
 
-    return searchableFields.some((field) => {
+    const matchesSearch = !normalizedQuery || searchableFields.some((field) => {
         return String(field || "").toLowerCase().includes(normalizedQuery);
     });
+    const matchesSpecies = !filters.species ||
+        String(item.species || "").toLowerCase() === filters.species.toLowerCase();
+    const maxPrice = Number(filters.maxPrice);
+    const matchesPrice = !filters.maxPrice ||
+        (!Number.isNaN(maxPrice) && Number(item.price) <= maxPrice);
+
+    return matchesSearch && matchesSpecies && matchesPrice;
 }
 
-function marketplaceSearchInfoHtml(searchQuery) {
-    if (!searchQuery) {
+function marketplaceFilterInfoHtml(filters, resultCount) {
+    if (!filters.q && !filters.species && !filters.maxPrice) {
         return "";
     }
 
     return `
         <div class="search-results-info">
-            <span>Suchergebnisse für: ${escapeHtml(searchQuery)}</span>
-            <a class="btn secondary" href="marketplace.html">Suche zurücksetzen</a>
+            <span>${resultCount} passende Inserate gefunden</span>
+            <a class="btn secondary" href="marketplace.html">Filter zurücksetzen</a>
         </div>
     `;
+}
+
+function fillMarketplaceFilterFields(filters) {
+    const queryInput = document.getElementById("filterQuery");
+    const speciesSelect = document.getElementById("filterSpecies");
+    const maxPriceInput = document.getElementById("filterMaxPrice");
+
+    if (queryInput) {
+        queryInput.value = filters.q;
+    }
+
+    if (speciesSelect) {
+        speciesSelect.value = filters.species;
+    }
+
+    if (maxPriceInput) {
+        maxPriceInput.value = filters.maxPrice;
+    }
+}
+
+function renderMarketplaceItems() {
+    const container = document.getElementById("itemsGrid");
+
+    if (!container) {
+        return;
+    }
+
+    const filters = getMarketplaceFilters();
+    const visibleItems = marketplaceItems.filter((item) => itemMatchesFilters(item, filters));
+    const filterInfoHtml = marketplaceFilterInfoHtml(filters, visibleItems.length);
+
+    if (visibleItems.length === 0) {
+        container.innerHTML = `${filterInfoHtml}<div class="empty-state">Keine Tiere für diese Filter gefunden.</div>`;
+        return;
+    }
+
+    container.innerHTML = `${filterInfoHtml}${visibleItems.map((item) => itemCardHtml(item, false)).join("")}`;
+}
+
+function setupMarketplaceFilters() {
+    const form = document.getElementById("marketplaceFilters");
+    const resetButton = document.getElementById("resetMarketplaceFilters");
+
+    if (!form || !resetButton) {
+        return;
+    }
+
+    fillMarketplaceFilterFields(getMarketplaceFilters());
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+
+        for (const name of ["q", "species", "maxPrice"]) {
+            const value = String(formData.get(name) || "").trim();
+
+            if (value) {
+                params.set(name, value);
+            }
+        }
+
+        const queryString = params.toString();
+        const url = queryString ? `marketplace.html?${queryString}` : "marketplace.html";
+
+        window.history.pushState({}, "", url);
+        renderMarketplaceItems();
+    });
+
+    resetButton.addEventListener("click", () => {
+        form.reset();
+        window.history.pushState({}, "", "marketplace.html");
+        renderMarketplaceItems();
+    });
+
+    window.addEventListener("popstate", () => {
+        fillMarketplaceFilterFields(getMarketplaceFilters());
+        renderMarketplaceItems();
+    });
 }
 
 function itemImageHtml(item) {
@@ -509,9 +651,6 @@ async function loadMarketplaceItems() {
         return;
     }
 
-    const searchQuery = getMarketplaceSearchQuery();
-    const searchInfoHtml = marketplaceSearchInfoHtml(searchQuery);
-
     container.innerHTML = `<div class="empty-state">Tiere werden geladen...</div>`;
 
     try {
@@ -524,20 +663,13 @@ async function loadMarketplaceItems() {
         }
 
         if (!data.items || data.items.length === 0) {
-            container.innerHTML = `${searchInfoHtml}<div class="empty-state">Noch keine Tiere im Marktplatz.</div>`;
+            marketplaceItems = [];
+            container.innerHTML = `<div class="empty-state">Noch keine Tiere im Marktplatz.</div>`;
             return;
         }
 
-        const visibleItems = searchQuery
-            ? data.items.filter((item) => itemMatchesSearch(item, searchQuery))
-            : data.items;
-
-        if (searchQuery && visibleItems.length === 0) {
-            container.innerHTML = `${searchInfoHtml}<div class="empty-state">Keine Tiere für diese Suche gefunden.</div>`;
-            return;
-        }
-
-        container.innerHTML = `${searchInfoHtml}${visibleItems.map((item) => itemCardHtml(item, false)).join("")}`;
+        marketplaceItems = data.items;
+        renderMarketplaceItems();
     } catch (error) {
         container.innerHTML = `<div class="empty-state">Server nicht erreichbar. Läuft dein Flask-Backend?</div>`;
     }
@@ -732,6 +864,8 @@ function setupSellForm() {
 
 document.addEventListener("DOMContentLoaded", () => {
     if (document.body.dataset.page === "marketplace") {
+        ensureMarketplaceFilters();
+        setupMarketplaceFilters();
         loadMarketplaceItems();
     }
 

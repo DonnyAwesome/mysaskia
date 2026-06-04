@@ -36,6 +36,53 @@
     margin: 24px 0 18px;
 }
 
+.marketplace-filters {
+    display: block;
+    max-width: none;
+    margin: 0;
+    padding: 20px;
+    border-radius: 20px;
+    background: var(--market-card-bg);
+    color: var(--market-text);
+    border: 1px solid var(--market-border);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+}
+
+.marketplace-filter-fields {
+    display: grid;
+    grid-template-columns: minmax(240px, 2fr) minmax(180px, 1fr) minmax(140px, 1fr);
+    gap: 14px;
+}
+
+.marketplace-filter-field label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--market-text);
+    font-weight: 700;
+}
+
+.marketplace-filter-field input,
+.marketplace-filter-field select {
+    width: 100%;
+    margin: 0;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--market-input-border);
+    background: var(--market-input-bg);
+    color: var(--market-text);
+}
+
+.marketplace-filter-field input::placeholder {
+    color: var(--market-placeholder);
+}
+
+.marketplace-filter-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
 .item-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -455,6 +502,10 @@ body[data-theme="dark"],
 
 @media (max-width: 700px) {
     .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .marketplace-filter-fields {
         grid-template-columns: 1fr;
     }
 
