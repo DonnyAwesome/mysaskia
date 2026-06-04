@@ -1,42 +1,77 @@
 # MySaskia
 
-MySaskia ist ein lokales Lernprojekt und ein einfacher Tier-Marktplatz. Das Projekt besteht aus einem statischen Frontend, das ueber Apache unter `http://localhost` ausgeliefert wird, und einem Flask-Backend unter `http://127.0.0.1:5000/api`.
+MySaskia ist ein lokaler Tier-Marktplatz und Shop als Lernprojekt für Backend-Entwicklung, REST APIs, SQLite, Login, Datei-Uploads und ein Frontend mit HTML, CSS und JavaScript.
 
-Die Anwendung bietet Benutzerkonten, Profile, Support-Tickets und Tier-Inserate mit Bild-Upload. Der Marktplatz kann im Frontend durchsucht werden und nutzt eine professionelle Shop-Navigation.
+Die Anwendung läuft lokal ohne echte Zahlung. Nutzer können Tier-Inserate entdecken, verwalten, merken und Interesse anmelden.
+
+## Features
+
+- Registrierung und Login mit Session-Token
+- Eigenes Profil und Passwortverwaltung
+- Öffentlicher Tier-Marktplatz mit Suche und Filtern
+- Inserate erstellen
+- Bilder für Inserate hochladen
+- Eigene Inserate bearbeiten, verkaufen oder löschen
+- Übersicht „Meine Inserate“
+- Kauf- und Interesse-Anfragen
+- Übersichten „Meine Käufe“ und „Meine Verkäufe“
+- Favoriten und Merkliste
+- Öffentliche Verkäuferprofile mit aktiven Inseraten
+- Support-Tickets für Nutzer und Admins
+- Admin-Bereich zur Account- und Ticketverwaltung
+- Dashboard-Zahlen für Nutzer und Admins
+- Lokale Demo-Inserate mit eigenen SVG-Bildern
+- Light- und Dark-Theme
+
+## Technik
+
+- **Backend:** Python, Flask, Flask-CORS und Werkzeug
+- **Datenbank:** SQLite
+- **Frontend:** HTML, CSS und JavaScript
+- **Lokaler Webserver:** Apache für das Frontend
+- **Versionsverwaltung:** Git und GitHub
 
 ## Projektstruktur
 
 ```text
 mysaskia/
 ├── backend/
-│   ├── app.py              # Flask-App, Blueprint-Registrierung, Upload-Auslieferung
-│   ├── auth.py             # Registrierung, Login, Logout
-│   ├── accounts.py         # Account-Verwaltung
-│   ├── profile.py          # Profil anzeigen/aendern, Passwort aendern
-│   ├── tickets.py          # Support-Tickets fuer User und Admins
-│   ├── items.py            # Marktplatz-API fuer Tier-Inserate
-│   ├── db.py               # SQLite-Verbindung und Tabellenanlage
-│   ├── utils.py            # Auth- und Rollen-Helfer
-│   ├── show_users.py       # lokales Hilfsskript
-│   └── uploads/items/      # hochgeladene Inseratsbilder
+│   ├── app.py                 # Flask-App und Blueprint-Registrierung
+│   ├── db.py                  # SQLite-Verbindung und Tabellenanlage
+│   ├── auth.py                # Registrierung, Login und Logout
+│   ├── profile.py             # Eigenes Profil und Passwortverwaltung
+│   ├── items.py               # Inserate, Bilder und Bearbeitung
+│   ├── orders.py              # Kauf- und Interesse-Anfragen
+│   ├── favorites.py           # Favoriten-API
+│   ├── sellers.py             # Öffentliche Verkäuferprofile
+│   ├── tickets.py             # Support-Tickets
+│   ├── accounts.py            # Admin-Accountverwaltung
+│   ├── dashboard.py           # Dashboard-Zahlen
+│   ├── seed_demo_items.py     # Demo-Account, Inserate und SVG-Bilder
+│   ├── utils.py               # Authentifizierungs-Helfer
+│   └── uploads/items/         # Demo-SVGs und lokale Uploads
 ├── frontend/
-│   ├── index.html          # Startseite
-│   ├── marketplace.html    # Marktplatz
-│   ├── sell.html           # Inserat erstellen
-│   ├── my-items.html       # eigene Inserate verwalten
-│   ├── dashboard.html      # Benutzer-Dashboard
-│   ├── login.html          # Login/Registrierung
-│   ├── profile.html        # Profilverwaltung
-│   ├── support.html        # Support-Tickets
-│   ├── about.html          # Projektinformationen
-│   ├── contact.html        # Kontaktseite
-│   ├── css/                # Stylesheets
-│   ├── js/                 # Frontend-Logik
-│   └── images/             # Bilder und Logo
+│   ├── index.html             # Startseite
+│   ├── marketplace.html       # Marktplatz mit Filtern
+│   ├── item.html              # Inserat-Detailseite
+│   ├── sell.html              # Neues Inserat
+│   ├── edit-item.html         # Inserat bearbeiten
+│   ├── my-items.html          # Eigene Inserate
+│   ├── orders.html            # Meine Käufe
+│   ├── sales.html             # Meine Verkäufe
+│   ├── favorites.html         # Merkliste
+│   ├── seller.html            # Öffentliches Verkäuferprofil
+│   ├── dashboard.html         # Nutzer- und Admin-Dashboard
+│   ├── profile.html           # Profilverwaltung
+│   ├── support.html           # Support-Tickets
+│   ├── css/                   # Gemeinsame Stylesheets
+│   ├── js/                    # Frontend-Logik
+│   └── images/                # Logo und statische Bilder
+├── .gitignore
 └── README.md
 ```
 
-Die SQLite-Datenbank liegt lokal unter `backend/database.db`. Sie ist nicht fuer Git gedacht und wird durch `.gitignore` ausgeschlossen.
+Die lokale Datenbank liegt unter `backend/database.db` und wird nicht versioniert.
 
 ## Voraussetzungen
 
@@ -44,162 +79,112 @@ Die SQLite-Datenbank liegt lokal unter `backend/database.db`. Sie ist nicht fuer
 - Flask
 - Flask-CORS
 - Werkzeug
-- Apache oder ein anderer lokaler Webserver fuer das Frontend
-- Ein moderner Browser
+- Apache mit DocumentRoot auf dem Frontend-Verzeichnis
+- Moderner Browser
 
-Falls die Python-Abhaengigkeiten noch fehlen, koennen sie lokal installiert werden:
+Fehlende Python-Pakete können lokal installiert werden:
 
 ```bash
 pip install flask flask-cors werkzeug
 ```
 
-## Backend starten
+## Lokal starten
+
+### Backend
 
 ```bash
-cd backend
-python app.py
+cd ~/mysaskia/backend
+python3 app.py
 ```
 
-Das Backend laeuft danach standardmaessig unter:
+Das Backend läuft anschließend unter `http://127.0.0.1:5000`. Die REST API verwendet den Prefix `http://127.0.0.1:5000/api`.
+
+Beim Start erstellt `db.py` fehlende SQLite-Tabellen automatisch.
+
+### Frontend
+
+Der Apache DocumentRoot zeigt auf:
 
 ```text
-http://127.0.0.1:5000
+~/mysaskia/frontend
 ```
 
-Die API ist unter diesem Prefix erreichbar:
+Das Frontend ist anschließend unter `http://localhost` erreichbar.
 
-```text
-http://127.0.0.1:5000/api
+## Demo-Daten
+
+Das Seed-Script erzeugt einen Demo-Verkäufer, acht Tier-Inserate und passende lokale SVG-Bilder. Es kann mehrfach ausgeführt werden, ohne doppelte Demo-Inserate anzulegen.
+
+```bash
+cd ~/mysaskia/backend
+python3 seed_demo_items.py
 ```
 
-Beim Start initialisiert `backend/db.py` die benoetigten SQLite-Tabellen, falls sie noch nicht existieren.
+## Demo-Accounts
 
-## Frontend oeffnen
+Diese Accounts sind ausschließlich für das lokale Lernprojekt gedacht:
 
-Das Frontend liegt in `frontend/` und wird lokal ueber Apache unter folgender Adresse geoeffnet:
+| Rolle | E-Mail | Passwort |
+|---|---|---|
+| Admin | `admin@local.test` | `Admin` |
+| Demo-Verkäufer | `demo@local.test` | `Demo123` |
 
-```text
-http://localhost
-```
+## Wichtige URLs
 
-Wichtige Seiten:
+- Startseite: `http://localhost`
+- Marktplatz: `http://localhost/marketplace.html`
+- Dashboard: `http://localhost/dashboard.html`
+- Merkliste: `http://localhost/favorites.html`
 
-- `http://localhost/index.html`
-- `http://localhost/marketplace.html`
-- `http://localhost/sell.html`
-- `http://localhost/my-items.html`
-- `http://localhost/dashboard.html`
-- `http://localhost/profile.html`
-- `http://localhost/support.html`
+## Wichtige API-Bereiche
 
-## Standard-Admin-Account
+Basis-URL: `http://127.0.0.1:5000/api`
 
-Beim Initialisieren der Datenbank wird ein lokaler Admin-Account angelegt, falls er noch nicht existiert:
+- `/register`, `/login`, `/logout` – Authentifizierung
+- `/profile`, `/change_password` – Profil und Sicherheit
+- `/items`, `/my_items` – Marktplatz und Inserate
+- `/orders`, `/my_orders`, `/my_sales` – Kauf- und Interesse-Anfragen
+- `/favorites`, `/favorites/status` – Merkliste
+- `/sellers/<user_id>` – öffentliche Verkäuferprofile
+- `/tickets`, `/my_tickets`, `/admin/tickets` – Support
+- `/dashboard/summary` – Dashboard-Zahlen
+- `/accounts`, `/delete_account` – Accountverwaltung
 
-```text
-E-Mail: admin@local.test
-Passwort: Admin
-```
-
-Dieser Account ist fuer die lokale Entwicklung gedacht. In einer echten Umgebung muss das Passwort geaendert und das Seed-Verhalten angepasst werden.
-
-## Wichtige API-Endpunkte
-
-Basis-URL:
-
-```text
-http://127.0.0.1:5000/api
-```
-
-Auth:
-
-- `POST /api/register` - neuen Account erstellen
-- `POST /api/login` - einloggen und Session-Token erhalten
-- `POST /api/logout` - ausloggen
-
-Profile:
-
-- `GET /api/profile` - eigenes Profil laden
-- `PATCH /api/profile` - Vorname und Nachname aendern
-- `PATCH /api/change_password` - Passwort aendern
-
-Accounts:
-
-- `GET /api/accounts` - Accounts laden
-- `DELETE /api/delete_account` - Account loeschen
-
-Support:
-
-- `POST /api/tickets` - Support-Ticket erstellen
-- `GET /api/my_tickets` - eigene Tickets laden
-- `GET /api/admin/tickets` - alle Tickets fuer Admins laden
-- `PATCH /api/admin/tickets/status` - Ticket-Status aendern
-
-Marktplatz:
-
-- `GET /api/items` - aktive Tier-Inserate laden
-- `GET /api/my_items` - eigene Inserate laden
-- `POST /api/items` - neues Inserat mit optionalem Bild erstellen
-- `PATCH /api/items/status` - Inserat als aktiv oder verkauft markieren
-- `DELETE /api/items` - Inserat loeschen
-- `GET /uploads/items/<filename>` - hochgeladenes Inseratsbild laden
-
-Geschuetzte Endpunkte erwarten einen Authorization-Header:
+Geschützte Endpunkte erwarten einen Authorization-Header:
 
 ```text
 Authorization: Bearer <token>
 ```
 
-## Aktuelle Features
+## Git und lokale Daten
 
-- Registrierung und Login mit Session-Token
-- Benutzer-Dashboard
-- Profil anzeigen und bearbeiten
-- Passwort aendern
-- Support-Tickets fuer eingeloggte Nutzer
-- Admin-Ansicht fuer Tickets
-- Account-Verwaltung
-- Tier-Inserate erstellen
-- Bild-Upload fuer Inserate
-- Eigene Inserate anzeigen, loeschen und als verkauft markieren
-- Oeffentlicher Marktplatz fuer aktive Inserate
-- Frontend-Suche ueber `marketplace.html?q=Suchbegriff`
-- Suche ueber Titel, Beschreibung, Tierart, Rasse, Alter, Geschlecht, Preis und Verkaeufername
-- Professionelle Shop-Navigation mit Suche, Konto, Inseraten und Verkauf
-- Light-/Dark-Theme-Unterstuetzung ueber CSS-Variablen
+Die `.gitignore`-Regeln schließen unter anderem folgende lokale Daten aus:
+
+- `backend/database.db` und andere SQLite-Datenbanken
+- Python-Caches wie `__pycache__/` und `*.pyc`
+- Umgebungsdateien wie `.env`
+- echte Uploads unter `backend/uploads/items/`
+
+Die Demo-SVGs unter `backend/uploads/items/` dürfen versioniert bleiben.
 
 ## Git-Workflow
 
-Empfohlener Ablauf fuer Aenderungen:
-
 ```bash
 git status
-git diff
-git add <dateien>
-git commit -m "Kurze Beschreibung der Aenderung"
-git status
+git add .
+git commit -m "Beschreibung"
+git push
 ```
 
-Vor einem Commit sollte geprueft werden:
+Vor einem Commit sollte geprüft werden, dass keine Datenbank, echten Uploads, Zugangsdaten oder unbeabsichtigten Änderungen vorgemerkt sind.
 
-- Sind nur die beabsichtigten Dateien geaendert?
-- Funktioniert das Backend noch?
-- Laden die betroffenen Frontend-Seiten ohne Browser-Fehler?
-- Sind keine lokalen Datenbank- oder Upload-Dateien versehentlich fuer Git vorgemerkt?
+## Hinweis
 
-Die Datei `backend/database.db` und lokale Upload-/Cache-Dateien sollten nicht committed werden.
+MySaskia ist ein lokales Lernprojekt. Es gibt keine echte Zahlungsabwicklung, keine Produktionskonfiguration und keine Garantie für den Einsatz mit echten Nutzerdaten.
 
-## Sinnvolle naechste Features
+## Nächste mögliche Schritte
 
-- Backend-Suche und Filter fuer den Marktplatz
-- Detailseite fuer einzelne Tier-Inserate
-- Bearbeiten bestehender Inserate
-- Admin-Moderation fuer Inserate
-- Kontaktfunktion zwischen Kaeufer und Verkaeufer
-- Favoriten oder Merkliste
-- Pagination fuer viele Inserate
-- Validierung und Groessenlimit fuer Bild-Uploads
-- Zentrale Frontend-Konfiguration fuer die API-URL
-- `requirements.txt` fuer reproduzierbare Python-Abhaengigkeiten
-- Automatisierte Tests fuer Backend-Endpunkte
-- Verbesserte Fehler- und Ladezustaende im Frontend
+- Bewertungen für Verkäufer und Inserate
+- Bessere Admin-Verwaltung und Moderation
+- Automatisierte Backend- und Frontend-Tests
+- Deployment und produktionsgeeignete Konfiguration
