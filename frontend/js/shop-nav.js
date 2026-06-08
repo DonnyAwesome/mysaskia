@@ -228,6 +228,11 @@ function renderShopNavigation() {
                         <span>Tierwissen</span>
                     </a>
 
+                    <a class="shop-tab ${isActivePage("adoption.html")}" href="adoption.html">
+                        <span class="shop-tab-icon">🤝</span>
+                        <span>Adoption</span>
+                    </a>
+
                     ${adminTab}
                     <a class="shop-tab ${isActivePage("support.html")}" href="support.html">
                         <span class="shop-tab-icon">🎫</span>
