@@ -45,40 +45,96 @@
         <section class="marketplace-container">
             <h2>Aktive Tier-Inserate</h2>
 
-            <form id="marketplaceFilters" class="marketplace-filters">
-                <div class="marketplace-filter-fields">
-                    <div class="marketplace-filter-field marketplace-filter-search">
-                        <label for="filterQuery">Suche</label>
-                        <input id="filterQuery" name="q" type="search" placeholder="Titel, Rasse, Beschreibung...">
+            <div class="marketplace-layout">
+                <aside class="marketplace-sidebar" aria-label="Marktplatz-Filter">
+                    <form id="marketplaceFilters" class="marketplace-filters">
+                        <h3>Filter</h3>
+
+                        <div class="marketplace-filter-field marketplace-filter-search">
+                            <label for="filterQuery">Suchbegriff</label>
+                            <input id="filterQuery" name="q" type="search" placeholder="Titel, Rasse, Beschreibung...">
+                        </div>
+
+                        <fieldset class="marketplace-filter-group">
+                            <legend>Tierart / Kategorie</legend>
+                            <label><input type="checkbox" name="category" value="hunde"> Hunde</label>
+                            <label><input type="checkbox" name="category" value="katzen"> Katzen</label>
+                            <label><input type="checkbox" name="category" value="kleintiere"> Kleintiere</label>
+                            <label><input type="checkbox" name="category" value="voegel"> Vögel</label>
+                            <label><input type="checkbox" name="category" value="reptilien"> Reptilien</label>
+                            <label><input type="checkbox" name="category" value="sonstige"> Sonstige</label>
+                        </fieldset>
+
+                        <fieldset class="marketplace-filter-group">
+                            <legend>Preis</legend>
+                            <div class="marketplace-price-row">
+                                <div class="marketplace-filter-field">
+                                    <label for="filterMinPrice">Min.</label>
+                                    <input id="filterMinPrice" name="minPrice" type="number" min="0" step="0.01" placeholder="0">
+                                </div>
+                                <div class="marketplace-filter-field">
+                                    <label for="filterMaxPrice">Max.</label>
+                                    <input id="filterMaxPrice" name="maxPrice" type="number" min="0" step="0.01" placeholder="500">
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="marketplace-filter-field">
+                            <label for="filterGender">Geschlecht</label>
+                            <select id="filterGender" name="gender">
+                                <option value="">Egal</option>
+                                <option value="männlich">Männlich</option>
+                                <option value="weiblich">Weiblich</option>
+                                <option value="unbekannt">Unbekannt / keine Angabe</option>
+                            </select>
+                        </div>
+
+                        <div class="marketplace-filter-field">
+                            <label for="filterAge">Alter</label>
+                            <select id="filterAge" name="age">
+                                <option value="">Alle</option>
+                                <option value="jungtier">Jungtier</option>
+                                <option value="erwachsen">Erwachsen</option>
+                                <option value="senior">Senior</option>
+                            </select>
+                        </div>
+
+                        <div class="marketplace-filter-field">
+                            <label for="filterBreed">Rasse</label>
+                            <input id="filterBreed" name="breed" type="search" placeholder="z. B. Labrador">
+                        </div>
+
+                        <fieldset class="marketplace-filter-group">
+                            <legend>Weitere Filter</legend>
+                            <label><input id="filterWithImage" type="checkbox" name="withImage"> Nur mit Bild</label>
+                            <label><input id="filterActiveOnly" type="checkbox" name="activeOnly" checked> Nur aktive Inserate</label>
+                        </fieldset>
+
+                        <div class="marketplace-filter-actions">
+                            <button class="btn" type="submit">Filter anwenden</button>
+                            <button id="resetMarketplaceFilters" class="btn secondary" type="button">Filter zurücksetzen</button>
+                        </div>
+                    </form>
+                </aside>
+
+                <section class="marketplace-results" aria-label="Marktplatz-Ergebnisse">
+                    <div class="marketplace-results-toolbar">
+                        <div id="marketplaceResultCount" class="marketplace-result-count">Inserate werden geladen...</div>
+
+                        <div class="marketplace-sort-field">
+                            <label for="marketplaceSort">Sortieren</label>
+                            <select id="marketplaceSort">
+                                <option value="newest">Neueste zuerst</option>
+                                <option value="priceAsc">Preis aufsteigend</option>
+                                <option value="priceDesc">Preis absteigend</option>
+                                <option value="titleAsc">Titel A-Z</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="marketplace-filter-field">
-                        <label for="filterSpecies">Tierart/Kategorie</label>
-                        <select id="filterSpecies" name="species">
-                            <option value="">Alle</option>
-                            <option value="Hund">Hund</option>
-                            <option value="Katze">Katze</option>
-                            <option value="Kaninchen">Kaninchen</option>
-                            <option value="Vogel">Vogel</option>
-                            <option value="Hamster">Hamster</option>
-                            <option value="Meerschweinchen">Meerschweinchen</option>
-                            <option value="Schildkröte">Schildkröte</option>
-                        </select>
-                    </div>
-
-                    <div class="marketplace-filter-field">
-                        <label for="filterMaxPrice">Preis bis</label>
-                        <input id="filterMaxPrice" name="maxPrice" type="number" min="0" step="0.01" placeholder="500">
-                    </div>
-                </div>
-
-                <div class="marketplace-filter-actions">
-                    <button class="btn" type="submit">Filter anwenden</button>
-                    <button id="resetMarketplaceFilters" class="btn secondary" type="button">Zurücksetzen</button>
-                </div>
-            </form>
-
-            <div id="itemsGrid" class="item-grid"></div>
+                    <div id="itemsGrid" class="item-grid"></div>
+                </section>
+            </div>
         </section>
     </main>
 

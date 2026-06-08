@@ -2,18 +2,31 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: #101827;
-    color: #ffffff;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+    --shop-nav-bg: #101827;
+    --shop-nav-bg-soft: #172033;
+    --shop-nav-text: #ffffff;
+    --shop-nav-muted: rgba(255, 255, 255, 0.72);
+    --shop-nav-surface: var(--market-card-bg, #ffffff);
+    --shop-nav-surface-text: var(--market-text, #1d2433);
+    --shop-nav-surface-muted: var(--market-muted, #5f6b7a);
+    --shop-nav-border: rgba(255, 255, 255, 0.1);
+    --shop-nav-menu-border: var(--market-border, rgba(16, 24, 39, 0.12));
+    --shop-nav-accent: #ffcf40;
+    --shop-nav-accent-hover: #f5bd12;
+    --shop-nav-radius: 14px;
+    background: var(--shop-nav-bg);
+    color: var(--shop-nav-text);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
 }
 
 .shop-header-top {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 12px 18px;
+    padding: 14px 18px;
     display: grid;
-    grid-template-columns: auto minmax(260px, 1fr) auto;
-    gap: 18px;
+    grid-template-columns: auto minmax(280px, 640px) auto;
+    justify-content: space-between;
+    gap: 20px;
     align-items: center;
 }
 
@@ -26,6 +39,7 @@
     font-weight: 800;
     font-size: 1.15rem;
     white-space: nowrap;
+    min-height: 44px;
 }
 
 .shop-logo img {
@@ -36,56 +50,103 @@
 .shop-search {
     display: flex;
     align-items: center;
-    background: #ffffff;
-    border-radius: 999px;
+    width: 100%;
+    max-width: 640px;
+    justify-self: center;
+    background: var(--shop-nav-surface);
+    border-radius: var(--shop-nav-radius);
     overflow: hidden;
-    border: 2px solid transparent;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
 }
 
 .shop-search:focus-within {
-    border-color: #ffcf40;
+    border-color: var(--shop-nav-accent);
+    box-shadow: 0 0 0 3px rgba(255, 207, 64, 0.22), 0 10px 26px rgba(0, 0, 0, 0.18);
 }
 
 .shop-search input {
     flex: 1;
+    min-width: 0;
     border: none;
     outline: none;
     padding: 12px 16px;
     font-size: 0.95rem;
-    color: #1d2433;
+    background: transparent;
+    color: var(--shop-nav-surface-text);
+}
+
+.shop-search input::placeholder {
+    color: var(--shop-nav-surface-muted);
 }
 
 .shop-search button {
     border: none;
-    padding: 12px 18px;
-    background: #ffcf40;
+    min-height: 44px;
+    padding: 0 20px;
+    background: var(--shop-nav-accent);
     color: #1d2433;
     font-weight: 800;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .shop-search button:hover {
-    background: #f5bd12;
+    background: var(--shop-nav-accent-hover);
 }
 
 .shop-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: flex-end;
+    gap: 10px;
+    min-width: 0;
+}
+
+.shop-dropdown {
+    position: relative;
+}
+
+.shop-dropdown summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.shop-dropdown summary::-webkit-details-marker {
+    display: none;
+}
+
+.shop-dropdown summary::after {
+    content: "v";
+    font-size: 0.72rem;
+    opacity: 0.8;
+    margin-left: 2px;
+}
+
+.shop-dropdown[open] summary::after {
+    content: "^";
 }
 
 .shop-action {
-    color: #ffffff;
+    min-height: 42px;
+    color: var(--shop-nav-text);
     text-decoration: none;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 3px;
-    padding: 8px 10px;
-    border-radius: 12px;
-    font-size: 0.78rem;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 14px;
+    border-radius: var(--shop-nav-radius);
+    border: 1px solid var(--shop-nav-border);
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 0.9rem;
     font-weight: 700;
-    min-width: 66px;
+    white-space: nowrap;
+}
+
+.shop-account-dropdown .shop-action {
+    min-width: 118px;
 }
 
 .shop-action-icon {
@@ -95,12 +156,63 @@
 
 .shop-action:hover,
 .shop-action.active {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: var(--shop-nav-text);
+    text-decoration: none;
+}
+
+.shop-sell-action,
+.shop-auth-link {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    border-radius: var(--shop-nav-radius);
+    border: 1px solid var(--shop-nav-border);
+    color: var(--shop-nav-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.shop-sell-action {
+    background: var(--shop-nav-accent);
+    border-color: var(--shop-nav-accent);
+    color: #1d2433;
+}
+
+.shop-sell-action:hover,
+.shop-sell-action.active,
+.shop-auth-link.primary:hover {
+    background: var(--shop-nav-accent-hover);
+    border-color: var(--shop-nav-accent-hover);
+    color: #1d2433;
+    text-decoration: none;
+}
+
+.shop-auth-link {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.shop-auth-link:hover,
+.shop-auth-link.active {
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--shop-nav-text);
+    text-decoration: none;
+}
+
+.shop-auth-link.primary {
+    background: var(--shop-nav-accent);
+    border-color: var(--shop-nav-accent);
+    color: #1d2433;
 }
 
 .shop-header-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background: #172033;
+    border-top: 1px solid var(--shop-nav-border);
+    background: var(--shop-nav-bg-soft);
 }
 
 .shop-tabs {
@@ -108,26 +220,77 @@
     margin: 0 auto;
     padding: 0 18px;
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
-    overflow-x: auto;
+    overflow: visible;
 }
 
 .shop-tab {
-    color: #ffffff;
+    min-height: 42px;
+    color: var(--shop-nav-muted);
     text-decoration: none;
-    padding: 11px 14px;
+    padding: 0 14px;
     display: flex;
     align-items: center;
     gap: 7px;
     white-space: nowrap;
-    border-radius: 10px 10px 0 0;
+    border-radius: 12px 12px 0 0;
     font-size: 0.92rem;
     font-weight: 700;
+}
+
+.shop-tab-dropdown .shop-tab {
+    border: none;
 }
 
 .shop-tab:hover,
 .shop-tab.active {
     background: rgba(255, 255, 255, 0.12);
+    color: var(--shop-nav-text);
+    text-decoration: none;
+}
+
+.shop-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 1001;
+    min-width: 230px;
+    padding: 10px;
+    border-radius: 16px;
+    background: var(--shop-nav-surface);
+    color: var(--shop-nav-surface-text);
+    border: 1px solid var(--shop-nav-menu-border);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.24);
+}
+
+.shop-tab-dropdown .shop-dropdown-menu {
+    right: auto;
+    left: 0;
+}
+
+.shop-dropdown-menu a,
+.shop-dropdown-menu button {
+    width: 100%;
+    display: block;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: var(--shop-nav-surface-text);
+    text-align: left;
+    text-decoration: none;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.shop-dropdown-menu a:hover,
+.shop-dropdown-menu a.active,
+.shop-dropdown-menu button:hover {
+    background: var(--market-badge-bg, rgba(36, 104, 178, 0.12));
+    color: var(--shop-nav-surface-text);
+    text-decoration: none;
 }
 
 .shop-tab-icon {
@@ -149,7 +312,8 @@
 
 @media (max-width: 900px) {
     .shop-header-top {
-        grid-template-columns: auto 1fr;
+        grid-template-columns: auto auto;
+        gap: 12px;
     }
 
     .shop-header-top .shop-search {
@@ -162,15 +326,25 @@
 
     .shop-actions {
         justify-content: flex-end;
+        flex-wrap: wrap;
     }
 
     .shop-action {
         min-width: auto;
-        padding: 8px;
+        padding: 0 12px;
     }
 
-    .shop-action span:last-child {
+    .shop-action-icon {
         display: none;
+    }
+
+    .shop-account-dropdown .shop-action {
+        min-width: auto;
+    }
+
+    .shop-mobile-search .shop-search {
+        max-width: none;
+        margin: 0 auto;
     }
 }
 
@@ -189,12 +363,43 @@
         height: 40px;
     }
 
+    .shop-actions {
+        gap: 6px;
+    }
+
+    .shop-sell-action,
+    .shop-auth-link,
+    .shop-action {
+        min-height: 38px;
+        padding: 0 10px;
+        font-size: 0.82rem;
+    }
+
+    .shop-mobile-search {
+        padding: 0 10px 10px;
+    }
+
+    .shop-search input {
+        padding: 10px 12px;
+        font-size: 0.88rem;
+    }
+
+    .shop-search button {
+        min-height: 40px;
+        padding: 0 14px;
+    }
+
     .shop-tabs {
         padding: 0 10px;
     }
 
     .shop-tab {
-        padding: 10px 12px;
+        min-height: 38px;
+        padding: 0 10px;
         font-size: 0.86rem;
+    }
+
+    .shop-dropdown-menu {
+        min-width: 200px;
     }
 }

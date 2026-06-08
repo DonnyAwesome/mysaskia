@@ -36,6 +36,10 @@ function isActivePage(targetPage) {
     return getCurrentPageName() === targetPage ? "active" : "";
 }
 
+function isAnyActivePage(targetPages) {
+    return targetPages.includes(getCurrentPageName()) ? "active" : "";
+}
+
 function handleShopSearch(event) {
     event.preventDefault();
 
@@ -88,51 +92,50 @@ async function loadShopUnreadCount() {
 }
 
 function renderShopNavigation() {
-    const existingNavbar = document.querySelector(".navbar");
-    if (existingNavbar) {
+    document.querySelectorAll(".navbar").forEach((existingNavbar) => {
         existingNavbar.remove();
-    }
+    });
 
     const token = getShopToken();
     const isLoggedIn = Boolean(token);
-    const adminAction = isShopAdmin()
+    const accountActivePages = [
+        "dashboard.html",
+        "profile.html",
+        "my-items.html",
+        "favorites.html",
+        "orders.html",
+        "sales.html",
+        "support.html",
+        "notifications.html",
+        "admin.html",
+        "login.html"
+    ];
+    const guideActivePages = ["guide.html", "adoption.html", "safety.html", "about.html"];
+    const accountMenu = isLoggedIn
         ? `
-            <a class="shop-action ${isActivePage("admin.html")}" href="admin.html" title="Admin-Bereich">
-                <span class="shop-action-icon">🛡️</span>
-                <span>Admin</span>
-            </a>
-        `
-        : "";
-    const adminTab = isShopAdmin()
-        ? `
-            <a class="shop-tab ${isActivePage("admin.html")}" href="admin.html">
-                <span class="shop-tab-icon">🛡️</span>
-                <span>Admin-Bereich</span>
-            </a>
-        `
-        : "";
-
-    const authAction = isLoggedIn
-        ? `
-            <button class="shop-action shop-logout-button" onclick="shopLogout()" title="Logout">
-                <span class="shop-action-icon">🚪</span>
-                <span>Logout</span>
-            </button>
+            <details class="shop-dropdown shop-account-dropdown">
+                <summary class="shop-action ${isAnyActivePage(accountActivePages)}" title="Mein Konto">
+                    <span class="shop-action-icon">👤</span>
+                    <span>Mein Konto</span>
+                </summary>
+                <div class="shop-dropdown-menu">
+                    <a class="${isActivePage("dashboard.html")}" href="dashboard.html">Dashboard</a>
+                    <a class="${isActivePage("profile.html")}" href="profile.html">Profil</a>
+                    <a class="${isActivePage("my-items.html")}" href="my-items.html">Meine Inserate</a>
+                    <a class="${isActivePage("favorites.html")}" href="favorites.html">Merkliste</a>
+                    <a class="${isActivePage("orders.html")}" href="orders.html">Meine Käufe</a>
+                    <a class="${isActivePage("sales.html")}" href="sales.html">Meine Verkäufe</a>
+                    <a class="${isActivePage("support.html")}" href="support.html">Support</a>
+                    <a class="${isActivePage("notifications.html")}" href="notifications.html">Benachrichtigungen</a>
+                    ${isShopAdmin() ? `<a class="${isActivePage("admin.html")}" href="admin.html">Admin-Bereich</a>` : ""}
+                    <button type="button" onclick="shopLogout()">Logout</button>
+                </div>
+            </details>
         `
         : `
-            <a class="shop-action ${isActivePage("login.html")}" href="login.html" title="Login">
-                <span class="shop-action-icon">👤</span>
-                <span>Login</span>
-            </a>
+            <a class="shop-auth-link ${isActivePage("login.html")}" href="login.html">Login</a>
+            <a class="shop-auth-link primary" href="login.html#register">Registrieren</a>
         `;
-    const notificationsAction = isLoggedIn
-        ? `
-            <a class="shop-action ${isActivePage("notifications.html")}" href="notifications.html" title="Benachrichtigungen">
-                <span class="shop-action-icon">🔔</span>
-                <span id="shopNotificationsLabel">Benachrichtigungen</span>
-            </a>
-        `
-        : "";
 
     const navHtml = `
         <header class="shop-header">
@@ -143,50 +146,19 @@ function renderShopNavigation() {
                 </a>
 
                 <form class="shop-search" onsubmit="handleShopSearch(event)">
-                    <input type="search" placeholder="Tiere suchen, z. B. Labrador, Katze, Maus...">
+                    <input type="search" placeholder="Tier, Rasse oder Zubehör suchen...">
                     <button type="submit">Suchen</button>
                 </form>
 
                 <div class="shop-actions">
-                    <a class="shop-action ${isActivePage("dashboard.html")}" href="dashboard.html" title="Dashboard">
-                        <span class="shop-action-icon">🏠</span>
-                        <span>Konto</span>
-                    </a>
-
-                    <a class="shop-action ${isActivePage("my-items.html")}" href="my-items.html" title="Meine Inserate">
-                        <span class="shop-action-icon">📦</span>
-                        <span>Inserate</span>
-                    </a>
-
-                    <a class="shop-action ${isActivePage("orders.html")}" href="orders.html" title="Meine Käufe">
-                        <span class="shop-action-icon">🛒</span>
-                        <span>Käufe</span>
-                    </a>
-
-                    <a class="shop-action ${isActivePage("favorites.html")}" href="favorites.html" title="Merkliste">
-                        <span class="shop-action-icon">♥</span>
-                        <span>Merkliste</span>
-                    </a>
-
-                    <a class="shop-action ${isActivePage("sales.html")}" href="sales.html" title="Meine Verkäufe">
-                        <span class="shop-action-icon">🤝</span>
-                        <span>Verkäufe</span>
-                    </a>
-
-                    <a class="shop-action ${isActivePage("sell.html")}" href="sell.html" title="Tier verkaufen">
-                        <span class="shop-action-icon">➕</span>
-                        <span>Verkaufen</span>
-                    </a>
-
-                    ${notificationsAction}
-                    ${adminAction}
-                    ${authAction}
+                    <a class="shop-sell-action ${isAnyActivePage(["sell.html", "edit-item.html"])}" href="sell.html">Inserieren</a>
+                    ${accountMenu}
                 </div>
             </div>
 
             <div class="shop-mobile-search">
                 <form class="shop-search" onsubmit="handleShopSearch(event)">
-                    <input type="search" placeholder="Tiere suchen...">
+                    <input type="search" placeholder="Tier, Rasse oder Zubehör suchen...">
                     <button type="submit">Suchen</button>
                 </form>
             </div>
@@ -198,24 +170,14 @@ function renderShopNavigation() {
                         <span>Home</span>
                     </a>
 
-                    <a class="shop-tab ${isActivePage("marketplace.html")}" href="marketplace.html">
+                    <a class="shop-tab ${isAnyActivePage(["marketplace.html", "item.html", "seller.html"])}" href="marketplace.html">
                         <span class="shop-tab-icon">🐾</span>
                         <span>Marktplatz</span>
                     </a>
 
-                    <a class="shop-tab ${isActivePage("sell.html")}" href="sell.html">
+                    <a class="shop-tab ${isAnyActivePage(["sell.html", "edit-item.html"])}" href="sell.html">
                         <span class="shop-tab-icon">📸</span>
-                        <span>Tier verkaufen</span>
-                    </a>
-
-                    <a class="shop-tab ${isActivePage("my-items.html")}" href="my-items.html">
-                        <span class="shop-tab-icon">📋</span>
-                        <span>Meine Inserate</span>
-                    </a>
-
-                    <a class="shop-tab ${isActivePage("favorites.html")}" href="favorites.html">
-                        <span class="shop-tab-icon">♥</span>
-                        <span>Merkliste</span>
+                        <span>Verkaufen</span>
                     </a>
 
                     <a class="shop-tab ${isActivePage("forum.html") || isActivePage("forum-group.html") || isActivePage("forum-story.html")}" href="forum.html">
@@ -223,31 +185,18 @@ function renderShopNavigation() {
                         <span>Tiergeschichten</span>
                     </a>
 
-                    <a class="shop-tab ${isActivePage("guide.html")}" href="guide.html">
-                        <span class="shop-tab-icon">💡</span>
-                        <span>Tierwissen</span>
-                    </a>
-
-                    <a class="shop-tab ${isActivePage("adoption.html")}" href="adoption.html">
-                        <span class="shop-tab-icon">🤝</span>
-                        <span>Adoption</span>
-                    </a>
-
-                    ${adminTab}
-                    <a class="shop-tab ${isActivePage("support.html")}" href="support.html">
-                        <span class="shop-tab-icon">🎫</span>
-                        <span>Support</span>
-                    </a>
-
-                    <a class="shop-tab ${isActivePage("profile.html")}" href="profile.html">
-                        <span class="shop-tab-icon">⚙️</span>
-                        <span>Profil</span>
-                    </a>
-
-                    <a class="shop-tab ${isActivePage("about.html")}" href="about.html">
-                        <span class="shop-tab-icon">ℹ️</span>
-                        <span>Über uns</span>
-                    </a>
+                    <details class="shop-dropdown shop-tab-dropdown">
+                        <summary class="shop-tab ${isAnyActivePage(guideActivePages)}">
+                            <span class="shop-tab-icon">💡</span>
+                            <span>Ratgeber</span>
+                        </summary>
+                        <div class="shop-dropdown-menu">
+                            <a class="${isActivePage("guide.html")}" href="guide.html">Tierwissen</a>
+                            <a class="${isActivePage("adoption.html")}" href="adoption.html">Adoption</a>
+                            <a class="${isActivePage("safety.html")}" href="safety.html">Sicherheit</a>
+                            <a class="${isActivePage("about.html")}" href="about.html">Über uns</a>
+                        </div>
+                    </details>
                 </nav>
             </div>
         </header>

@@ -63,66 +63,129 @@ function handleItemImageError(image, detail = false) {
 
 let marketplaceItems = [];
 
-function marketplaceFiltersHtml() {
-    return `
-        <form id="marketplaceFilters" class="marketplace-filters">
-            <div class="marketplace-filter-fields">
-                <div class="marketplace-filter-field marketplace-filter-search">
-                    <label for="filterQuery">Suche</label>
-                    <input id="filterQuery" name="q" type="search" placeholder="Titel, Rasse, Beschreibung...">
-                </div>
-
-                <div class="marketplace-filter-field">
-                    <label for="filterSpecies">Tierart/Kategorie</label>
-                    <select id="filterSpecies" name="species">
-                        <option value="">Alle</option>
-                        <option value="Hund">Hund</option>
-                        <option value="Katze">Katze</option>
-                        <option value="Kaninchen">Kaninchen</option>
-                        <option value="Vogel">Vogel</option>
-                        <option value="Hamster">Hamster</option>
-                        <option value="Meerschweinchen">Meerschweinchen</option>
-                        <option value="Schildkröte">Schildkröte</option>
-                    </select>
-                </div>
-
-                <div class="marketplace-filter-field">
-                    <label for="filterMaxPrice">Preis bis</label>
-                    <input id="filterMaxPrice" name="maxPrice" type="number" min="0" step="0.01" placeholder="500">
-                </div>
-            </div>
-
-            <div class="marketplace-filter-actions">
-                <button class="btn" type="submit">Filter anwenden</button>
-                <button id="resetMarketplaceFilters" class="btn secondary" type="button">Zurücksetzen</button>
-            </div>
-        </form>
-    `;
-}
-
-function ensureMarketplaceFilters() {
-    if (document.getElementById("marketplaceFilters")) {
-        return;
-    }
-
-    const itemsGrid = document.getElementById("itemsGrid");
-
-    if (itemsGrid) {
-        itemsGrid.insertAdjacentHTML("beforebegin", marketplaceFiltersHtml());
-    }
-}
-
-function getMarketplaceFilters() {
+function getInitialMarketplaceFilters() {
     const params = new URLSearchParams(window.location.search);
 
     return {
-        q: (params.get("q") || "").trim(),
-        species: (params.get("species") || "").trim(),
-        maxPrice: (params.get("maxPrice") || "").trim()
+        q: (params.get("q") || "").trim()
     };
 }
 
-function itemMatchesFilters(item, filters) {
+function getSelectedCheckboxValues(form, name) {
+    return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map((input) => input.value);
+}
+
+function getMarketplaceFilters() {
+    const form = document.getElementById("marketplaceFilters");
+
+    if (!form) {
+        return {
+            q: "",
+            categories: [],
+            minPrice: "",
+            maxPrice: "",
+            gender: "",
+            age: "",
+            breed: "",
+            withImage: false,
+            activeOnly: true
+        };
+    }
+
+    const formData = new FormData(form);
+
+    return {
+        q: String(formData.get("q") || "").trim(),
+        categories: getSelectedCheckboxValues(form, "category"),
+        minPrice: String(formData.get("minPrice") || "").trim(),
+        maxPrice: String(formData.get("maxPrice") || "").trim(),
+        gender: String(formData.get("gender") || "").trim(),
+        age: String(formData.get("age") || "").trim(),
+        breed: String(formData.get("breed") || "").trim(),
+        withImage: Boolean(formData.get("withImage")),
+        activeOnly: Boolean(formData.get("activeOnly"))
+    };
+}
+
+function normalizeFilterText(value) {
+    return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ä/g, "ae")
+        .replace(/ö/g, "oe")
+        .replace(/ü/g, "ue")
+        .replace(/ß/g, "ss");
+}
+
+function itemText(item, fields) {
+    return fields.map((field) => normalizeFilterText(item[field])).join(" ");
+}
+
+function itemCategoryKey(item) {
+    const text = itemText(item, ["species", "breed", "title", "description"]);
+
+    if (text.includes("hund")) {
+        return "hunde";
+    }
+
+    if (text.includes("katze") || text.includes("kater")) {
+        return "katzen";
+    }
+
+    if (["kaninchen", "hamster", "meerschwein", "maus", "ratte", "chinchilla"].some((word) => text.includes(word))) {
+        return "kleintiere";
+    }
+
+    if (["vogel", "papagei", "wellensittich", "sittich", "kanar"].some((word) => text.includes(word))) {
+        return "voegel";
+    }
+
+    if (["reptil", "schildkroete", "schildkrote", "echse", "gecko", "schlange"].some((word) => text.includes(word))) {
+        return "reptilien";
+    }
+
+    return "sonstige";
+}
+
+function itemMatchesAgeFilter(item, ageFilter) {
+    if (!ageFilter) {
+        return true;
+    }
+
+    const ageText = normalizeFilterText(item.age);
+
+    if (ageFilter === "jungtier") {
+        return ["jung", "welpe", "kitten", "baby", "junior", "monat"].some((word) => ageText.includes(word));
+    }
+
+    if (ageFilter === "erwachsen") {
+        return ["erwachsen", "adult", "jahr"].some((word) => ageText.includes(word)) &&
+            !["senior", "alt"].some((word) => ageText.includes(word));
+    }
+
+    if (ageFilter === "senior") {
+        return ["senior", "alt", "aelter"].some((word) => ageText.includes(word));
+    }
+
+    return true;
+}
+
+function itemMatchesGenderFilter(item, genderFilter) {
+    if (!genderFilter) {
+        return true;
+    }
+
+    const genderText = normalizeFilterText(item.gender);
+
+    if (genderFilter === "unbekannt") {
+        return !genderText || ["unbekannt", "keine", "n/a"].some((word) => genderText.includes(word));
+    }
+
+    return genderText.includes(normalizeFilterText(genderFilter));
+}
+
+function itemMatchesMarketplaceFilters(item, filters) {
     const normalizedQuery = filters.q.toLowerCase();
     const searchableFields = [
         item.title,
@@ -138,43 +201,61 @@ function itemMatchesFilters(item, filters) {
     const matchesSearch = !normalizedQuery || searchableFields.some((field) => {
         return String(field || "").toLowerCase().includes(normalizedQuery);
     });
-    const matchesSpecies = !filters.species ||
-        String(item.species || "").toLowerCase() === filters.species.toLowerCase();
+    const matchesCategory = filters.categories.length === 0 ||
+        filters.categories.includes(itemCategoryKey(item));
+    const minPrice = Number(filters.minPrice);
     const maxPrice = Number(filters.maxPrice);
-    const matchesPrice = !filters.maxPrice ||
+    const matchesMinPrice = !filters.minPrice ||
+        (!Number.isNaN(minPrice) && Number(item.price) >= minPrice);
+    const matchesMaxPrice = !filters.maxPrice ||
         (!Number.isNaN(maxPrice) && Number(item.price) <= maxPrice);
+    const matchesGender = itemMatchesGenderFilter(item, filters.gender);
+    const matchesAge = itemMatchesAgeFilter(item, filters.age);
+    const matchesBreed = !filters.breed ||
+        normalizeFilterText(item.breed).includes(normalizeFilterText(filters.breed));
+    const matchesImage = !filters.withImage || Boolean(item.image_url || item.image_path);
+    const matchesStatus = !filters.activeOnly || normalizeFilterText(item.status || "aktiv").includes("aktiv");
 
-    return matchesSearch && matchesSpecies && matchesPrice;
+    return matchesSearch &&
+        matchesCategory &&
+        matchesMinPrice &&
+        matchesMaxPrice &&
+        matchesGender &&
+        matchesAge &&
+        matchesBreed &&
+        matchesImage &&
+        matchesStatus;
 }
 
-function marketplaceFilterInfoHtml(filters, resultCount) {
-    if (!filters.q && !filters.species && !filters.maxPrice) {
-        return "";
-    }
+function applyMarketplaceFilters(items) {
+    const filters = getMarketplaceFilters();
 
-    return `
-        <div class="search-results-info">
-            <span>${resultCount} passende Inserate gefunden</span>
-            <a class="btn secondary" href="marketplace.html">Filter zurücksetzen</a>
-        </div>
-    `;
+    return items.filter((item) => itemMatchesMarketplaceFilters(item, filters));
 }
 
-function fillMarketplaceFilterFields(filters) {
-    const queryInput = document.getElementById("filterQuery");
-    const speciesSelect = document.getElementById("filterSpecies");
-    const maxPriceInput = document.getElementById("filterMaxPrice");
+function sortMarketplaceItems(items) {
+    const sortSelect = document.getElementById("marketplaceSort");
+    const sortValue = sortSelect ? sortSelect.value : "newest";
+    const sortedItems = [...items];
 
-    if (queryInput) {
-        queryInput.value = filters.q;
+    if (sortValue === "priceAsc") {
+        sortedItems.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
+    } else if (sortValue === "priceDesc") {
+        sortedItems.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
+    } else if (sortValue === "titleAsc") {
+        sortedItems.sort((a, b) => String(a.title || "").localeCompare(String(b.title || ""), "de"));
+    } else {
+        sortedItems.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
     }
 
-    if (speciesSelect) {
-        speciesSelect.value = filters.species;
-    }
+    return sortedItems;
+}
 
-    if (maxPriceInput) {
-        maxPriceInput.value = filters.maxPrice;
+function renderResultCount(count) {
+    const container = document.getElementById("marketplaceResultCount");
+
+    if (container) {
+        container.textContent = count === 1 ? "1 Inserat gefunden" : `${count} Inserate gefunden`;
     }
 }
 
@@ -185,62 +266,77 @@ function renderMarketplaceItems() {
         return;
     }
 
-    const filters = getMarketplaceFilters();
-    const visibleItems = marketplaceItems.filter((item) => itemMatchesFilters(item, filters));
-    const filterInfoHtml = marketplaceFilterInfoHtml(filters, visibleItems.length);
+    const visibleItems = sortMarketplaceItems(applyMarketplaceFilters(marketplaceItems));
+
+    renderResultCount(visibleItems.length);
 
     if (visibleItems.length === 0) {
-        container.innerHTML = `${filterInfoHtml}${itemStateHtml(
-            "Keine passenden Inserate",
-            "Passe die Filter an oder setze sie zurück.",
+        container.innerHTML = itemStateHtml(
+            "Keine Inserate gefunden",
+            "Passe deine Filter an.",
             "",
             `<button class="btn secondary" type="button" onclick="document.getElementById('resetMarketplaceFilters').click()">Filter zurücksetzen</button>`
-        )}`;
+        );
         return;
     }
 
-    container.innerHTML = `${filterInfoHtml}${visibleItems.map((item) => itemCardHtml(item, false)).join("")}`;
+    container.innerHTML = visibleItems.map((item) => itemCardHtml(item, false)).join("");
 }
 
 function setupMarketplaceFilters() {
     const form = document.getElementById("marketplaceFilters");
     const resetButton = document.getElementById("resetMarketplaceFilters");
+    const sortSelect = document.getElementById("marketplaceSort");
 
     if (!form || !resetButton) {
         return;
     }
 
-    fillMarketplaceFilterFields(getMarketplaceFilters());
+    const initialFilters = getInitialMarketplaceFilters();
+    const queryInput = document.getElementById("filterQuery");
+
+    if (queryInput) {
+        queryInput.value = initialFilters.q;
+    }
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-
-        const formData = new FormData(form);
-        const params = new URLSearchParams();
-
-        for (const name of ["q", "species", "maxPrice"]) {
-            const value = String(formData.get(name) || "").trim();
-
-            if (value) {
-                params.set(name, value);
-            }
-        }
-
-        const queryString = params.toString();
-        const url = queryString ? `marketplace.html?${queryString}` : "marketplace.html";
-
-        window.history.pushState({}, "", url);
         renderMarketplaceItems();
     });
 
+    form.addEventListener("input", () => {
+        renderMarketplaceItems();
+    });
+
+    form.addEventListener("change", () => {
+        renderMarketplaceItems();
+    });
+
+    if (sortSelect) {
+        sortSelect.addEventListener("change", () => {
+            renderMarketplaceItems();
+        });
+    }
+
     resetButton.addEventListener("click", () => {
         form.reset();
+        const activeOnly = document.getElementById("filterActiveOnly");
+
+        if (activeOnly) {
+            activeOnly.checked = true;
+        }
+
         window.history.pushState({}, "", "marketplace.html");
         renderMarketplaceItems();
     });
 
     window.addEventListener("popstate", () => {
-        fillMarketplaceFilterFields(getMarketplaceFilters());
+        const filters = getInitialMarketplaceFilters();
+
+        if (queryInput) {
+            queryInput.value = filters.q;
+        }
+
         renderMarketplaceItems();
     });
 }
@@ -799,6 +895,7 @@ async function loadMarketplaceItems() {
 
         if (!data.items || data.items.length === 0) {
             marketplaceItems = [];
+            renderResultCount(0);
             container.innerHTML = itemStateHtml(
                 "Noch keine aktiven Inserate",
                 "Sei der Erste und stelle ein Tier ein.",
@@ -811,6 +908,7 @@ async function loadMarketplaceItems() {
         marketplaceItems = data.items;
         renderMarketplaceItems();
     } catch (error) {
+        renderResultCount(0);
         container.innerHTML = itemStateHtml("Server nicht erreichbar", "Prüfe, ob das Flask-Backend läuft.", "error-state");
     }
 }
@@ -1009,7 +1107,6 @@ function setupSellForm() {
 
 document.addEventListener("DOMContentLoaded", () => {
     if (document.body.dataset.page === "marketplace") {
-        ensureMarketplaceFilters();
         setupMarketplaceFilters();
         loadMarketplaceItems();
     }
