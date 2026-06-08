@@ -18,12 +18,15 @@ function dashboardEscapeHtml(value) {
         .replaceAll("'", "&#039;");
 }
 
-function statCardHtml(label, value) {
+function statCardHtml(label, value, href) {
+    const tagName = href ? "a" : "article";
+    const hrefAttribute = href ? ` href="${dashboardEscapeHtml(href)}"` : "";
+
     return `
-        <article class="dashboard-stat-card">
+        <${tagName} class="dashboard-stat-card"${hrefAttribute}>
             <div class="dashboard-stat-value">${dashboardEscapeHtml(value)}</div>
             <div class="dashboard-stat-label">${dashboardEscapeHtml(label)}</div>
-        </article>
+        </${tagName}>
     `;
 }
 
@@ -33,7 +36,7 @@ function renderStats(container, stats, summary) {
     }
 
     container.innerHTML = stats.map((stat) => {
-        return statCardHtml(stat.label, summary[stat.key] ?? 0);
+        return statCardHtml(stat.label, summary[stat.key] ?? 0, stat.href);
     }).join("");
 }
 
@@ -89,28 +92,28 @@ async function loadDashboardSummary() {
         }
 
         const userStats = [
-            { key: "my_items_count", label: "Meine Inserate" },
-            { key: "my_active_items_count", label: "Aktive Inserate" },
-            { key: "my_sold_items_count", label: "Verkaufte Inserate" },
-            { key: "my_orders_count", label: "Meine Käufe" },
-            { key: "my_sales_count", label: "Meine Verkäufe" },
-            { key: "my_open_sales_count", label: "Offene Verkaufsanfragen" },
-            { key: "my_tickets_count", label: "Meine Tickets" },
-            { key: "my_open_tickets_count", label: "Offene Tickets" }
+            { key: "my_items_count", label: "Meine Inserate", href: "my-items.html" },
+            { key: "my_active_items_count", label: "Aktive Inserate", href: "my-items.html" },
+            { key: "my_sold_items_count", label: "Verkaufte Inserate", href: "my-items.html" },
+            { key: "my_orders_count", label: "Meine Käufe", href: "orders.html" },
+            { key: "my_sales_count", label: "Meine Verkäufe", href: "sales.html" },
+            { key: "my_open_sales_count", label: "Offene Verkaufsanfragen", href: "sales.html" },
+            { key: "my_tickets_count", label: "Support-Tickets", href: "support.html" },
+            { key: "my_open_tickets_count", label: "Offene Tickets", href: "support.html" }
         ];
 
         renderStats(userStatsGrid, userStats, data);
 
         if (Object.prototype.hasOwnProperty.call(data, "total_users")) {
             const adminStats = [
-                { key: "total_users", label: "Nutzer" },
-                { key: "total_items", label: "Inserate gesamt" },
-                { key: "active_items", label: "Aktive Inserate" },
-                { key: "sold_items", label: "Verkaufte Inserate" },
+                { key: "total_users", label: "Nutzer gesamt" },
+                { key: "total_items", label: "Inserate gesamt", href: "admin.html" },
+                { key: "active_items", label: "Aktive Inserate", href: "admin.html" },
+                { key: "sold_items", label: "Verkaufte Inserate", href: "admin.html" },
                 { key: "total_orders", label: "Kaufanfragen gesamt" },
                 { key: "open_orders", label: "Offene Kaufanfragen" },
-                { key: "total_tickets", label: "Tickets gesamt" },
-                { key: "open_tickets", label: "Offene Tickets" }
+                { key: "total_tickets", label: "Tickets gesamt", href: "support.html" },
+                { key: "open_tickets", label: "Offene Tickets", href: "support.html" }
             ];
 
             if (adminStatsSection) {

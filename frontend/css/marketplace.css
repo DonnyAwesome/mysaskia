@@ -449,13 +449,31 @@
     margin-top: 26px;
 }
 
+.dashboard-quick-actions {
+    margin-top: 28px;
+}
+
+.dashboard-quick-actions h2 {
+    margin-bottom: 12px;
+}
+
 .dashboard-stat-card {
+    display: block;
     padding: 18px;
     border-radius: 18px;
     background: var(--market-card-bg);
     color: var(--market-text);
     border: 1px solid var(--market-border);
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+a.dashboard-stat-card:hover,
+a.dashboard-stat-card:focus-visible {
+    border-color: var(--market-price);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+    transform: translateY(-2px);
 }
 
 .dashboard-stat-value {
