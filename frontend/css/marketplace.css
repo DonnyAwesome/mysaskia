@@ -163,6 +163,17 @@
     margin-bottom: 12px;
 }
 
+.guide-tip-list {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--market-text);
+    line-height: 1.55;
+}
+
+.guide-tip-list li + li {
+    margin-top: 8px;
+}
+
 .item-meta {
     display: flex;
     flex-wrap: wrap;
@@ -413,6 +424,29 @@
     line-height: 1.5;
 }
 
+.admin-detail-list {
+    display: grid;
+    gap: 8px;
+    margin: 14px 0 0;
+}
+
+.admin-detail-list div {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px;
+}
+
+.admin-detail-list dt {
+    color: var(--market-muted);
+    font-weight: 700;
+}
+
+.admin-detail-list dd {
+    margin: 0;
+    color: var(--market-text);
+    overflow-wrap: anywhere;
+}
+
 .seller-review-form {
     max-width: none;
     margin: 0;
@@ -559,6 +593,13 @@ button:disabled,
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+@media (max-width: 640px) {
+    .admin-detail-list div {
+        grid-template-columns: 1fr;
+        gap: 2px;
     }
 }
 

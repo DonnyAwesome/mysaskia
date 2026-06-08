@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Admin-Moderation - MySaskia</title>
+    <title>Admin-Bereich - MySaskia</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="css/shop-nav.css?v=1">
@@ -19,25 +19,40 @@
 
     <main>
         <section class="marketplace-hero">
-            <h1>Admin-Moderation</h1>
-            <p>Verwalte Inserate und Verkäuferbewertungen.</p>
+            <h1>Admin-Bereich</h1>
+            <p>Zentrale Übersicht für Nutzer, Inserate, Support-Tickets und Orders.</p>
             <div id="adminMessage" class="status-message"></div>
         </section>
 
-        <section id="adminItemsSection" class="marketplace-container">
-            <h2>Alle Inserate</h2>
-            <div id="adminItemsGrid" class="item-grid"></div>
+        <section id="adminOverviewSection" class="marketplace-container">
+            <h2>Übersicht</h2>
+            <div id="adminOverviewGrid" class="dashboard-stats-grid"></div>
         </section>
 
-        <section id="adminReviewsSection" class="marketplace-container">
-            <h2>Alle Verkäuferbewertungen</h2>
-            <div id="adminReviewsList" class="review-list"></div>
+        <section id="adminUsersSection" class="marketplace-container">
+            <h2>Nutzer</h2>
+            <div id="adminUsersList" class="review-list"></div>
+        </section>
+
+        <section id="adminItemsSection" class="marketplace-container">
+            <h2>Inserate</h2>
+            <div id="adminItemsList" class="review-list"></div>
+        </section>
+
+        <section id="adminTicketsSection" class="marketplace-container">
+            <h2>Support-Tickets</h2>
+            <div id="adminTicketsList" class="review-list"></div>
+        </section>
+
+        <section id="adminOrdersSection" class="marketplace-container">
+            <h2>Orders</h2>
+            <div id="adminOrdersList" class="review-list"></div>
         </section>
     </main>
 
     <script src="js/i18n.js?v=1"></script>
     <script src="js/site.js?v=1"></script>
     <script src="js/shop-nav.js?v=3"></script>
-    <script src="js/admin.js?v=2"></script>
+    <script src="js/admin.js?v=3"></script>
 </body>
 </html>

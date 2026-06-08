@@ -15,6 +15,8 @@ def get_accounts():
     user = get_user_by_token(token)
     if not user:
         return jsonify({"message":"Du musst eingeloggt sein."}), 401
+    if not user["is_admin"]:
+        return jsonify({"message":"Nur Admins dürfen Accounts sehen."}), 403
 
     conn = get_db_connection()
     cursor = conn.cursor()

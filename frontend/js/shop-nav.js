@@ -97,7 +97,7 @@ function renderShopNavigation() {
     const isLoggedIn = Boolean(token);
     const adminAction = isShopAdmin()
         ? `
-            <a class="shop-action ${isActivePage("admin.html")}" href="admin.html" title="Moderation">
+            <a class="shop-action ${isActivePage("admin.html")}" href="admin.html" title="Admin-Bereich">
                 <span class="shop-action-icon">🛡️</span>
                 <span>Admin</span>
             </a>
@@ -107,7 +107,7 @@ function renderShopNavigation() {
         ? `
             <a class="shop-tab ${isActivePage("admin.html")}" href="admin.html">
                 <span class="shop-tab-icon">🛡️</span>
-                <span>Moderation</span>
+                <span>Admin-Bereich</span>
             </a>
         `
         : "";
@@ -221,6 +221,11 @@ function renderShopNavigation() {
                     <a class="shop-tab ${isActivePage("forum.html") || isActivePage("forum-group.html") || isActivePage("forum-story.html")}" href="forum.html">
                         <span class="shop-tab-icon">📖</span>
                         <span>Tiergeschichten</span>
+                    </a>
+
+                    <a class="shop-tab ${isActivePage("guide.html")}" href="guide.html">
+                        <span class="shop-tab-icon">💡</span>
+                        <span>Tierwissen</span>
                     </a>
 
                     ${adminTab}
